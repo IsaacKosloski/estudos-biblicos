@@ -1,0 +1,37 @@
+%% =============================================================================
+%%  Estudo temático — arquivo principal (LuaLaTeX)
+%%  Dados em dados/temas/<sigla>/ (textos.tsv, vocabulario.tsv, ocorrencias.tsv)
+%% =============================================================================
+\documentclass[11pt, twoside, openany]{book}
+\input{config}
+% Para compilar mais rápido enquanto escreve, descomente e deixe só a etapa atual:
+% \includeonly{capitulos/04-contexto}
+\usepackage{estilo/estudobiblico}
+\usepackage{estilo/tema}
+\addbibresource{geral.bib}          % compartilhado/bibliografia/geral.bib
+\addbibresource{bibliografia.bib}   % deste caderno
+
+\begin{document}
+
+\frontmatter
+\capa
+\colofao
+\tableofcontents
+\include{capitulos/00-como-estudar}
+
+\mainmatter
+\include{capitulos/01-pergunta}
+\include{capitulos/02-palavras}
+\include{capitulos/03-textos}
+\include{capitulos/04-contexto}
+\include{capitulos/05-desenvolvimento}
+\include{capitulos/06-dialogo}
+\include{capitulos/07-sintese}
+
+\backmatter
+\include{capitulos/90-ocorrencias}
+\printbibliography[heading=bibintoc, title={Bibliografia}]
+\printindex[textos]
+\printindex[termos]
+
+\end{document}

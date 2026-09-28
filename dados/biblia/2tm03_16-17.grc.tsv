@@ -1,0 +1,32 @@
+# Fonte: SBLGNT (CC BY 4.0) + MorphGNT (CC BY-SA 3.0); glosa 'en' lexical (Dodson, dom. público)
+# 2Tm 3:16-17 — gerado por ferramentas/interlinear.py
+# glosas pt/en: próprias (literais), ordem do grego
+ref	palavra	translit	lema	strong	morf	pt	en	var	freq_nt
+3:16	πᾶσα		πᾶς	G3956	adj. nom. f. sg.	toda	every		1244
+3:16	γραφὴ		γραφή	G1124	subst. nom. f. sg.	Escritura	Scripture		49
+3:16	θεόπνευστος		θεόπνευστος	G2315	adj. nom. f. sg.	inspirada por Deus	God-breathed		1
+3:16	καὶ		καί	G2532	conj.	e	and		8973
+3:16	ὠφέλιμος		ὠφέλιμος	G5624	adj. nom. f. sg.	proveitosa	useful		4
+3:16	πρὸς		πρός	G4314	prep.	para	for		696
+3:16	διδασκαλίαν,		διδασκαλία	G1319	subst. ac. f. sg.	ensino	teaching		21
+3:16	πρὸς		πρός	G4314	prep.	para	for		696
+3:16	ἐλεγμόν,		ἐλεγμός		subst. ac. m. sg.	repreensão	reproof	RP: ἔλεγχον	1
+3:16	πρὸς		πρός	G4314	prep.	para	for		696
+3:16	ἐπανόρθωσιν,		ἐπανόρθωσις	G1882	subst. ac. f. sg.	correção	correction		1
+3:16	πρὸς		πρός	G4314	prep.	para	for		696
+3:16	παιδείαν		παιδεία	G3809	subst. ac. f. sg.	disciplina	discipline		6
+3:16	τὴν		ὁ	G3588	art. ac. f. sg.	a	the [one]		19769
+3:16	ἐν		ἐν	G1722	prep.	em	in		2733
+3:16	δικαιοσύνῃ,		δικαιοσύνη	G1343	subst. dat. f. sg.	justiça	righteousness		91
+3:17	ἵνα		ἵνα	G2443	conj.	para que	so that		662
+3:17	ἄρτιος		ἄρτιος	G739	adj. nom. m. sg.	completo	complete		1
+3:17	ᾖ		εἰμί	G1510	v. pres. at. subj. 3sg	seja	may be		2456
+3:17	ὁ		ὁ	G3588	art. nom. m. sg.	o	the		19769
+3:17	τοῦ		ὁ	G3588	art. gen. m. sg.	de	of		19769
+3:17	θεοῦ		θεός	G2316	subst. gen. m. sg.	Deus	God		1307
+3:17	ἄνθρωπος,		ἄνθρωπος	G444	subst. nom. m. sg.	homem	man		550
+3:17	πρὸς		πρός	G4314	prep.	para	for		696
+3:17	πᾶν		πᾶς	G3956	adj. ac. n. sg.	toda	every		1244
+3:17	ἔργον		ἔργον	G2041	subst. ac. n. sg.	obra	work		169
+3:17	ἀγαθὸν		ἀγαθός	G18	adj. ac. n. sg.	boa	good		101
+3:17	ἐξηρτισμένος.		ἐξαρτίζω	G1822	part. perf. pass. nom. m. sg.	equipado	having been equipped		2

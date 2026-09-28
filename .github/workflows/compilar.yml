@@ -1,0 +1,21 @@
+# Compila todos os cadernos a cada push e guarda os PDFs como "artifact".
+# (Opcional. Em repositório privado, consome minutos do plano do GitHub.)
+name: compilar
+on:
+  push:
+    paths: ["cadernos/**", "compartilhado/**", "dados/**", "modelos/**"]
+  workflow_dispatch:
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python
+        run: command -v python3 || (apt-get update && apt-get install -y python3)
+      - name: Compilar
+        run: python3 estudos.py compilar --todos
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cadernos-pdf
+          path: saida/*.pdf

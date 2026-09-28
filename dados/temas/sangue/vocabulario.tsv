@@ -1,0 +1,7 @@
+# Vocabulário do tema — contagens de ferramentas/tema.py (WLC/OSHB e SBLGNT)
+# lingua: grego | hebraico | aramaico; translit vazia no grego = gerada automaticamente
+lingua	lema	translit	strong	ocorrencias	sentido	nota
+hebraico	דָּם	dām	H1818	361	sangue	no plural (dāmîm), muitas vezes “derramamento de sangue” ou “culpa de sangue”
+hebraico	נֶפֶשׁ	nep̄eš	H5315	757	alma, vida, ser vivente	ligado ao sangue em Gn 9:4; Lv 17:11, 14; Dt 12:23
+grego	αἷμα		G129	97	sangue	21 das 97 ocorrências estão em Hebreus
+grego	πνικτός		G4156	3	estrangulado	só em At 15:20, 29; 21:25

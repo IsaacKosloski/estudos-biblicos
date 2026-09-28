@@ -1,0 +1,99 @@
+%% =============================================================================
+%%  Etapa 3 — Estrutura
+%% =============================================================================
+\chapter{Estrutura}\label{cap:estrutura}
+
+\begin{objetivo}
+Descobrir como o trecho está construído: suas partes, as correspondências
+entre elas e as formas literárias que usa. A forma faz parte da mensagem.
+\end{objetivo}
+
+\section{Paralelismo antitético}
+
+Os vv.~20–26 formam dois blocos de quatro, espelhados. Cada felicidade tem um
+\enquote{ai} correspondente, com a situação invertida; a conjunção
+\gr{πλήν} (\enquote{porém}) faz de dobradiça entre eles.
+
+\begin{center}
+\begin{tikzpicture}[
+    x=1mm, y=1mm,
+    caixa/.style={draw=#1, fill=#1!6, rounded corners=2pt, text width=44mm,
+      inner sep=4pt, align=left, font=\small, minimum height=15mm},
+    ref/.style={font=\EBfnumeros\bfseries\footnotesize, text=rubrica},
+    liga/.style={{Stealth[length=4pt]}-{Stealth[length=4pt]}, draw=destaque2, thick},
+    rot/.style={font=\sffamily\scriptsize, text=suave, fill=white, inner sep=1.5pt,
+      text width=20mm, align=center}]
+  \node[font=\EBfversal\small, text=grego] at (-39, 17) {Felicidades};
+  \node[font=\EBfversal\small, text=rubrica] at (39, 17) {Ais};
+  \foreach \n/\y/\a/\b/\ra/\rb/\c in {
+      1/0/{\gr{οἱ πτωχοί} — o Reino é vosso}/{\gr{οἱ πλούσιοι} — já tendes a consolação}/20b/24/{pobres\\×\\ricos},
+      2/-20/{\gr{οἱ πεινῶντες νῦν} — sereis saciados}/{\gr{οἱ ἐμπεπλησμένοι νῦν} — tereis fome}/21a/25a/{fome\\×\\fartura},
+      3/-40/{\gr{οἱ κλαίοντες νῦν} — rireis}/{\gr{οἱ γελῶντες νῦν} — chorareis}/21b/25b/{choro\\×\\riso},
+      4/-64/{odiados, excluídos, insultados — \enquote{assim faziam aos \emph{profetas}}}/{elogiados por todos — \enquote{assim faziam aos \emph{falsos profetas}}}/22–23/26/{rejeição\\×\\aprovação}}{
+    \node[caixa=grego] (f\n) at (-39, \y) {\a};
+    \node[caixa=rubrica] (a\n) at (39, \y) {\b};
+    \node[ref, anchor=south east] at (f\n.north east) {\ra};
+    \node[ref, anchor=south east] at (a\n.north east) {\rb};
+    \draw[liga] (f\n) -- node[rot]{\c} (a\n);
+  }
+  \node[draw=destaque2, fill=fundo, circle, inner sep=1pt, font=\EBfgrego\small,
+    text=tinta] at (0, 11) {\gr{πλήν}};
+\end{tikzpicture}
+\end{center}
+
+\paragraph{Observações.}
+Os três primeiros pares são curtos e simétricos, com \gr{νῦν} nos
+pares~2 e~3. O quarto par é mais longo e traz o fundamento histórico: o modo
+como \enquote{os pais deles} tratavam os profetas. A última felicidade termina
+com uma ordem (\enquote{alegrai-vos}); o último ai, com uma comparação que
+desmascara a aprovação geral.
+
+\begin{pergunta}
+Onde está o \enquote{centro} do trecho? No par mais longo (22–23 × 26) ou
+na dobradiça \gr{πλήν}? Que diferença isso faz para a leitura?
+\end{pergunta}
+
+\section{Formas literárias}
+
+O trecho combina duas formas conhecidas da Bíblia hebraica e do judaísmo:
+uma vem da sabedoria, a outra da profecia.
+
+\subsection{O macarismo}
+A forma \enquote{feliz quem\ldots, porque\ldots} é comum na literatura
+sapiencial (\rb{Sl 1:1; 32:1–2; Pr 3:13}). Ali ela descreve quem vive com
+sabedoria. Nos macarismos de Jesus, a razão (\gr{ὅτι}) está no \emph{futuro}
+e depende de Deus: são macarismos \emph{escatológicos}, que anunciam uma
+inversão, e não conselhos de conduta.
+
+\subsection{O \enquote{ai} profético}
+Os ais retomam uma forma dos profetas, que os usavam em séries contra a
+injustiça e a autossuficiência: \rb{Is 5:8–23} (seis ais contra quem acumula
+casas e campos), \rb{Am 6:1} (\enquote{ai dos que vivem tranquilos em Sião}),
+\rb{Hc 2:6–19} (cinco ais contra o opressor). Ao unir macarismos e ais, Jesus
+junta a voz do sábio e a voz do profeta.
+
+\begin{nota}[Bênção e maldição]
+O par felicidade/ai lembra a estrutura de bênçãos e maldições da aliança
+(\rb{Dt 27–28}) e o \enquote{caminho dos justos} e o \enquote{caminho dos
+ímpios} de \rb{Sl 1}. Mas note: os ais de Lucas não são maldições
+(\gr{ἐπικατάρατος}); são lamentos e advertências.
+\end{nota}
+
+\section{Marcadores de discurso}
+
+\begin{ebtabela}{@{}l l >{\raggedright\arraybackslash}X@{}}
+\EBcab{Marcador} & \EBcab{Onde} & \EBcab{Função}\\\midrule
+\gr{καὶ αὐτός} & 20 & introduz a fala; retoma Jesus como sujeito após a cena de 6:17–19\\
+\gr{ὅτι} (6×) & 20–25 & dá a razão de cada felicidade e de cada ai\\
+\gr{νῦν} (4×) & 21, 25 & contrasta o presente com o futuro\\
+\gr{ὅταν} (2×) & 22, 26 & introduz situações eventuais nos pares longos\\
+\gr{ἰδοὺ γάρ} & 23 & chama a atenção para a recompensa\\
+\gr{κατὰ τὰ αὐτὰ γάρ} (2×) & 23, 26 & fundamenta com o passado (profetas / falsos profetas)\\
+\gr{πλήν} & 24 & dobradiça adversativa\\
+\end{ebtabela}
+
+\begin{pergunta}
+A mesma frase (\gr{κατὰ τὰ αὐτὰ γὰρ ἐποίουν \ldots\ οἱ πατέρες αὐτῶν})
+fecha as duas metades. O que ela diz sobre o critério usado para julgar
+\enquote{bem} ou \enquote{mal} alguém que fala em nome de Deus?
+\end{pergunta}

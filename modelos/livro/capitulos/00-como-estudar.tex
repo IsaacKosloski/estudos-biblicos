@@ -1,0 +1,111 @@
+%% =============================================================================
+%%  Como estudar um livro com este caderno (texto genérico: serve a qualquer livro)
+%% =============================================================================
+\chapter{Como estudar este livro}
+
+Este caderno acompanha \emph{\livroNome} \parencite{livro} lição a lição. Ele
+não reproduz o texto da publicação: traz apenas o número, o título e as
+páginas de cada lição, a lista dos textos bíblicos que ela cita e espaço para
+as suas anotações. Use-o com o livro aberto ao lado.
+
+A própria publicação incentiva o leitor a ler os textos bíblicos indicados e
+a comparar o que a Bíblia diz com o que está a aprender. O caderno organiza
+esse trabalho, no espírito dos bereanos, que recebiam a mensagem com
+prontidão e \enquote{examinavam as Escrituras} para confirmar o que ouviam
+(\rb{At 17:11}).
+
+\section{O ciclo de cada lição}
+
+O roteiro combina três ideias bem estabelecidas sobre leitura e aprendizagem:
+ter uma visão geral antes de ler \parencite{robinson1946}, fazer perguntas ao
+texto enquanto se lê \parencite{adler1972} e recordar de memória em vez de
+apenas reler, espaçando as revisões no tempo \parencite{brown2014}.
+
+\begin{center}
+\begin{tikzpicture}[
+    passo/.style={circle, minimum size=12mm, inner sep=0pt, font=\EBftitulo\Large, text=white},
+    rot/.style={font=\sffamily\scriptsize, text width=25mm, align=center, text=tinta}]
+  \foreach \i/\ang/\t/\d in {
+      1/90/{Ver o todo}/{título, pontos, imagens, resumo},
+      2/18/{Ler e marcar}/{a ideia de cada ponto},
+      3/-54/{Conferir os textos}/{no contexto, em mais de uma tradução},
+      4/-126/{Dizer com as próprias palavras}/{sem olhar},
+      5/162/{Revisar e aplicar}/{depois de 1 dia, 1 semana, 1 mês}}{
+    \node[passo, fill=destaque] (p\i) at (\ang:2.6cm) {\i};
+    \node[rot, anchor=center] at (\ang:4.35cm) {\textbf{\t}\\{\color{suave}\d}};
+  }
+  \foreach \a/\b in {1/2, 2/3, 3/4, 4/5, 5/1}
+    \draw[-{Stealth[length=5pt]}, destaque2, thick, shorten <=2pt, shorten >=2pt]
+      (p\a) to[bend left=18] (p\b);
+  \node[font=\EBfversal\small, text=destaque2!80!black] at (0,0) {Lição};
+\end{tikzpicture}
+\end{center}
+
+\paragraph{1. Ver o todo.} Antes de ler, percorra o título, as perguntas e os
+subtítulos, as imagens e o resumo. Escreva no campo \enquote{Antes de ler}
+qual pergunta a lição pretende responder.
+
+\paragraph{2. Ler e marcar.} Leia ponto por ponto. Para cada um, anote a
+ideia principal numa frase. Os números da coluna \enquote{§} da tabela de
+textos indicam em que ponto da lição cada texto aparece.
+
+\paragraph{3. Conferir os textos.} É a etapa central deste caderno. Os textos
+com o selo \EBlivtipo{leia} são os que a lição pede para ler; os
+\EBlivtipo{citado} aparecem entre parênteses ou no corpo do texto. Para cada
+um, siga o roteiro abaixo e marque as caixinhas.
+
+\paragraph{4. Dizer com as próprias palavras.} Feche o livro e escreva a
+ideia central da lição. Depois responda às perguntas de revisão de memória.
+Recordar é mais eficaz do que reler \parencite{brown2014}.
+
+\paragraph{5. Revisar e aplicar.} Volte à lição um dia depois, uma semana
+depois e na revisão da parte. Registre as datas na ficha da lição e no
+registro de progresso. Anote uma aplicação concreta.
+
+\section{Como conferir um texto bíblico}
+
+\begin{ebtabela}{@{}>{\raggedright}p{.28\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Pergunta} & \EBcab{Como responder}\\\midrule
+O que diz o contexto? & leia o capítulo inteiro (ou o parágrafo, nas cartas); anote quem fala, a quem, quando e por quê\\
+As traduções concordam? & compare duas ou três traduções; onde divergem, anote a diferença\\
+Depende de uma palavra? & abra o original com o interlinear (\texttt{ferramentas/interlinear.py}) e veja o uso da palavra em outros textos\\
+Que ponto a lição tira dele? & escreva em uma frase como a lição usa o texto e qual é o raciocínio que liga os dois\\
+O que ficou em aberto? & registre a dúvida no campo \enquote{Dúvidas para pesquisar}\\
+\end{ebtabela}
+
+\begin{alerta}[Texto e contexto]
+Um versículo isolado pode parecer dizer mais, ou menos, do que diz no seu
+contexto. Ler o capítulo inteiro é o hábito mais simples e mais útil.
+\end{alerta}
+
+\section{Como usar este caderno}
+
+\paragraph{Impresso ou digital.} No modo \texttt{impresso}
+(\texttt{config.tex}), cada lição traz linhas para escrever à mão e caixinhas
+para marcar. No modo \texttt{digital}, aparecem só as anotações que você
+escrever no computador.
+
+\paragraph{Anotações no computador.} Crie o arquivo \texttt{licoes/07.tex}
+(número da lição com dois dígitos). O que estiver nele entra na lição, no
+lugar dos campos em branco. Podem ser usados os mesmos recursos do caderno de
+exegese: caixas (\texttt{nota}, \texttt{pergunta}, \texttt{lexico}), texto em
+grego ou hebraico (\verb|\gr{...}|, \verb|\hb{...}|) e o interlinear.
+
+\begin{nota}[Exemplo de licoes/07.tex]
+\small\ttfamily
+\textbackslash begin\{campo\}\{Ideia central\}\\
+\ \ Escrevo aqui a resposta da lição com as minhas palavras.\\
+\textbackslash end\{campo\}\\
+\textbackslash begin\{campo\}\{Texto em foco: Êx 34:6\}\\
+\ \ \textbackslash interlinear[modo=leitura]\{dados/biblia/ex034\_06.hbo.tsv\}\\
+\textbackslash end\{campo\}
+\end{nota}
+
+\paragraph{Índices.} No fim do caderno estão os textos mais citados no livro,
+um índice de todos os textos bíblicos (em ordem bíblica, com a página da
+lição) e um quadro dos 1189 capítulos da Bíblia para registrar a sua leitura.
+
+\paragraph{Legenda da tabela de textos.}
+\S\ = ponto da lição; \EBlivtipo{leia} = a lição pede para ler;
+\EBlivtipo{citado} = citado ou mencionado; \EBcaixa\ = marque ao ler o
+contexto e ao comparar traduções.

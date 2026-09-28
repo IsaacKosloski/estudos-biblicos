@@ -1,0 +1,112 @@
+%% =============================================================================
+%%  Apresentação — como usar este caderno
+%% =============================================================================
+\chapter{Apresentação}
+
+Este caderno reúne um estudo pessoal de \rb{Lc 6:20–26}, as quatro felicidades
+e os quatro \enquote{ais} que abrem o discurso de Jesus em Lucas~6. O
+objetivo é duplo: entender o texto com a maior fidelidade possível e, ao mesmo
+tempo, fixar um \emph{método} que possa ser repetido nos próximos cadernos da
+série.
+
+\begin{nota}[Sobre o título]
+O discurso é conhecido em Lucas como \emph{Sermão da Planície}, e não
+\enquote{Sermão do Monte}. Jesus sobe ao monte para orar e escolher os Doze
+(\rb{6:12–16}), mas desce com eles e fala \enquote{num lugar plano}
+(\gr{ἐπὶ τόπου πεδινοῦ}, \rb{6:17}). O paralelo em Mateus (\rb{Mt 5–7}) é
+que se passa no monte. A diferença de cenário é um dado a observar, não um
+problema a resolver.
+\end{nota}
+
+\section{O roteiro em sete etapas}
+
+O caminho parte do mais próximo do leitor (as traduções que ele já usa) e vai
+se aproximando do texto em sua língua, forma e contexto, para só depois ouvir
+outros intérpretes e formular uma síntese. Ao final, volta-se ao texto: a
+interpretação é uma \emph{espiral}, não uma linha reta \parencite{osborne2006}.
+
+\begin{center}
+\begin{tikzpicture}[
+    etapa/.style={circle, minimum size=11mm, inner sep=0pt, font=\EBftitulo\Large,
+      text=white},
+    rot/.style={font=\sffamily\scriptsize, text width=18mm, align=center, text=tinta},
+    grupo/.style={font=\EBfversal\footnotesize, text=destaque2!80!black}]
+  \foreach \i/\t/\c in {1/Traduções/destaque, 2/Texto original/destaque,
+      3/Estrutura/destaque, 4/Contexto/grego!70!destaque2, 5/Intertexto/grego!70!destaque2,
+      6/Diálogo/grego!70!destaque2, 7/Síntese/rubrica}{
+    \node[etapa, fill=\c] (e\i) at ({(\i-1)*2.1}, 0) {\i};
+    \node[rot, below=2pt of e\i] {\t};
+  }
+  \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,6}
+    \draw[-{Stealth[length=5pt]}, destaque2, thick] (e\i) -- (e\j);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e1.west) -- node[grupo, above=6pt]{Observação} ([yshift=9mm]e3.east);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e4.west) -- node[grupo, above=6pt]{Interpretação} ([yshift=9mm]e6.east);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e7.west) -- node[grupo, above=6pt]{Apropriação} ([yshift=9mm]e7.east);
+  \draw[-{Stealth[length=5pt]}, rubrica, thick, dashed, rounded corners=8pt]
+    (e7.south) -- ++(0,-12mm) -| node[pos=.25, below, font=\sffamily\scriptsize, text=rubrica]
+    {espiral hermenêutica: voltar ao texto com novas perguntas} (e1.south);
+\end{tikzpicture}
+\end{center}
+
+Cada etapa abre com uma caixa de \emph{objetivo}, traz perguntas numeradas e
+fecha com o que foi aprendido. As etapas retomam o plano original deste
+estudo (seis etapas), desdobrando-o para dar lugar próprio ao texto original,
+à estrutura literária e ao uso do Antigo Testamento:
+
+\begin{ebtabela}{@{}>{\raggedright}p{.3\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Plano original} & \EBcab{Neste caderno}\\\midrule
+1. Tradução & Etapa 1 — Traduções (comparação crítica)\\
+2. Léxico e semântica & Etapa 2 — Texto original (crítica textual, léxico, gramática)\\
+3. Contexto imediato & Etapa 3 — Estrutura \emph{e} Etapa 4 — Contexto\\
+4. Referências cruzadas & Etapa 5 — Intertexto (AT hebraico, aramaico, LXX, Peshitta)\\
+5. Comentários & Etapa 6 — Diálogo com a tradição\\
+6. Homilético e doutrinário & Etapa 7 — Síntese e apropriação\\
+\end{ebtabela}
+
+\section{Princípios de trabalho}
+
+\paragraph{Observar antes de interpretar.} As três primeiras etapas só
+registram o que está no texto: palavras, formas, repetições, contrastes.
+Perguntas de sentido são anotadas, mas ficam em aberto
+\parencite{duvall2012, fee2002}.
+
+\paragraph{Comentários por último.} Ler comentários cedo demais faz o estudo
+repetir conclusões alheias. Eles entram na Etapa~6 como interlocutores, para
+confirmar, corrigir ou ampliar o que foi observado.
+
+\paragraph{Palavras têm sentido no contexto.} O interlinear é uma ferramenta de
+observação, não uma tradução. Ele tende a sugerir uma leitura \enquote{palavra
+por palavra} e a esconder a sintaxe; por isso é sempre acompanhado da análise
+da frase inteira.
+
+\begin{alerta}[Falácias a evitar]
+\emph{Falácia da raiz}: supor que a etimologia define o sentido atual de uma
+palavra. \emph{Transferência ilegítima de totalidade}: carregar para uma
+ocorrência todos os sentidos que a palavra tem no dicionário.
+\emph{Anacronismo}: ler um termo grego pelo sentido de uma palavra portuguesa
+derivada dele. Ver \textcite{carson1996} e \textcite{silva1994}.
+\end{alerta}
+
+\section{Legenda}
+
+\noindent
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\gr{Grego} & texto grego (Gentium Book Plus, azul)\\
+\hb{עִבְרִית} & hebraico (Noto Serif Hebrew, âmbar)\\
+\arc{אֲרָמִית} \ \sy{ܣܘܪܝܝܐ} & aramaico e siríaco (verde-oliva)\\
+\tl{translit.} & transliteração no padrão SBL\\
+\vs{20}\hspace{-.2em} & número de versículo (vermelho-rubrica, como nos manuscritos)\\
+{\color{rubrica}°} & palavra com variante textual registrada\\
+{\color{suave}[\,]} & palavra implícita, acrescentada na glosa\\
+\end{tabularx}
+
+\begin{objetivo}Diz o que se quer alcançar na etapa.\end{objetivo}
+\begin{pergunta}Pergunta de estudo, numerada por etapa.\end{pergunta}
+\begin{nota}Observação, dado ou esclarecimento.\end{nota}
+\begin{variante}Problema de crítica textual.\end{variante}
+\begin{aplicacao}Ponte entre o sentido do texto e a vida hoje.\end{aplicacao}
+
+

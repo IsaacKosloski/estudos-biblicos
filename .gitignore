@@ -1,0 +1,26 @@
+# compilação LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.idx
+*.ilg
+*.ind
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+cadernos/**/main.pdf
+# PDFs gerados e pacotes do Overleaf
+saida/
+# PDFs e arquivos de publicações (direitos autorais): ficam só na sua máquina
+referencias/*
+!referencias/LEIA-ME.md
+# cache das bases baixadas pelas ferramentas
+ferramentas/.cache/
+__pycache__/
+.DS_Store

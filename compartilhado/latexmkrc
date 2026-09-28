@@ -1,0 +1,13 @@
+# Configuração comum de todos os cadernos (carregada pelo latexmkrc de cada caderno).
+# $raiz = pasta raiz do repositório (definida pelo latexmkrc do caderno).
+our $raiz;
+$pdf_mode   = 4;                  # 4 = LuaLaTeX
+$lualatex   = 'lualatex -interaction=nonstopmode -file-line-error -synctex=1 %O %S';
+$bibtex_use = 2;                  # biber quando houver .bcf
+$makeindex  = 'makeindex -s indice.ist %O -o %D %S';
+# Onde o TeX procura: compartilhado/ (estilo/...) e a raiz (dados/...)
+ensure_path('TEXINPUTS',  "$raiz/compartilhado/", "$raiz/");
+ensure_path('BIBINPUTS',  "$raiz/compartilhado/bibliografia/");
+ensure_path('INDEXSTYLE', "$raiz/compartilhado/");
+# arquivos extras a apagar com `latexmk -c`
+push @generated_exts, 'ilg', 'ind', 'idx', 'run.xml', 'bbl', 'synctex.gz';

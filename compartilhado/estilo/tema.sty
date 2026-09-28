@@ -1,0 +1,146 @@
+%% =============================================================================
+%%  tema.sty — estudo bíblico por TEMA ("Quem é Jesus?", "O que a Bíblia diz
+%%  sobre o sangue?"). Carregar DEPOIS de estilo/estudobiblico.
+%%
+%%  Dados (pasta \temaDados): textos.tsv, vocabulario.tsv, ocorrencias.tsv
+%%  (ver ferramentas/tema.py)
+%%
+%%  \textosdotema[ordem=grupo|biblica, grupo=..., peso=central|apoio|dificil]
+%%  \vocabulariodotema                               palavras do tema no original
+%%  \distribuicaodotema                              textos e ocorrências por parte da Bíblia
+%%  \ocorrenciasdotema[H1818]                         todas as ocorrências (apêndice)
+%%  \begin{fichatexto}{Lv 17:11} ... \end{fichatexto}  estudo de um texto no contexto
+%%  \proposicao{afirmação}{textos}                   síntese numerada
+%%  \tema{Lv 17:11}                                   escreve "Levítico 17:11" e indexa
+%% =============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/tema}[2026/09/28 v1.0 Estudo temático]
+
+\providecommand\temaDados{dados/temas/exemplo}
+\providecommand\temaPergunta{}
+\providecommand\temaModo{impresso}   % impresso: linhas para escrever | digital
+\providecommand\temaLinhas{4}
+
+\directlua{
+  local nome = "estilo/tema.lua"
+  local f = io.open(nome, "r")
+  if f then f:close() else nome = kpse.find_file("estilo/tema.lua", "tex") or nome end
+  dofile(nome)
+}
+
+\newif\ifEBtemaimpresso
+\ifdefstring{\temaModo}{impresso}{\EBtemaimpressotrue}{\EBtemaimpressofalse}
+
+\makeindex[name=textos, intoc, columns=3, title=Índice de textos bíblicos,
+  options={-s indice-termos.ist}]
+
+%% ---------------------------------------------- elementos comuns (se faltarem)
+\providecommand\EBcaixa{\leavevmode{\color{suave}\fboxrule=.45pt\fboxsep=0pt\fbox{\rule{0pt}{2.5mm}\rule{2.5mm}{0pt}}}}
+\providecommand\EBlinhas[1]{\par\nobreak\vspace{2pt}{\color{suave!45}%
+  \count@=#1\relax\loop\ifnum\count@>0 \vskip 7mm\hrule height .4pt width\linewidth\relax
+  \advance\count@ -1 \repeat}\par\vspace{2pt}}
+\ifcsname campo\endcsname\else
+  \newenvironment{campo}[1]
+    {\par\addvspace{10pt}\noindent{\sffamily\bfseries\small\color{destaque}#1}\par\nobreak\vspace{3pt}}
+    {\par}
+\fi
+% campo em branco: título, dica e linhas (só no modo impresso)
+\newcommand\campovazio[3][\temaLinhas]{%
+  \ifEBtemaimpresso
+    \par\addvspace{10pt}\noindent{\sffamily\bfseries\small\color{destaque}#2}%
+    \ifblank{#3}{}{\enspace{\sffamily\scriptsize\color{suave}#3}}\par
+    \EBlinhas{#1}%
+  \fi}
+
+%% ---------------------------------------------- números do tema
+\newcommand\EBtemanumeros{\directlua{TM.numeros("\temaDados")}}
+\AtBeginDocument{\EBtemanumeros}
+
+%% ---------------------------------------------- referências
+\newcommand\tema[1]{\directlua{TM.nome("\luaescapestring{#1}")}\directlua{TM.indice("\luaescapestring{#1}")}}
+
+%% ---------------------------------------------- catálogo de textos
+\newcommand\EBtemapeso[1]{\leavevmode
+  \ifstrequal{#1}{central}{{\fboxsep=1.2pt\colorbox{destaque}{\color{white}\sffamily\bfseries\tiny CENTRAL}}}{%
+  \ifstrequal{#1}{apoio}{{\sffamily\scriptsize\color{tinta}apoio}}{%
+  \ifstrequal{#1}{dificil}{{\fboxsep=1.2pt\colorbox{rubrica}{\color{white}\sffamily\bfseries\tiny DIFÍCIL}}}{%
+  \ifblank{#1}{\ifEBtemaimpresso{\sffamily\tiny\color{suave}C\,\EBcaixa\;A\,\EBcaixa\;D\,\EBcaixa}\fi}{%
+  {\sffamily\scriptsize #1}}}}}}
+\newcommand\EBtemagrupo[2]{\multicolumn{4}{@{}l}{\rule{0pt}{4.2ex}\sffamily\bfseries\small\color{destaque}#1%
+  \enspace{\mdseries\scriptsize\color{suave}(#2)}}}
+\newcommand\EBtematexto[5]{\leavevmode\ifblank{#5}{}{\index[textos]{#5}}%
+  #1 & \EBtemapeso{#3} & \EBcaixa & {\small #4}}
+\newif\ifEBtemabiblica
+\pgfkeys{/eb/tema/.is family, /eb/tema,
+  ordem/.is choice, ordem/grupo/.code={\EBtemabiblicafalse}, ordem/biblica/.code={\EBtemabiblicatrue},
+  grupo/.store in=\EBtema@grupo, peso/.store in=\EBtema@peso}
+\newcommand\EBtemavazio{\multicolumn{3}{@{}l}{\sffamily\small\color{suave}(nenhum texto com esse critério em textos.tsv)}}
+\newcommand\textosdotema[1][]{%
+  \begingroup\def\EBtema@grupo{}\def\EBtema@peso{}\EBtemabiblicafalse\pgfkeys{/eb/tema,#1}%
+  \small\setlength\tabcolsep{4pt}\renewcommand\arraystretch{1.3}%
+  \ifEBtemabiblica
+    \renewcommand\EBtematexto[5]{\leavevmode\ifblank{##5}{}{\index[textos]{##5}}%
+      ##1 & \leavevmode{\sffamily\scriptsize\color{suave}##2} & \EBtemapeso{##3} & \EBcaixa & {\small ##4}}%
+    \begin{longtable}{@{}>{\raggedright}p{.3\linewidth} >{\raggedright}p{.2\linewidth} >{\centering}p{19mm}
+        >{\centering}p{9mm} >{\raggedright\arraybackslash}p{\dimexpr.5\linewidth-28mm-8\tabcolsep\relax}@{}}
+      \EBcab{Texto} & \EBcab{Grupo} & \EBcab{Peso} & \EBcab{Lido} & \EBcab{Nota}\\\midrule\endhead
+      \directlua{TM.tabela("\temaDados", "biblica", "\luaescapestring{\EBtema@grupo}", "\EBtema@peso")}
+    \end{longtable}%
+  \else
+    \begin{longtable}{@{}>{\raggedright}p{.34\linewidth} >{\centering}p{19mm}
+        >{\centering}p{9mm} >{\raggedright\arraybackslash}p{\dimexpr.66\linewidth-28mm-6\tabcolsep\relax}@{}}
+      \EBcab{Texto} & \EBcab{Peso} & \EBcab{Lido} & \EBcab{Nota}\\\midrule\endhead
+      \directlua{TM.tabela("\temaDados", "grupo", "\luaescapestring{\EBtema@grupo}", "\EBtema@peso")}
+    \end{longtable}%
+  \fi\endgroup}
+
+%% ---------------------------------------------- vocabulário
+\newcommand\EBtemavoc[7]{\leavevmode{\EBtemalingua{#1}{#2}} & \tl{#3} & #4 & #5 & #6 & {\small #7}}
+\newcommand\EBtemalingua[2]{%
+  \ifstrequal{#1}{grego}{\gr{#2}}{\ifstrequal{#1}{aramaico}{\arc{#2}}{\hb{#2}}}}
+\newcommand\vocabulariodotema{%
+  \begingroup\small\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!60}{white}%
+  \begin{longtable}{@{}l l l r >{\raggedright}p{.2\linewidth} >{\raggedright\arraybackslash}p{.3\linewidth}@{}}
+    \EBcab{Palavra} & \EBcab{Translit.} & \EBcab{Strong} & \EBcab{Ocorr.} & \EBcab{Sentido} & \EBcab{Nota}\\\midrule\endhead
+    \directlua{TM.vocabulario("\temaDados")}
+  \end{longtable}\endgroup}
+
+%% ---------------------------------------------- distribuição (barras simples, sem TikZ)
+\newlength\EBtemabarmax \setlength\EBtemabarmax{38mm}
+\newcommand\EBtemabarra[5]{{\small #1} &
+  {\color{destaque}\rule{\dimexpr\EBtemabarmax*#2/#3\relax}{2.2mm}}\,{\scriptsize #2} &
+  \ifnum\temaNOcorrencias>0 {\color{destaque2}\rule{\dimexpr\EBtemabarmax*#4/#5\relax}{2.2mm}}\,{\scriptsize #4}\fi}
+\newcommand\distribuicaodotema{%
+  \begingroup\setlength\tabcolsep{5pt}\renewcommand\arraystretch{1.2}%
+  \par\noindent\begin{tabular}{@{}l l l@{}}
+    \EBcab{Parte da Bíblia} & \EBcab{Textos estudados} & \EBcab{Ocorrências das palavras}\\\midrule
+    \directlua{TM.distribuicao("\temaDados")}
+  \end{tabular}\endgroup}
+
+%% ---------------------------------------------- ocorrências (apêndice)
+\newcommand\EBtemacoberto[1]{\textbf{\color{destaque}#1}}
+\newcommand\EBtemaoclivro[2]{\par\noindent\hangindent=4mm{\sffamily\bfseries\footnotesize #1}\enspace
+  {\footnotesize\addfontfeatures{Numbers={Lining}}#2}\par}
+\newcommand\ocorrenciasdotema[1][]{%
+  \begingroup\raggedright\setlength\parskip{2pt}%
+  \directlua{TM.ocorrencias("\temaDados", "#1")}\par\endgroup}
+
+%% ---------------------------------------------- ficha de estudo de um texto
+\newtcolorbox{fichatexto}[2][]{enhanced, breakable, colback=white, colframe=destaque2!70,
+  boxrule=.5pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  before skip=12pt, after skip=12pt,
+  fonttitle=\sffamily\bfseries\small, coltitle=destaque, colbacktitle=fundo,
+  title={\directlua{TM.nome("\luaescapestring{#2}")}\ifblank{#1}{}{\hfill{\mdseries\scriptsize\color{suave}#1}}},
+  before upper={\directlua{TM.indice("\luaescapestring{#2}")}}}
+
+%% ---------------------------------------------- síntese
+\newcounter{proposicao}
+\newcommand\proposicao[2]{\refstepcounter{proposicao}%
+  \par\addvspace{8pt}\noindent
+  \begin{tcolorbox}[enhanced, colback=fundo!50, colframe=fundo, boxrule=0pt, arc=2pt,
+      borderline west={2pt}{0pt}{destaque}, left=10pt, top=5pt, bottom=5pt]
+    {\EBftitulo\large\color{destaque}\theproposicao.}\enspace #1
+    \ifblank{#2}{}{\par\smallskip{\sffamily\footnotesize\color{suave}Base: #2}}
+  \end{tcolorbox}}
+
+\endinput

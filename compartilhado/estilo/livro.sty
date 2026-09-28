@@ -1,0 +1,156 @@
+%% =============================================================================
+%%  livro.sty — "estudo de livro": um caderno para acompanhar uma publicação
+%%  lição a lição. Carregar DEPOIS de estilo/estudobiblico.
+%%
+%%  Dados (pasta \livroDados):  licoes.tsv, textos.tsv  (ver ferramentas/livro.py)
+%%  Anotações (opcional):       licoes/NN.tex  (NN = número da lição, 2 dígitos)
+%%
+%%  \licoes            gera todas as lições (ou só as de \livroLicoes, ex.: 1-12)
+%%  \progresso         tabela para registrar datas de estudo e revisão
+%%  \textosmaiscitados tabela dos textos bíblicos que mais se repetem no livro
+%%  \leituradabiblia   quadro dos 66 livros e 1189 capítulos para marcar a leitura
+%% =============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/livro}[2026/09/27 v1.0 Estudo de livro]
+
+\providecommand\livroDados{dados/livros/exemplo}
+\providecommand\livroNome{}
+\providecommand\livroEditora{}
+\providecommand\livroEdicao{}
+\providecommand\livroUnidade{Lição}
+\providecommand\livroUnidadePlural{Lições}
+\providecommand\livroParte{Parte}
+\providecommand\livroModo{impresso}      % impresso | digital
+\providecommand\livroLinhas{5}
+\providecommand\livroLicoes{}             % vazio = todas; ex.: 1-12 ou 1,4,7
+\providecommand\livroNotas{licoes}
+
+\directlua{
+  local nome = "estilo/livro.lua"
+  local f = io.open(nome, "r")
+  if f then f:close() else nome = kpse.find_file("estilo/livro.lua", "tex") or nome end
+  dofile(nome)
+}
+
+% cabeçalho: a lição aparece nas duas páginas (as lições não têm seções)
+\fancyhead[RO]{\sffamily\small{\color{suave}\leftmark}\quad{\color{destaque}\bfseries\thepage}}
+
+\newif\ifEBimpresso
+\ifdefstring{\livroModo}{impresso}{\EBimpressotrue}{\EBimpressofalse}
+
+%% ------------------------------------------------ nomes e numeração
+\addto\captionsbrazilian{\renewcommand\chaptername{\livroUnidade}\renewcommand\partname{\livroParte}}
+\renewcommand\chaptername{\livroUnidade}
+\renewcommand\thechapter{\two@digits{\value{chapter}}}
+\setcounter{tocdepth}{0}
+\makeindex[name=textos, intoc, columns=3, title=Índice de textos bíblicos,
+  options={-s indice-termos.ist}]
+
+%% ------------------------------------------------ elementos gráficos
+% caixinha para marcar à mão
+% (sem TikZ: são centenas por caderno e o TikZ deixaria a compilação lenta)
+\newcommand\EBcaixa{\leavevmode{\color{suave}\fboxrule=.45pt\fboxsep=0pt\fbox{\rule{0pt}{2.5mm}\rule{2.5mm}{0pt}}}}
+% linhas para escrever à mão
+\newcommand\EBlinhas[1]{\par\nobreak\vspace{2pt}{\color{suave!45}%
+  \count@=#1\relax\loop\ifnum\count@>0 \vskip 7mm\hrule height .4pt width\linewidth\relax
+  \advance\count@ -1 \repeat}\par\vspace{2pt}}
+% selo "LEIA" / "citado"
+\newcommand\EBlivtipo[1]{\leavevmode\ifstrequal{#1}{leia}%
+  {{\fboxsep=1.3pt\colorbox{destaque}{\color{white}\sffamily\bfseries\tiny LEIA}}}%
+  {{\sffamily\scriptsize\color{suave}citado}}}
+
+%% ------------------------------------------------ campos de anotação
+% \begin{campo}{Título} ... \end{campo}  — usado nos arquivos licoes/NN.tex
+\newenvironment{campo}[1]
+  {\par\addvspace{10pt}\noindent{\sffamily\bfseries\small\color{destaque}#1}\par\nobreak\vspace{3pt}}
+  {\par}
+% campo vazio (modo impresso): título + dica + linhas
+\newcommand\EBlivcampo[3][\livroLinhas]{%
+  \ifEBimpresso
+    \par\addvspace{10pt}\noindent{\sffamily\bfseries\small\color{destaque}#2}%
+    \ifblank{#3}{}{\enspace{\sffamily\scriptsize\color{suave}#3}}\par
+    \EBlinhas{#1}%
+  \fi}
+
+%% ------------------------------------------------ partes e lições
+\newcommand\EBlivparte[2]{\part{#2}}   % nº da parte, título (ex.: Lições 01–12)
+
+\newcommand\EBlivlicao[5]{% num, título, pág. inicial, pág. final, pág. PDF
+  \clearpage
+  \setcounter{chapter}{\numexpr#1-1\relax}%
+  \chapter{#2}\label{licao:#1}%
+  \EBlivficha{#1}{#3}{#4}{#5}%
+  \EBlivcampo[2]{Antes de ler}{Que pergunta esta lição responde? (em minhas palavras)}%
+  \EBlivtabela{#1}%
+  \IfFileExists{\livroNotas/#1.tex}%
+    {\input{\livroNotas/#1.tex}}%
+    {\EBlivcampo{Ideia central}{a resposta da lição, em uma ou duas frases}%
+     \EBlivcampo[4]{Anotações}{pontos principais de cada seção; o que me chamou a atenção}%
+     \EBlivcampo[3]{Dúvidas para pesquisar}{}%
+     \EBlivcampo[3]{Revisão sem consultar}{responda às perguntas de revisão da lição de memória}%
+     \EBlivcampo[3]{Aplicação}{}}}
+
+\newcommand\EBlivnumeros[2]{\def\EBlivnt{#1}\def\EBlivnl{#2}}
+\newcommand\EBlivficha[4]{%
+  \directlua{LV.contagem("\livroDados", "#1")}%
+  \par\noindent{\sffamily\small\color{suave}%
+    pp.\,#2–#3 \ifblank{#4}{}{(PDF #4)}\enspace\textperiodcentered\enspace
+    \EBlivnt\ textos bíblicos (\EBlivnl\ para ler)%
+    \ifEBimpresso\hfill Estudada em \rule{20mm}{.4pt}\enspace Revisada em \rule{20mm}{.4pt}\fi}\par
+  \vspace{6pt}}
+
+%% ------------------------------------------------ tabela de textos da lição
+\newcommand\EBlivsemtextos{\multicolumn{3}{l}{\sffamily\small\color{suave}(nenhum texto bíblico encontrado nesta lição)}}
+\ifEBimpresso
+  \newcommand\EBlivtexto[5]{\leavevmode\index[textos]{#4!#5}%
+    {\sffamily\scriptsize\color{suave}#1} & #2 & \EBlivtipo{#3} & \EBcaixa & \EBcaixa & }
+  \newcommand\EBlivtabela[1]{%
+    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}Textos bíblicos}\enspace
+    {\sffamily\scriptsize\color{suave}§ = ponto da lição · marque ao ler o contexto (capítulo) e ao comparar traduções}\par
+    \begingroup\small\setlength\tabcolsep{4pt}\renewcommand\arraystretch{1.35}\rowcolors{2}{fundo!60}{white}%
+    \begin{longtable}{@{}>{\centering}p{5mm} >{\raggedright}p{.3\linewidth} >{\centering}p{11mm}
+        >{\centering}p{12mm} >{\centering}p{13mm} >{\raggedright\arraybackslash}Y@{}}
+      \EBcab{§} & \EBcab{Texto} & \EBcab{Tipo} & \EBcab{Contexto} & \EBcab{Traduções} & \EBcab{Observação}\\\midrule\endhead
+      \directlua{LV.tabela("\livroDados", "#1", true)}
+    \end{longtable}\endgroup}
+\else
+  \newcommand\EBlivtexto[5]{\leavevmode\index[textos]{#4!#5}%
+    {\sffamily\scriptsize\color{suave}#1} & #2 & \EBlivtipo{#3}}
+  \newcommand\EBlivtabela[1]{%
+    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}Textos bíblicos}\par
+    \begingroup\small\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!60}{white}%
+    \begin{longtable}{@{}>{\centering}p{5mm} >{\raggedright}p{.5\linewidth} >{\centering\arraybackslash}p{12mm}@{}}
+      \EBcab{§} & \EBcab{Texto} & \EBcab{Tipo}\\\midrule\endhead
+      \directlua{LV.tabela("\livroDados", "#1", false)}
+    \end{longtable}\endgroup}
+\fi
+% coluna que ocupa o que sobra da linha (longtable não aceita X)
+\newcolumntype{Y}{p{\dimexpr\linewidth-5mm-.3\linewidth-36mm-10\tabcolsep\relax}}
+
+%% ------------------------------------------------ comandos para o documento
+\newcommand\licoes{\directlua{LV.gerar("\livroDados", "\livroLicoes")}}
+
+\newcommand\EBlivprog[5]{\hyperref[licao:#1]{#1} & #2 & #3 & #4 & \rule{16mm}{.4pt} & \rule{16mm}{.4pt}}
+\newcommand\progresso{%
+  \begingroup\small\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!60}{white}%
+  \begin{longtable}{@{}l >{\raggedright}p{.46\linewidth} r r c c@{}}
+    \EBcab{Nº} & \EBcab{\livroUnidade} & \EBcab{Pág.} & \EBcab{Textos} & \EBcab{Estudada} & \EBcab{Revisada}\\\midrule\endhead
+    \directlua{LV.progresso("\livroDados")}
+  \end{longtable}\endgroup}
+
+\newcommand\textosmaiscitados[1][2]{%
+  \begingroup\small\setlength\tabcolsep{5pt}\rowcolors{2}{fundo!60}{white}%
+  \begin{longtable}{@{}>{\raggedright}p{.38\linewidth} r >{\raggedright\arraybackslash}p{.44\linewidth}@{}}
+    \EBcab{Texto} & \EBcab{Vezes} & \EBcab{Em que lições}\\\midrule\endhead
+    \directlua{LV.mais_citados("\livroDados", #1, 40)}
+  \end{longtable}\endgroup}
+\newcommand\textosporlivro{\directlua{LV.por_livro("\livroDados")}}
+
+\newcommand\EBlivgrupo[2]{\par\addvspace{8pt}\noindent{\sffamily\bfseries\footnotesize\color{destaque}\MakeUppercase{#1}\enspace·\enspace#2}\par\nobreak\vspace{2pt}}
+\newcommand\EBlivlivro[2]{\par\noindent\hangindent=24mm\hangafter=1
+  \makebox[24mm][l]{\small #1}#2\par}
+\newcommand\EBcx[1]{\hbox{{\color{suave!50}\fboxrule=.4pt\fboxsep=0pt\fbox{\makebox[3.9mm]{%
+  \rule[-.9mm]{0pt}{3.3mm}\color{suave}\sffamily\fontsize{5.5}{6}\selectfont#1}}}}\hskip 1pt plus .5pt\relax}
+\newcommand\leituradabiblia{\begingroup\raggedright\directlua{LV.leitura()}\endgroup}
+
+\endinput

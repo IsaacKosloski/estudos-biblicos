@@ -1,0 +1,37 @@
+%% =============================================================================
+%%  Cadernos de Estudo Bíblico — arquivo principal
+%%  Overleaf: Menu → Compilador (Compiler) → LuaLaTeX.   Local: latexmk
+%% =============================================================================
+\documentclass[11pt, twoside, openany]{book}
+\input{config}
+% Para compilar mais rápido enquanto escreve, descomente e liste só a etapa em que está trabalhando:
+% \includeonly{capitulos/02-texto-original}
+\usepackage{estilo/estudobiblico}
+\addbibresource{geral.bib}   % compartilhado/bibliografia/geral.bib
+
+\begin{document}
+
+\frontmatter
+\capa
+\colofao
+\tableofcontents
+\include{capitulos/00-apresentacao}
+
+\mainmatter
+\part{Observação}
+\include{capitulos/01-traducoes}
+\include{capitulos/02-texto-original}
+\include{capitulos/03-estrutura}
+\part{Interpretação}
+\include{capitulos/04-contexto}
+\include{capitulos/05-intertexto}
+\include{capitulos/06-dialogo}
+\part{Apropriação}
+\include{capitulos/07-sintese}
+
+\backmatter
+\printbibliography[heading=bibintoc, title={Bibliografia}]
+\printindex[termos]
+\printindex
+
+\end{document}

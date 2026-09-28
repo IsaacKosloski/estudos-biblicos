@@ -1,0 +1,132 @@
+# Lucas 6:20-26 — texto grego: SBLGNT (CC BY 4.0), idêntico a Westcott-Hort nestes versículos
+# morfologia: MorphGNT (CC BY-SA 3.0) | lema/Strong: MorphGNT lexicon | glosas pt/en: próprias (literais)
+# var: variante no aparato SBLGNT (WH, Treg, NA28, RP) | freq_nt: ocorrências do lema no NT (SBLGNT)
+# translit vazio = gerado automaticamente (padrão SBL) pelo interlinear.lua
+ref	palavra	translit	lema	strong	morf	pt	en	var	freq_nt
+6:20	Καὶ		καί	G2532	conj.	e	and		8973
+6:20	αὐτὸς		αὐτός	G846	pron. pess. nom. m. sg.	ele	he		5546
+6:20	ἐπάρας		ἐπαίρω	G1869	part. aor. at. nom. m. sg.	tendo erguido	having lifted up		19
+6:20	τοὺς		ὁ	G3588	art. ac. m. pl.	os	the		19769
+6:20	ὀφθαλμοὺς		ὀφθαλμός	G3788	subst. ac. m. pl.	olhos	eyes		100
+6:20	αὐτοῦ		αὐτός	G846	pron. pess. gen. m. sg.	dele	of him		5546
+6:20	εἰς		εἰς	G1519	prep.	para	toward		1754
+6:20	τοὺς		ὁ	G3588	art. ac. m. pl.	os	the		19769
+6:20	μαθητὰς		μαθητής	G3101	subst. ac. m. pl.	discípulos	disciples		262
+6:20	αὐτοῦ		αὐτός	G846	pron. pess. gen. m. sg.	dele	of him		5546
+6:20	ἔλεγεν·		λέγω	G3004	v. imperf. at. ind. 3sg	dizia	was saying		2345
+6:20	Μακάριοι		μακάριος	G3107	adj. nom. m. pl.	felizes	happy		50
+6:20	οἱ		ὁ	G3588	art. nom. m. pl.	os	the		19769
+6:20	πτωχοί,		πτωχός	G4434	adj. nom. m. pl.	pobres	poor [ones]		34
+6:20	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:20	ὑμετέρα		ὑμέτερος	G5212	adj. nom. f. sg.	vosso	YOURS		11
+6:20	ἐστὶν		εἰμί	G1510	v. pres. at. ind. 3sg	é	is		2456
+6:20	ἡ		ὁ	G3588	art. nom. f. sg.	o	the		19769
+6:20	βασιλεία		βασιλεία	G932	subst. nom. f. sg.	reino	kingdom		162
+6:20	τοῦ		ὁ	G3588	art. gen. m. sg.	de	of the		19769
+6:20	θεοῦ.		θεός	G2316	subst. gen. m. sg.	Deus	God		1307
+6:21	μακάριοι		μακάριος	G3107	adj. nom. m. pl.	felizes	happy		50
+6:21	οἱ		ὁ	G3588	art. nom. m. pl.	os	the [ones]		19769
+6:21	πεινῶντες		πεινάω	G3983	part. pres. at. nom. m. pl.	tendo fome	hungering		23
+6:21	νῦν,		νῦν	G3568	adv.	agora	now		145
+6:21	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:21	χορτασθήσεσθε.		χορτάζω	G5526	v. fut. pass. ind. 2pl	sereis saciados	YOU will be filled		15
+6:21	μακάριοι		μακάριος	G3107	adj. nom. m. pl.	felizes	happy		50
+6:21	οἱ		ὁ	G3588	art. nom. m. pl.	os	the [ones]		19769
+6:21	κλαίοντες		κλαίω	G2799	part. pres. at. nom. m. pl.	chorando	weeping		40
+6:21	νῦν,		νῦν	G3568	adv.	agora	now		145
+6:21	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:21	γελάσετε.		γελάω	G1070	v. fut. at. ind. 2pl	rireis	YOU will laugh		2
+6:22	Μακάριοί		μακάριος	G3107	adj. nom. m. pl.	felizes	happy		50
+6:22	ἐστε		εἰμί	G1510	v. pres. at. ind. 2pl	sois	YOU are		2456
+6:22	ὅταν		ὅταν	G3752	conj.	quando	whenever		123
+6:22	μισήσωσιν		μισέω	G3404	v. aor. at. subj. 3pl	odiarem	they hate		40
+6:22	ὑμᾶς		σύ	G4771	pron. pess. ac. pl.	vos	YOU		2894
+6:22	οἱ		ὁ	G3588	art. nom. m. pl.	os	the		19769
+6:22	ἄνθρωποι,		ἄνθρωπος	G444	subst. nom. m. pl.	homens	men		550
+6:22	καὶ		καί	G2532	conj.	e	and		8973
+6:22	ὅταν		ὅταν	G3752	conj.	quando	whenever		123
+6:22	ἀφορίσωσιν		ἀφορίζω	G873	v. aor. at. subj. 3pl	excluírem	they exclude		10
+6:22	ὑμᾶς		σύ	G4771	pron. pess. ac. pl.	vos	YOU		2894
+6:22	καὶ		καί	G2532	conj.	e	and		8973
+6:22	ὀνειδίσωσιν		ὀνειδίζω	G3679	v. aor. at. subj. 3pl	insultarem	they reproach		10
+6:22	καὶ		καί	G2532	conj.	e	and		8973
+6:22	ἐκβάλωσιν		ἐκβάλλω	G1544	v. aor. at. subj. 3pl	lançarem fora	they cast out		81
+6:22	τὸ		ὁ	G3588	art. ac. n. sg.	o	the		19769
+6:22	ὄνομα		ὄνομα	G3686	subst. ac. n. sg.	nome	name		229
+6:22	ὑμῶν		σύ	G4771	pron. pess. gen. pl.	vosso	of YOU		2894
+6:22	ὡς		ὡς	G5613	conj.	como	as		503
+6:22	πονηρὸν		πονηρός	G4190	adj. ac. n. sg.	mau	wicked		78
+6:22	ἕνεκα		ἕνεκα	G1752	prep.	por causa de	on account of		4
+6:22	τοῦ		ὁ	G3588	art. gen. m. sg.	o	the		19769
+6:22	υἱοῦ		υἱός	G5207	subst. gen. m. sg.	Filho	Son		375
+6:22	τοῦ		ὁ	G3588	art. gen. m. sg.	do	of the		19769
+6:22	ἀνθρώπου·		ἄνθρωπος	G444	subst. gen. m. sg.	Homem	Man		550
+6:23	χάρητε		χαίρω	G5463	v. aor. pass. imper. 2pl	alegrai-vos	rejoice		74
+6:23	ἐν		ἐν	G1722	prep.	em	in		2733
+6:23	ἐκείνῃ		ἐκεῖνος	G1565	pron. dem. dat. f. sg.	aquele	that		242
+6:23	τῇ		ὁ	G3588	art. dat. f. sg.	o	the		19769
+6:23	ἡμέρᾳ		ἡμέρα	G2250	subst. dat. f. sg.	dia	day		389
+6:23	καὶ		καί	G2532	conj.	e	and		8973
+6:23	σκιρτήσατε,		σκιρτάω	G4640	v. aor. at. imper. 2pl	saltai [de alegria]	leap [for joy]		3
+6:23	ἰδοὺ		ἰδού	G2400	partíc.	eis	look!		200
+6:23	γὰρ		γάρ	G1063	conj.	pois	for		1039
+6:23	ὁ		ὁ	G3588	art. nom. m. sg.	a	the		19769
+6:23	μισθὸς		μισθός	G3408	subst. nom. m. sg.	recompensa	reward		29
+6:23	ὑμῶν		σύ	G4771	pron. pess. gen. pl.	vossa	of YOU		2894
+6:23	πολὺς		πολύς	G4183	adj. nom. m. sg.	grande	much		415
+6:23	ἐν		ἐν	G1722	prep.	em	in		2733
+6:23	τῷ		ὁ	G3588	art. dat. m. sg.	o	the		19769
+6:23	οὐρανῷ·		οὐρανός	G3772	subst. dat. m. sg.	céu	heaven		273
+6:23	κατὰ		κατά	G2596	prep.	segundo	according to		469
+6:23	τὰ		ὁ	G3588	art. ac. n. pl.	as	the	RP: ταῦτα	19769
+6:23	αὐτὰ		αὐτός	G846	adj. ac. n. pl.	mesmas [coisas]	same [things]	RP: ταῦτα	5546
+6:23	γὰρ		γάρ	G1063	conj.	pois	for		1039
+6:23	ἐποίουν		ποιέω	G4160	v. imperf. at. ind. 3pl	faziam	were doing		568
+6:23	τοῖς		ὁ	G3588	art. dat. m. pl.	aos	to the		19769
+6:23	προφήταις		προφήτης	G4396	subst. dat. m. pl.	profetas	prophets		144
+6:23	οἱ		ὁ	G3588	art. nom. m. pl.	os	the		19769
+6:23	πατέρες		πατήρ	G3962	subst. nom. m. pl.	pais	fathers		413
+6:23	αὐτῶν.		αὐτός	G846	pron. pess. gen. m. pl.	deles	of them		5546
+6:24	πλὴν		πλήν	G4133	conj.	porém	however		31
+6:24	οὐαὶ		οὐαί	G3759	interj.	ai	woe		46
+6:24	ὑμῖν		σύ	G4771	pron. pess. dat. pl.	a vós	to YOU		2894
+6:24	τοῖς		ὁ	G3588	art. dat. m. pl.	os	the		19769
+6:24	πλουσίοις,		πλούσιος	G4145	adj. dat. m. pl.	ricos	rich [ones]		28
+6:24	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:24	ἀπέχετε		ἀπέχω	G568	v. pres. at. ind. 2pl	tendes por inteiro	YOU have in full		19
+6:24	τὴν		ὁ	G3588	art. ac. f. sg.	a	the		19769
+6:24	παράκλησιν		παράκλησις	G3874	subst. ac. f. sg.	consolação	consolation		29
+6:24	ὑμῶν.		σύ	G4771	pron. pess. gen. pl.	vossa	of YOU		2894
+6:25	οὐαὶ		οὐαί	G3759	interj.	ai	woe		46
+6:25	ὑμῖν,		σύ	G4771	pron. pess. dat. pl.	a vós	to YOU		2894
+6:25	οἱ		ὁ	G3588	art. nom. m. pl.	os	the [ones]		19769
+6:25	ἐμπεπλησμένοι		ἐμπίμπλημι	G1705	part. perf. pass. nom. m. pl.	saciados	having been filled		5
+6:25	νῦν,		νῦν	G3568	adv.	agora	now	RP omite	145
+6:25	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:25	πεινάσετε.		πεινάω	G3983	v. fut. at. ind. 2pl	tereis fome	YOU will hunger		23
+6:25	οὐαί,		οὐαί	G3759	interj.	ai	woe	RP: + ὑμῖν	46
+6:25	οἱ		ὁ	G3588	art. nom. m. pl.	os	the [ones]		19769
+6:25	γελῶντες		γελάω	G1070	part. pres. at. nom. m. pl.	rindo	laughing		2
+6:25	νῦν,		νῦν	G3568	adv.	agora	now		145
+6:25	ὅτι		ὅτι	G3754	conj.	porque	because		1294
+6:25	πενθήσετε		πενθέω	G3996	v. fut. at. ind. 2pl	lamentareis	YOU will mourn		10
+6:25	καὶ		καί	G2532	conj.	e	and		8973
+6:25	κλαύσετε.		κλαίω	G2799	v. fut. at. ind. 2pl	chorareis	YOU will weep		40
+6:26	Οὐαὶ		οὐαί	G3759	interj.	ai	woe		46
+6:26	ὅταν		ὅταν	G3752	conj.	quando	whenever		123
+6:26	καλῶς		καλῶς	G2573	adv.	bem	well	NA28: ὑμᾶς καλῶς	36
+6:26	ὑμᾶς		σύ	G4771	pron. pess. ac. pl.	de vós	of YOU	NA28: ὑμᾶς καλῶς	2894
+6:26	εἴπωσιν		λέγω	G3004	v. aor. at. subj. 3pl	falarem	they speak		2345
+6:26	πάντες		πᾶς	G3956	adj. nom. m. pl.	todos	all	RP omite	1244
+6:26	οἱ		ὁ	G3588	art. nom. m. pl.	os	the		19769
+6:26	ἄνθρωποι,		ἄνθρωπος	G444	subst. nom. m. pl.	homens	men		550
+6:26	κατὰ		κατά	G2596	prep.	segundo	according to		469
+6:26	τὰ		ὁ	G3588	art. ac. n. pl.	as	the	RP: ταῦτα	19769
+6:26	αὐτὰ		αὐτός	G846	adj. ac. n. pl.	mesmas [coisas]	same [things]	RP: ταῦτα	5546
+6:26	γὰρ		γάρ	G1063	conj.	pois	for		1039
+6:26	ἐποίουν		ποιέω	G4160	v. imperf. at. ind. 3pl	faziam	were doing		568
+6:26	τοῖς		ὁ	G3588	art. dat. m. pl.	aos	to the		19769
+6:26	ψευδοπροφήταις		ψευδοπροφήτης	G5578	subst. dat. m. pl.	falsos profetas	false prophets		11
+6:26	οἱ		ὁ	G3588	art. nom. m. pl.	os	the		19769
+6:26	πατέρες		πατήρ	G3962	subst. nom. m. pl.	pais	fathers		413
+6:26	αὐτῶν.		αὐτός	G846	pron. pess. gen. m. pl.	deles	of them		5546

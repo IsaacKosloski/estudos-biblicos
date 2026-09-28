@@ -1,0 +1,16 @@
+{
+  "latex-workshop.latex.recipes": [
+    { "name": "latexmk (LuaLaTeX, configuração do repositório)", "tools": ["latexmk-estudos"] }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-estudos",
+      "command": "latexmk",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOCFILE%"],
+      "env": {}
+    }
+  ],
+  "latex-workshop.latex.outDir": "%DIR%",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "files.associations": { "*.tsv": "plaintext" }
+}

@@ -1,0 +1,221 @@
+%% =============================================================================
+%%  Etapa 2 — Texto original
+%% =============================================================================
+\chapter{Texto original}\label{cap:original}
+
+\begin{objetivo}
+Estabelecer o texto grego (crítica textual), lê-lo palavra por palavra com o
+interlinear, e estudar as palavras e construções que as traduções resolveram
+de modos diferentes. Tudo aqui é observação: o sentido do conjunto fica para
+as etapas seguintes.
+\end{objetivo}
+
+\section{O texto grego e suas edições}
+
+O texto usado é o do \emph{SBL Greek New Testament} \parencite{sblgnt2010},
+que nestes versículos coincide com Westcott-Hort \parencite{westcotthort1881},
+a base declarada da TNM. As diferenças em relação ao Nestle-Aland 28
+\parencite{na28} e ao texto bizantino de Robinson-Pierpont (RP), próximo do
+\emph{Textus Receptus} da Almeida Corrigida, estão marcadas com
+{\color{rubrica}°} e listadas abaixo do texto.
+
+\textooriginal{dados/biblia/lc06_20-26.grc.tsv}
+
+\subsection{Crítica textual}
+
+Nenhuma das variantes muda o sentido do trecho, mas duas explicam diferenças
+entre as traduções portuguesas vistas na Etapa~\ref{cap:traducoes}.
+
+\begin{variante}[\rb{Lc 6:25a} — \gr{νῦν}]
+O texto crítico (SBLGNT, NA28) lê \gr{οἱ ἐμπεπλησμένοι νῦν},
+\enquote{os que \emph{agora} estais saciados}; o texto bizantino (RP) e o
+\emph{Textus Receptus} omitem \gr{νῦν}. Por isso RC e ARC dizem só
+\enquote{os que estais fartos}. Com \gr{νῦν}, o \enquote{agora} aparece quatro
+vezes (21a, 21b, 25a, 25b) em perfeita simetria entre felicidades e ais — o
+que pode ser original ou fruto de harmonização por um copista
+\parencite[cf.][]{metzger1994}. Pergunta de método: qual leitura explica melhor
+o surgimento da outra?
+\end{variante}
+
+\begin{variante}[\rb{Lc 6:25b} — \gr{οὐαί, οἱ γελῶντες}]
+RP lê \gr{οὐαὶ ὑμῖν, οἱ γελῶντες}, repetindo o \gr{ὑμῖν} dos outros ais. Quase
+todas as traduções acrescentam \enquote{de vós/de vocês} de qualquer modo, por
+exigência do português; só a TNM de 1986 (\enquote{Ai, vós que agora rides})
+deixa ver a forma mais curta.
+\end{variante}
+
+\begin{variante}[\rb{Lc 6:23, 26} — \gr{τὰ αὐτά} / \gr{ταῦτα}]
+\enquote{Segundo as \emph{mesmas} coisas} (texto crítico) ou \enquote{segundo
+\emph{estas} coisas} (RP). A diferença é de uma letra e um acento; o sentido
+praticamente não muda.
+\end{variante}
+
+\begin{variante}[\rb{Lc 6:26} — \gr{πάντες} e a ordem \gr{καλῶς ὑμᾶς}]
+RP omite \gr{πάντες} (\enquote{todos}), mas RC e ARC trazem \enquote{todos os
+homens}, como a KJV (\en{all men}): um lembrete de que o \emph{Textus Receptus}
+não é idêntico ao texto majoritário bizantino. O NA28 inverte a ordem para
+\gr{ὑμᾶς καλῶς}, sem efeito na tradução. \textbf{A conferir} no aparato do
+NA28.
+\end{variante}
+
+\begin{nota}[Como gerar esta lista]
+As variantes vêm do aparato do SBLGNT, que compara Westcott-Hort, Tregelles,
+NA28 e RP. O comando \texttt{python3 ferramentas/interlinear.py aparato Lc 6:20-26}
+lista-as para qualquer trecho; a coluna \texttt{var} do arquivo de dados guarda
+o resumo usado no interlinear.
+\end{nota}
+
+%------------------------------------------------------------------------------
+\section{Interlinear}
+
+O versículo~20 aparece no modo completo (com lema, número de Strong e
+morfologia); os demais, no modo de estudo. As glosas portuguesas são
+propositalmente literais: \enquote{YOU} em maiúsculas marca a 2.ª pessoa do
+plural, e o que está entre colchetes, em cinza, não está no grego.
+
+\interlinear[de=6:20, ate=6:20, modo=completo, titulo={Lc 6:20 · SBLGNT}]{dados/biblia/lc06_20-26.grc.tsv}
+
+\interlinear[de=6:21, ate=6:26, titulo={Lc 6:21–26 · SBLGNT}]{dados/biblia/lc06_20-26.grc.tsv}
+
+\begin{pergunta}
+Escreva sua própria tradução literal dos vv.~20–26 a partir do interlinear,
+sem olhar as traduções. Depois compare: em que pontos você precisou decidir
+algo que o grego deixa aberto?
+\end{pergunta}
+
+\subsection{Análise morfológica do v.~24}
+
+\tabelamorfologica[de=6:24, ate=6:24]{dados/biblia/lc06_20-26.grc.tsv}
+
+\subsection{Vocabulário do trecho}
+
+Lemas que aparecem duas vezes ou mais, com a frequência no Novo Testamento.
+Repetições são pistas de estrutura: \gr{μακάριος} e \gr{οὐαί} (4 cada),
+\gr{νῦν} (4), \gr{ὅτι} (6).
+
+\vocabulario[minimo=2]{dados/biblia/lc06_20-26.grc.tsv}
+
+%------------------------------------------------------------------------------
+\section{Estudo de palavras}
+
+Os números de ocorrência vêm do SBLGNT (comando \texttt{concordancia} da
+ferramenta). O sentido de cada palavra é buscado primeiro no uso dentro de
+Lucas, depois no restante do NT e da Septuaginta, e só então nos léxicos
+\parencite{silva1994, louwnida1988}.
+
+\begin{lexico}{μακάριος}{G3107}{50}
+Adjetivo que abre o \emph{macarismo}, forma literária antiga: \enquote{feliz
+(é) quem\ldots, porque\ldots}. Na Septuaginta traduz sobretudo o hebraico
+\hb{אַשְׁרֵי} (\rb{Sl 1:1}, ver Etapa~5). Lucas o usa 15 vezes (\rb{1:45;
+6:20–22; 7:23; 10:23; 11:27–28; 12:37–43; 14:14–15; 23:29}). Não descreve um
+sentimento, mas uma \emph{situação} favorecida, reconhecida por Deus ou pela
+comunidade. \textcite{hanson1994} propõe que, numa cultura de honra e
+vergonha, \gr{μακάριοι} equivale a \enquote{honrados sejam\ldots}.
+\end{lexico}
+
+\begin{lexico}{πτωχός}{G4434}{34}
+Em Lucas, 10 vezes: \rb{4:18; 6:20; 7:22; 14:13, 21; 16:20, 22; 18:22; 19:8;
+21:3}. Os pobres recebem a boa notícia (\rb{4:18; 7:22}), são convidados ao
+banquete (\rb{14:13, 21}) e Lázaro é \gr{πτωχός} diante do rico (\rb{16:20}).
+A distinção clássica entre \gr{πτωχός} (\enquote{mendigo}, sem recursos) e
+\gr{πένης} (\enquote{trabalhador pobre}; no NT só em \rb{2Co 9:9}) é
+útil, mas não deve ser forçada: o uso real é mais fluido.
+\end{lexico}
+
+\begin{alerta}[Etimologia não é sentido]
+\gr{πτωχός} é aparentado a \gr{πτώσσω}, \enquote{encolher-se de medo}. Isso é
+curioso, mas não autoriza traduzir \enquote{os que se encolhem}: o que conta é
+como a palavra era usada no século~I \parencite{carson1996}.
+\end{alerta}
+
+\begin{lexico}{οὐαί}{G3759}{46}
+Interjeição de lamento, como a de quem chora um morto, e de ameaça
+profética. Na Septuaginta traduz \hb{הוֹי} e \hb{אוֹי} (\rb{Is 5:8–23; Am 6:1;
+Hc 2:6–19}). Em Lucas, 15 vezes, sobretudo aqui e nos ais contra fariseus e
+escribas (\rb{11:42–52}). A NVT (\enquote{que aflição espera}) interpreta o
+\enquote{ai} como anúncio de desgraça futura.
+\end{lexico}
+
+\begin{lexico}{ἀπέχω}{G568}{19}
+Na voz ativa com objeto, é termo técnico dos recibos comerciais em papiros:
+\enquote{recebi por inteiro, dou quitação} \parencite{deissmann1927}. É o mesmo
+uso de \rb{Mt 6:2, 5, 16} (\enquote{já receberam a sua recompensa}) e de
+\rb{Fp 4:18}. Os ricos já \enquote{deram quitação} à sua consolação: não há
+mais nada a receber. Só a TNM (\enquote{plenamente}, \enquote{todo o seu
+conforto}) deixa isso explícito.
+\end{lexico}
+
+\begin{lexico}{παράκλησις}{G3874}{29}
+Em Lucas, apenas duas vezes: aqui e em \rb{2:25}, onde Simeão
+\enquote{esperava a consolação de Israel}. A palavra liga os ais à esperança
+messiânica do início do Evangelho. Compare também \rb{Lc 16:25}: Lázaro
+\enquote{agora é consolado} (\gr{παρακαλεῖται}), enquanto o rico, que recebeu
+seus bens em vida, é atormentado.
+\end{lexico}
+
+\begin{lexico}{σκιρτάω}{G4640}{3}
+Só em Lucas: \rb{1:41, 44} (João salta no ventre de Isabel) e \rb{6:23}.
+Na Septuaginta descreve os gêmeos no ventre de Rebeca (\rb{Gn 25:22}) e os
+bezerros soltos no dia da justiça (\rb{Ml 3:20}). É alegria física,
+exuberante: a BP (\enquote{dançai de júbilo}) e a TNM (\enquote{pulem de
+alegria}) captam melhor que \enquote{exultai}.
+\end{lexico}
+
+\begin{lexico}{ἐμπίμπλημι}{G1705}{5}
+Em Lucas só aqui e no Magnificat: \enquote{encheu de bens os famintos e
+despediu vazios os ricos} (\rb{1:53}). O v.~25 é a outra face da mesma
+inversão cantada por Maria.
+\end{lexico}
+
+\begin{lexico}{γελάω}{G1070}{2}
+\enquote{Rir}: em todo o NT, só em \rb{Lc 6:21} e \rb{6:25}. A raridade
+reforça o paralelo intencional entre a felicidade e o ai.
+\end{lexico}
+
+\begin{lexico}{χορτάζω}{G5526}{15}
+Originalmente \enquote{alimentar animais com forragem}; no NT, \enquote{saciar}
+em geral. Em Lucas: \rb{6:21}; \rb{9:17} (\enquote{todos comeram e ficaram
+saciados}); \rb{16:21}, Lázaro, que desejava \enquote{saciar-se} com o que caía
+da mesa do rico.
+\end{lexico}
+
+%------------------------------------------------------------------------------
+\section{Gramática e sintaxe}
+
+\paragraph{Segunda pessoa.} Todas as felicidades e todos os ais se dirigem a
+\enquote{vós} (\gr{ὑμετέρα}, \gr{χορτασθήσεσθε}, \gr{ὑμῖν}). Mesmo onde o
+sujeito vem com artigo (\gr{οἱ πτωχοί}, \gr{οἱ πεινῶντες}), a frase funciona
+como vocativo: \enquote{vós, os pobres}.
+
+\paragraph{Passivo divino.} \gr{χορτασθήσεσθε} (\enquote{sereis saciados}) é
+futuro passivo sem agente expresso. No judaísmo da época, a passiva era um
+modo reverente de indicar a ação de Deus sem nomeá-lo. As traduções ativas
+(\enquote{vão ter fartura}, \enquote{vos saciareis}) apagam essa pista.
+
+\paragraph{Agora e depois.} \gr{νῦν} (4×) opõe o presente (particípios
+\gr{πεινῶντες}, \gr{κλαίοντες}, \gr{γελῶντες}) ao futuro
+(\gr{χορτασθήσεσθε}, \gr{γελάσετε}, \gr{πεινάσετε}, \gr{πενθήσετε}). O perfeito
+\gr{ἐμπεπλησμένοι} (v.~25) descreve um estado já alcançado.
+
+\paragraph{\gr{ὅταν} + subjuntivo aoristo} (vv.~22, 26) indica uma
+situação eventual e repetível: \enquote{sempre que} (TNM) é boa solução.
+
+\paragraph{Imperativos e imperfeitos.} \gr{χάρητε} e \gr{σκιρτήσατε} são
+imperativos aoristos: ordens para reagir de imediato, \enquote{naquele dia}.
+Os imperfeitos \gr{ἔλεγεν} (v.~20) e \gr{ἐποίουν} (vv.~23, 26) indicam ação
+em curso ou costumeira: \enquote{começou a dizer}, \enquote{costumavam fazer}
+(TNM 1986).
+
+\paragraph{A dobradiça.} \gr{πλήν} (v.~24) é adversativa forte:
+\enquote{porém, em contraste}. Marca a passagem das felicidades para os ais
+\parencite[cf.][]{runge2010}.
+
+\begin{pergunta}
+Se \gr{χορτασθήσεσθε} é passivo divino, quem é o agente implícito das outras
+inversões (\gr{γελάσετε}, \gr{πεινάσετε})? O texto diz, ou só sugere?
+\end{pergunta}
+
+\begin{pergunta}
+\enquote{Naquele dia} (v.~23) é o dia da perseguição ou o dia do juízo
+final? Que elementos do contexto apoiam cada leitura?
+\end{pergunta}

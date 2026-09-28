@@ -1,0 +1,254 @@
+%% =============================================================================
+%%  interlinear.sty — interlinear grego / hebraico / aramaico / siríaco
+%%  Motor em Lua (estilo/interlinear.lua) + dados em TSV (pasta dados/).
+%%
+%%  \interlinear[opções]{dados/arquivo.tsv}        texto em camadas
+%%  \textooriginal[opções]{dados/arquivo.tsv}      texto corrido com nº de versículos
+%%  \tabelamorfologica[opções]{dados/arquivo.tsv}  análise palavra por palavra
+%%  \vocabulario[opções]{dados/arquivo.tsv}        lemas mais repetidos no trecho
+%%  \variantes[opções]{dados/arquivo.tsv}          lista das variantes marcadas
+%%
+%%  Opções: lingua=grego|hebraico|aramaico|siriaco (padrão: pela extensão
+%%  .grc/.hbo/.arc/.syr), de=6:20, ate=6:21, modo=leitura|estudo|completo,
+%%  translit, pt, en, lema, strong, morf (=true|false), acentos (hebraico:
+%%  mostrar te'amim), indice, legenda, moldura, titulo={...}, quebra (cada
+%%  versículo em nova linha), minimo=2 (só em \vocabulario).
+%% =============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/interlinear}[2026/09/27 v1.0 Interlinear via LuaLaTeX]
+\RequirePackage{pgfkeys, etoolbox, longtable, xcolor}
+
+\directlua{
+  local nome = "estilo/interlinear.lua"
+  local f = io.open(nome, "r")
+  if f then f:close() else
+    nome = kpse.find_file("estilo/interlinear.lua", "tex") or kpse.find_file("interlinear.lua", "lua") or nome
+  end
+  dofile(nome)
+}
+\providecommand\ebInterlinearModo{estudo}
+\providecommand\ebAcentosHebraicos{nao}
+
+%% ------------------------------------------------------------------ opções
+\newif\ifEBil@translit \newif\ifEBil@pt \newif\ifEBil@en \newif\ifEBil@lema
+\newif\ifEBil@strong \newif\ifEBil@morf \newif\ifEBil@acentos \newif\ifEBil@indice
+\newif\ifEBil@legenda \newif\ifEBil@moldura \newif\ifEBil@quebra \newif\ifEBil@rtl
+\pgfkeys{/eb/il/.is family, /eb/il,
+  lingua/.store in=\EBil@lingua,
+  de/.store in=\EBil@de,
+  ate/.store in=\EBil@ate,
+  titulo/.store in=\EBil@titulo,
+  minimo/.store in=\EBil@minimo,
+  translit/.is if=EBil@translit, pt/.is if=EBil@pt, en/.is if=EBil@en,
+  lema/.is if=EBil@lema, strong/.is if=EBil@strong, morf/.is if=EBil@morf,
+  acentos/.is if=EBil@acentos, indice/.is if=EBil@indice,
+  legenda/.is if=EBil@legenda, moldura/.is if=EBil@moldura, quebra/.is if=EBil@quebra,
+  modo/.is choice,
+  modo/leitura/.code  ={\EBil@translittrue\EBil@pttrue\EBil@enfalse\EBil@lemafalse
+                        \EBil@strongfalse\EBil@morffalse},
+  modo/estudo/.code   ={\EBil@translittrue\EBil@pttrue\EBil@entrue\EBil@lemafalse
+                        \EBil@strongfalse\EBil@morftrue},
+  modo/completo/.code ={\EBil@translittrue\EBil@pttrue\EBil@entrue\EBil@lematrue
+                        \EBil@strongtrue\EBil@morftrue},
+}
+\newcommand\EBil@padroes{%
+  \def\EBil@lingua{}\def\EBil@de{}\def\EBil@ate{}\def\EBil@titulo{}\def\EBil@minimo{2}%
+  \EBil@acentosfalse\ifdefstring{\ebAcentosHebraicos}{sim}{\EBil@acentostrue}{}%
+  \EBil@indicetrue\EBil@legendatrue\EBil@molduratrue\EBil@quebrafalse
+  \pgfkeys{/eb/il/modo/.expanded=\ebInterlinearModo}}
+% opções globais: \interlinearset{modo=completo, en=false}
+\newcommand\interlinearset[1]{\pgfkeys{/eb/il,#1}}
+
+% prepara língua, fontes e direção; #1 = arquivo
+\newcommand\EBil@preparar[1]{%
+  \ifx\EBil@lingua\@empty\edef\EBil@lingua{\directlua{tex.sprint(EB.lingua_de("\luaescapestring{#1}"))}}\fi
+  \EBil@rtlfalse
+  \ifcsname EBil@conf@\EBil@lingua\endcsname\csname EBil@conf@\EBil@lingua\endcsname
+  \else\PackageError{interlinear}{Língua desconhecida: \EBil@lingua}{Use grego, hebraico, aramaico ou siriaco.}\fi}
+\newcommand\EBil@luaargs[1]{"\luaescapestring{#1}", "\EBil@lingua",
+  \ifx\EBil@de\@empty nil\else"\EBil@de"\fi, \ifx\EBil@ate\@empty nil\else"\EBil@ate"\fi}
+
+%% ------------------------------------------------------ aparência por língua
+% \EBil@forig: fonte e cor da palavra original; \EBil@nomelingua: rótulo
+\newcommand\EBil@conf@grego{%
+  \def\EBil@forig{\EBfgrego\fontsize{12.6}{15}\selectfont\color{grego}}%
+  \def\EBil@fcorrido{\EBfgrego\fontsize{13}{19}\selectfont\color{tinta}}%
+  \def\EBil@nomelingua{Grego}\def\EBil@corlingua{grego}\def\EBil@corpus{No NT}}
+\newcommand\EBil@conf@hebraico{\EBil@rtltrue
+  \def\EBil@forig{\EBfhebraico\fontsize{15}{17}\selectfont\color{hebraico}}%
+  \def\EBil@fcorrido{\EBfhebraico\fontsize{15.5}{24}\selectfont\color{tinta}}%
+  \def\EBil@nomelingua{Hebraico}\def\EBil@corlingua{hebraico}\def\EBil@corpus{No AT}}
+\newcommand\EBil@conf@aramaico{\EBil@rtltrue
+  \def\EBil@forig{\EBfhebraico\fontsize{15}{17}\selectfont\color{aramaico}}%
+  \def\EBil@fcorrido{\EBfhebraico\fontsize{15.5}{24}\selectfont\color{tinta}}%
+  \def\EBil@nomelingua{Aramaico}\def\EBil@corlingua{aramaico}\def\EBil@corpus{No AT}}
+\newcommand\EBil@conf@siriaco{\EBil@rtltrue
+  \def\EBil@forig{\EBfsiriaco\fontsize{15}{17}\selectfont\color{aramaico}}%
+  \def\EBil@fcorrido{\EBfsiriaco\fontsize{15.5}{24}\selectfont\color{tinta}}%
+  \def\EBil@nomelingua{Siríaco}\def\EBil@corlingua{aramaico}\def\EBil@corpus{No NT}}
+
+% camadas latinas
+\newcommand\EBil@ftranslit{\EBftranslit\fontsize{8.6}{10}\selectfont\color{suave}}
+\newcommand\EBil@fpt{\normalfont\fontsize{9.6}{11}\selectfont\color{tinta}}
+\newcommand\EBil@fen{\normalfont\itshape\fontsize{8.4}{10}\selectfont\color{ingles}}
+\newcommand\EBil@flema{\sffamily\fontsize{6.6}{8}\selectfont\color{suave}}
+\newcommand\EBil@fmorf{\sffamily\fontsize{6.6}{7.4}\selectfont}
+\newlength\EBilmorfmax  \setlength\EBilmorfmax{19mm}   % largura máx. da morfologia
+\newlength\EBilespaco   \setlength\EBilespaco{.8em plus .2em}   % espaço entre palavras
+\newlength\EBilentrelinhas \setlength\EBilentrelinhas{9pt}
+
+%% ------------------------------------------------------------- uma palavra
+\newbox\EBil@bw \newbox\EBil@bt \newbox\EBil@bp \newbox\EBil@be
+\newbox\EBil@bl \newbox\EBil@bm
+\newdimen\EBil@larg
+\def\EBil@max#1{\ifdim\wd#1>\EBil@larg\EBil@larg=\wd#1\fi}
+\def\EBil@ltr{\pardir TLT\textdir TLT}
+\def\EBil@linha#1{\hbox to\EBil@larg{\hss\box#1\hss}}
+\newcommand\EBil@marcavar{\textsuperscript{\normalfont\color{rubrica}°}}
+
+% \EBiw{palavra}{translit}{lema}{strong}{morf}{pt}{en}{var}
+\newcommand\EBiw[8]{%
+  \leavevmode
+  \setbox\EBil@bw\hbox{{\EBil@forig\strut#1\ifblank{#8}{}{\EBil@marcavar}}}%
+  \setbox\EBil@bt\hbox dir TLT{{\ifEBil@translit\EBil@ftranslit\strut#2\fi}}%
+  \setbox\EBil@bp\hbox dir TLT{{\ifEBil@pt\EBil@fpt\strut#6\fi}}%
+  \setbox\EBil@be\hbox dir TLT{{\ifEBil@en\EBil@fen\strut#7\fi}}%
+  \setbox\EBil@bl\hbox dir TLT{{\EBil@flema\strut
+     \ifEBil@lema{\ifEBil@rtl\textdir TRT\fi\EBil@forig\fontsize{8}{8}\selectfont\color{suave}#3}\fi
+     \ifEBil@strong\ifblank{#4}{}{\ifEBil@lema\ \fi#4}\fi}}%
+  \EBil@larg=\wd\EBil@bw
+  \EBil@max\EBil@bt \EBil@max\EBil@bp \EBil@max\EBil@be \EBil@max\EBil@bl
+  \ifEBil@morf
+    \setbox\EBil@bm\hbox{{\EBil@fmorf#5}}%
+    \ifdim\wd\EBil@bm>\EBil@larg
+      \dimen@=\EBilmorfmax
+      \ifdim\EBil@larg>\dimen@\dimen@=\EBil@larg\fi
+      \ifdim\wd\EBil@bm<\dimen@\dimen@=\wd\EBil@bm\fi
+      \EBil@larg=\dimen@
+    \fi
+    \setbox\EBil@bm\vtop{\hsize\EBil@larg\EBil@ltr\EBil@fmorf
+      \lineskip\z@\lineskiplimit\z@
+      \leftskip\z@ plus 1fil\rightskip\z@ plus 1fil\parfillskip\z@
+      \parindent\z@\hyphenpenalty10000 \leavevmode{\color{suave}#5}\par}%
+  \fi
+  \vtop{\offinterlineskip
+    \EBil@linha\EBil@bw
+    \ifEBil@translit\kern.5pt\EBil@linha\EBil@bt\fi
+    \ifEBil@pt\kern1pt\EBil@linha\EBil@bp\fi
+    \ifEBil@en\EBil@linha\EBil@be\fi
+    \ifEBil@lema\kern.5pt\EBil@linha\EBil@bl\else\ifEBil@strong\kern.5pt\EBil@linha\EBil@bl\fi\fi
+    \ifEBil@morf\kern1pt\box\EBil@bm\fi}%
+  \hskip\EBilespaco\relax}
+
+% número de versículo no fluxo do interlinear
+\newif\ifEBil@primeiro
+\newcommand\EBivers[2]{%
+  \ifEBil@quebra\ifEBil@primeiro\else\par\fi\fi
+  \leavevmode\hbox dir TLT{{\EBfnumeros\bfseries\fontsize{9.5}{11}\selectfont\color{rubrica}%
+    \ifEBil@primeiro#1:\fi#2}}\global\EBil@primeirofalse
+  \nobreak\hskip.45em\relax}
+
+%% ---------------------------------------------------------- \interlinear
+\tcbset{EB/interlinear/.style={enhanced, breakable, arc=1.5pt, boxrule=0pt,
+  colback=white, borderline north={.6pt}{0pt}{destaque2}, borderline south={.6pt}{0pt}{destaque2},
+  left=2pt, right=2pt, top=8pt, bottom=6pt, before skip=12pt, after skip=12pt}}
+
+\newcommand\EBil@titulolinha{%
+  \noindent{\sffamily\bfseries\footnotesize\color{\EBil@corlingua}\MakeUppercase{\EBil@nomelingua}}%
+  \ifdefempty{\EBil@titulo}{}{\enspace{\sffamily\footnotesize\color{suave}\EBil@titulo}}\par
+  \vspace{5pt}}
+\newcommand\EBil@legendalinha{%
+  \par\vspace{4pt}\noindent{\sffamily\scriptsize\color{suave}Camadas: original%
+  \ifEBil@translit\ · \textit{transliteração}\fi
+  \ifEBil@pt\ · glosa (pt)\fi\ifEBil@en\ · \textit{glosa (en)}\fi
+  \ifEBil@lema\ · lema\fi\ifEBil@strong\ · Strong\fi\ifEBil@morf\ · morfologia\fi
+  \ · {\color{rubrica}°}\,variante\ · [\,]\,implícito}\par}
+
+\newcommand\interlinear[2][]{%
+  \begingroup
+  \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
+  \ifEBil@moldura\begin{tcolorbox}[EB/interlinear]\fi
+  \EBil@titulolinha
+  \begingroup
+    \ifEBil@rtl\pardir TRT\textdir TRT\fi
+    \parindent\z@ \parfillskip\z@ plus 1fil
+    \leftskip\z@ \rightskip\z@ plus 1fil
+    \baselineskip\z@ \lineskip\EBilentrelinhas \lineskiplimit\EBilentrelinhas
+    \EBil@primeirotrue
+    \directlua{EB.interlinear(\EBil@luaargs{#2}, \ifEBil@acentos true\else false\fi,
+      \ifEBil@indice true\else false\fi)}\unskip\par
+  \endgroup
+  \EBil@listarvariantes{#2}%
+  \ifEBil@legenda\EBil@legendalinha\fi
+  \ifEBil@moldura\end{tcolorbox}\fi
+  \endgroup}
+
+% variantes em linha (abaixo do interlinear / texto)
+\newcommand\EBilvar[3]{\mbox{\EBfnumeros\color{rubrica}#1}~{\EBil@forig\fontsize{10}{12}\selectfont#2}\,{\color{rubrica}°}\enspace\EBil@leitura{#3}}
+\newcommand\EBil@leitura[1]{{\normalfont\small\color{tinta}#1}}
+\newcommand\EBilvarsep{\enspace{\color{fundo2}|}\enspace}
+\newcommand\EBil@listarvariantes[1]{%
+  \setbox0\hbox{\directlua{EB.variantes(\EBil@luaargs{#1})}}%
+  \ifdim\wd0>\z@
+    \par\vspace{6pt}\noindent{\sffamily\footnotesize\color{suave}%
+      {\color{rubrica}\bfseries Variantes\enspace}%
+      \directlua{EB.variantes(\EBil@luaargs{#1})}\par}%
+  \fi}
+\newcommand\variantes[2][]{%
+  \begingroup\EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
+  \EBil@listarvariantes{#2}\endgroup}
+
+%% --------------------------------------------------------- \textooriginal
+\newcommand\EBvsup[1]{\hbox dir TLT{\textsuperscript{\EBfnumeros\bfseries\color{rubrica}\fontsize{7.5}{8}\selectfont#1}}\,}
+\newcommand\EBvarmark{\textsuperscript{\normalfont\color{rubrica}°}}
+\newcommand\textooriginal[2][]{%
+  \begingroup
+  \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
+  \par\medskip
+  \begingroup
+    \ifEBil@rtl\pardir TRT\textdir TRT\fi
+    \emergencystretch=2em\tolerance=2000\noindent\EBil@fcorrido
+    \directlua{EB.texto(\EBil@luaargs{#2}, \ifEBil@acentos true\else false\fi, true)}\par
+  \endgroup
+  \EBil@listarvariantes{#2}\medskip
+  \endgroup}
+
+%% ----------------------------------------------------- tabela morfológica
+\newcommand\EBtabref[1]{\leavevmode{\EBfnumeros\footnotesize\color{rubrica}#1}}
+\newcommand\EBtaborig[1]{\leavevmode{\EBil@forig\fontsize{11.5}{13}\selectfont#1}}
+\newcommand\EBtabtr[1]{\leavevmode{\EBftranslit\color{suave}#1}}
+\newcommand\EBtabmorf[1]{\leavevmode{\sffamily\footnotesize#1}}
+\newcommand\EBil@cabtab[1]{\leavevmode{\sffamily\bfseries\footnotesize\color{destaque}#1}}
+
+\newcommand\tabelamorfologica[2][]{%
+  \begingroup
+  \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
+  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!70}{white}%
+  \begin{longtable}{@{}>{\raggedright}p{9mm} >{\raggedright}p{.15\linewidth}
+      >{\raggedright}p{.14\linewidth} >{\raggedright}p{.13\linewidth}
+      >{\raggedright}p{.2\linewidth} >{\raggedright\arraybackslash}p{.19\linewidth}@{}}
+    \toprule
+    \EBil@cabtab{Ref.} & \EBil@cabtab{Palavra} & \EBil@cabtab{Transliteração} &
+    \EBil@cabtab{Lema} & \EBil@cabtab{Morfologia} & \EBil@cabtab{Glosa}\\\midrule\endfirsthead
+    \EBil@cabtab{Ref.} & \EBil@cabtab{Palavra} & \EBil@cabtab{Transliteração} &
+    \EBil@cabtab{Lema} & \EBil@cabtab{Morfologia} & \EBil@cabtab{Glosa}\\\midrule\endhead
+    \bottomrule\endfoot
+    \directlua{EB.tabela(\EBil@luaargs{#2}, \ifEBil@acentos true\else false\fi)}
+  \end{longtable}\endgroup}
+
+%% ------------------------------------------------------------ vocabulário
+\newcommand\vocabulario[2][]{%
+  \begingroup
+  \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
+  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{5pt}\rowcolors{2}{fundo!70}{white}%
+  \begin{longtable}{@{}l l l r r >{\raggedright\arraybackslash}p{.36\linewidth}@{}}
+    \toprule
+    \EBil@cabtab{Lema} & \EBil@cabtab{Transliteração} & \EBil@cabtab{Strong} &
+    \EBil@cabtab{No trecho} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{Glosas no trecho}\\\midrule\endfirsthead
+    \EBil@cabtab{Lema} & \EBil@cabtab{Transliteração} & \EBil@cabtab{Strong} &
+    \EBil@cabtab{No trecho} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{Glosas no trecho}\\\midrule\endhead
+    \bottomrule\endfoot
+    \directlua{EB.vocabulario(\EBil@luaargs{#2}, \EBil@minimo)}
+  \end{longtable}\endgroup}
+
+\endinput

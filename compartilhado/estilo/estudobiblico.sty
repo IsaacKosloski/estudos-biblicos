@@ -1,0 +1,410 @@
+%% =============================================================================
+%%  estudobiblico.sty — identidade visual e estrutura dos Cadernos de Estudo
+%%  Compilar com LuaLaTeX (Overleaf: Menu → Compilador → LuaLaTeX).
+%%  As escolhas do usuário ficam em config.tex (carregado ANTES deste pacote).
+%% =============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/estudobiblico}[2026/09/27 v2.0 Cadernos de Estudo Biblico]
+
+\RequirePackage{iftex}
+\ifluatex\else
+  \PackageError{estudobiblico}{Este projeto precisa do LuaLaTeX}%
+    {No Overleaf: Menu > Compilador (Compiler) > LuaLaTeX.}
+\fi
+
+%% ---------------------------------------------------------------- padrões
+\providecommand\ebTema{lapis}
+\providecommand\ebPapel{a4}
+\providecommand\ebFundoPagina{nao}
+\providecommand\ebAbas{sim}
+\providecommand\ebAbasPor{capitulo}   % capitulo | parte
+\providecommand\ebInterlinearModo{estudo}
+\providecommand\ebAcentosHebraicos{nao}
+\providecommand\ebTitulo{Estudo bíblico}
+\providecommand\ebSubtitulo{}
+\providecommand\ebIncipit{}
+\providecommand\ebSerie{Cadernos de Estudo Bíblico}
+\providecommand\ebNumero{}
+\providecommand\ebAutor{}
+\providecommand\ebData{\today}
+\providecommand\ebEpigrafe{}
+\providecommand\ebEpigrafeRef{}
+\providecommand\ebFontesPersonalizadas{}
+
+\RequirePackage{etoolbox}
+\newcommand\EB@se[3]{\ifdefstring{#1}{#2}{#3}{}}
+
+%% ---------------------------------------------------------------- página
+\RequirePackage{geometry}
+\ifdefstring{\ebPapel}{b5}{%
+  \geometry{b5paper, inner=18mm, outer=32mm, top=22mm, bottom=26mm,
+    marginparwidth=22mm, marginparsep=4mm, headsep=7mm, headheight=14pt, footskip=10mm}%
+}{%
+  \geometry{a4paper, inner=22mm, outer=40mm, top=26mm, bottom=30mm,
+    marginparwidth=28mm, marginparsep=5mm, headsep=8mm, headheight=14pt, footskip=12mm}%
+}
+
+%% ---------------------------------------------------------------- cores
+\RequirePackage[table]{xcolor}
+% cores semânticas das línguas (fixas em todos os temas)
+\definecolor{grego}{HTML}{1F4E8C}     % lápis-lazúli
+\definecolor{hebraico}{HTML}{8A4B14}  % cedro / âmbar
+\definecolor{aramaico}{HTML}{3E6B3A}  % oliveira
+\definecolor{ingles}{HTML}{5E6B75}    % ardósia
+\definecolor{tinta}{HTML}{22262B}
+\definecolor{suave}{HTML}{6B7380}
+
+\newcommand\EB@tema[6]{% destaque, destaque2, rubrica, fundo, fundo2, fundo-página
+  \definecolor{destaque}{HTML}{#1}\definecolor{destaque2}{HTML}{#2}%
+  \definecolor{rubrica}{HTML}{#3}\definecolor{fundo}{HTML}{#4}%
+  \definecolor{fundo2}{HTML}{#5}\definecolor{fundopagina}{HTML}{#6}}
+% ------------- temas ------------- destaque  ouro    rubrica fundo   fundo2  página
+\EB@se{\ebTema}{lapis}   {\EB@tema{1F4E8C}{B08A2E}{A3322A}{F7F2E7}{EADFC8}{FBF8F1}}
+\EB@se{\ebTema}{purpura} {\EB@tema{6D2E63}{B08A2E}{A3322A}{F8F1F4}{E9D6E1}{FCF8FA}}
+\EB@se{\ebTema}{oliveira}{\EB@tema{4B5E2A}{A87C2A}{9C3B26}{F5F3E8}{E3E0C8}{FAF9F2}}
+\EB@se{\ebTema}{sepia}   {\EB@tema{7B4A22}{A07A2C}{9A2E22}{F7EFE2}{E8D8BE}{FBF6EE}}
+\@ifundefinedcolor{destaque}{\EB@tema{1F4E8C}{B08A2E}{A3322A}{F7F2E7}{EADFC8}{FBF8F1}}{}
+
+%% ---------------------------------------------------------------- fontes e línguas
+\RequirePackage{fontspec}
+\RequirePackage[bidi=basic]{babel}
+\babelprovide[main, import]{brazilian}
+\babelprovide[import]{english}
+\babelprovide[import, onchar=ids fonts]{ancientgreek}
+\babelprovide[import, onchar=ids fonts]{hebrew}
+\babelprovide[import, onchar=ids fonts]{syriac}
+
+% Pasta das fontes: "fontes/" ao lado da pasta "estilo/" (vale para o projeto do
+% Overleaf e para o repositório, onde estilo/ fica em compartilhado/).
+\edef\EB@dir{\directlua{
+  local sty = kpse.find_file("estilo/estudobiblico.sty", "tex") or "estilo/estudobiblico.sty"
+  local base = sty:gsub("estilo/estudobiblico[.]sty$", "")
+  tex.sprint(base .. "fontes/")}}
+% texto: EB Garamond | títulos: Marcellus | rótulos: Source Sans 3
+\babelfont{rm}[Path=\EB@dir, Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
+  BoldFont=*-SemiBold, BoldItalicFont=*-SemiBoldItalic, Numbers=OldStyle]{EBGaramond}
+\babelfont{sf}[Path=\EB@dir, Extension=.otf, UprightFont=*-Regular, ItalicFont=*-It,
+  BoldFont=*-Semibold, BoldItalicFont=*-SemiboldIt, Scale=MatchLowercase]{SourceSans3}
+% grego: Gentium Book Plus | hebraico/aramaico: Noto Serif Hebrew | siríaco: Noto Sans Syriac
+\babelfont[ancientgreek]{rm}[Path=\EB@dir, Extension=.ttf, UprightFont=*-Regular,
+  ItalicFont=*-Italic, BoldFont=*-Bold, Scale=MatchLowercase]{GentiumBookPlus}
+\babelfont[hebrew]{rm}[Path=\EB@dir, Extension=.ttf, UprightFont=*-Regular,
+  BoldFont=*-Bold, Scale=1.05]{NotoSerifHebrew}
+\babelfont[syriac]{rm}[Path=\EB@dir, Extension=.ttf, UprightFont=*-Regular,
+  Scale=1.1]{NotoSansSyriac}
+
+\newfontfamily\EBfgrego{GentiumBookPlus}[Path=\EB@dir, Extension=.ttf,
+  UprightFont=*-Regular, ItalicFont=*-Italic, BoldFont=*-Bold]
+\newfontfamily\EBftranslit{GentiumBookPlus}[Path=\EB@dir, Extension=.ttf,
+  UprightFont=*-Italic, BoldFont=*-Bold]
+\newfontfamily\EBfhebraico{NotoSerifHebrew}[Path=\EB@dir, Extension=.ttf,
+  UprightFont=*-Regular, BoldFont=*-Bold, Script=Hebrew, Renderer=HarfBuzz]
+\newfontfamily\EBfsiriaco{NotoSansSyriac}[Path=\EB@dir, Extension=.ttf,
+  UprightFont=*-Regular, Script=Syriac, Renderer=HarfBuzz]
+\newfontfamily\EBfsiriacoOriental{NotoSansSyriacEastern}[Path=\EB@dir, Extension=.ttf,
+  UprightFont=*-Regular, Script=Syriac, Renderer=HarfBuzz]
+\newfontfamily\EBftitulo{Marcellus}[Path=\EB@dir, Extension=.ttf, UprightFont=*-Regular]
+\newfontfamily\EBfversal{MarcellusSC}[Path=\EB@dir, Extension=.ttf, UprightFont=*-Regular,
+  LetterSpace=12]
+\newfontfamily\EBfnumeros{EBGaramond}[Path=\EB@dir, Extension=.otf, UprightFont=*-Regular,
+  BoldFont=*-SemiBold, Numbers=Lining]
+
+\ebFontesPersonalizadas
+
+\RequirePackage[protrusion=true, expansion=true]{microtype}
+\RequirePackage{csquotes}
+
+% textos em outras línguas (use também diretamente: o babel troca a fonte sozinho)
+\DeclareRobustCommand\gr[1]{\leavevmode{\color{grego}\foreignlanguage{ancientgreek}{#1}}}
+\DeclareRobustCommand\hb[1]{\leavevmode{\color{hebraico}\foreignlanguage{hebrew}{#1}}}
+\DeclareRobustCommand\arc[1]{\leavevmode{\color{aramaico}\foreignlanguage{hebrew}{#1}}}
+\DeclareRobustCommand\sy[1]{\leavevmode{\color{aramaico}\foreignlanguage{syriac}{#1}}}
+\DeclareRobustCommand\en[1]{\leavevmode{\color{ingles}\foreignlanguage{english}{\itshape #1}}}
+\DeclareRobustCommand\tl[1]{{\EBftranslit\mdseries #1}}
+\DeclareRobustCommand\trgr[1]{\tl{\directlua{tex.sprint(EB.translit_grc("\luaescapestring{#1}"))}}}
+\DeclareRobustCommand\rb[1]{\textsf{\small #1}}          % referência bíblica em linha: \rb{Lc 1:41}
+% nunca passar para maiúsculas (rótulos das caixas, cabeçalhos)
+\ExplSyntaxOn
+\tl_put_right:Nn \l_text_case_exclude_arg_tl { \gr \hb \arc \sy \en \tl \trgr \rb }
+\ExplSyntaxOff
+
+%% ---------------------------------------------------------------- pacotes gerais
+\RequirePackage{graphicx}
+\graphicspath{{imagens/}}
+\RequirePackage{tikz}
+\usetikzlibrary{calc, positioning, arrows.meta, shapes.geometric, decorations.pathmorphing, decorations.pathreplacing}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt, leftmargin=*}
+\RequirePackage{booktabs, tabularx, longtable, multirow, array}
+\renewcommand\arraystretch{1.25}
+\RequirePackage{marginnote}
+\RequirePackage{ragged2e}
+\RequirePackage{emptypage}
+\RequirePackage{afterpage}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{2pt plus 1pt}
+\linespread{1.06}
+
+%% ---------------------------------------------------------------- ornamentos
+\newcommand\EBlosango[1][destaque2]{\tikz[baseline=-.6ex]\fill[#1] (0,0) -- (.08,.08) -- (.16,0) -- (.08,-.08) -- cycle;}
+\newcommand\EBornamento[1][.55\linewidth]{%
+  \par\noindent\begin{tikzpicture}[baseline=0]
+    \draw[destaque2, line width=.5pt] (0,0) -- (#1/2-.25cm,0);
+    \fill[destaque2] (#1/2,0) ++(-.16,0) -- ++(.16,.09) -- ++(.16,-.09) -- ++(-.16,-.09) -- cycle;
+    \draw[destaque2, line width=.5pt] (#1/2+.25cm,0) -- (#1,0);
+  \end{tikzpicture}\par}
+% Emblema: lâmpada de azeite (Sl 119:105)
+\newcommand\EBemblema[1][1]{%
+  \begin{tikzpicture}[scale=#1, line cap=round, line join=round]
+    \fill[destaque2] (1.62,.52) .. controls (1.40,.78) and (1.47,1.06) .. (1.66,1.36)
+                     .. controls (1.80,1.08) and (1.90,.80) .. (1.62,.52) -- cycle;
+    \fill[destaque2!45!white] (1.63,.60) .. controls (1.52,.76) and (1.56,.93) .. (1.65,1.08)
+                     .. controls (1.73,.92) and (1.77,.76) .. (1.63,.60) -- cycle;
+    \fill[destaque] (-.95,.18) .. controls (-.95,.62) and (.85,.66) .. (1.18,.47)
+        -- (1.66,.50) .. controls (1.80,.45) and (1.78,.28) .. (1.62,.25)
+        -- (1.10,.10) .. controls (.88,-.34) and (-.62,-.38) .. (-.95,.18) -- cycle;
+    \draw[destaque, line width=2.4pt*#1] (-.90,.30) .. controls (-1.42,.42) and (-1.44,-.06) .. (-.84,.02);
+    \fill[destaque] (-.28,-.24) rectangle (.52,-.33);
+    \fill[fundo] (.12,.40) ellipse (.19 and .065);
+  \end{tikzpicture}}
+
+%% ---------------------------------------------------------------- títulos (titlesec)
+\RequirePackage{titlesec}
+\addto\captionsbrazilian{\renewcommand\chaptername{Etapa}\renewcommand\partname{Parte}
+  \renewcommand\contentsname{Sumário}\renewcommand\indexname{Índice remissivo}}
+\renewcommand\chaptername{Etapa}
+
+\newcommand\EB@fundopagina[1][fundo]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[#1] (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}}
+
+% pinta o fundo da página que está sendo composta (sem material horizontal)
+\newcommand\EB@fundoproxima[1][fundo]{\AddToHookNext{shipout/background}{%
+  \setlength\unitlength{1pt}\put(0,\strip@pt\dimexpr-\paperheight\relax){{\color{#1}\rule{\paperwidth}{\paperheight}}}}}
+
+% Parte: página inteira colorida, numeral romano grande
+\titleformat{\part}[display]
+  {\thispagestyle{empty}\EB@fundoproxima\centering}
+  {\vspace*{.12\textheight}{\EBfversal\large\color{destaque2}\partname}\\[6pt]
+   {\EBftitulo\fontsize{72}{72}\selectfont\color{destaque}\thepart}}
+  {18pt}
+  {\EBornamento[.35\linewidth]\vspace{14pt}\EBftitulo\fontsize{26}{32}\selectfont\color{tinta}}
+  [{\vspace{10pt}\EBornamento[.35\linewidth]}]
+
+% Etapa (capítulo)
+\titleformat{\chapter}[display]
+  {\normalfont\raggedright}
+  {{\EBfversal\normalsize\color{destaque}\chaptertitlename\ \thechapter}}
+  {6pt}
+  {\EBftitulo\fontsize{25}{30}\selectfont\color{tinta}}
+  [\vspace{6pt}{\color{destaque2}\titlerule[.6pt]}]
+\titleformat{name=\chapter, numberless}[display]
+  {\normalfont\raggedright}{}{0pt}
+  {\EBftitulo\fontsize{25}{30}\selectfont\color{tinta}}
+  [\vspace{6pt}{\color{destaque2}\titlerule[.6pt]}]
+\titlespacing*{\chapter}{0pt}{0pt}{26pt}
+
+\titleformat{\section}
+  {\normalfont\sffamily\large\bfseries\color{tinta}}
+  {\llap{\color{destaque}\EBfnumeros\bfseries\thesection\hspace{.9em}}}{0pt}{}
+\titleformat{\subsection}
+  {\normalfont\sffamily\bfseries\color{destaque}}
+  {\llap{\thesubsection\hspace{.9em}}}{0pt}{}
+\titleformat{\subsubsection}
+  {\normalfont\itshape\bfseries\color{tinta}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{18pt plus 4pt minus 2pt}{8pt plus 2pt}
+\titlespacing*{\subsection}{0pt}{14pt plus 3pt minus 2pt}{5pt plus 2pt}
+\titlespacing*{\subsubsection}{0pt}{10pt plus 2pt}{4pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+%% ---------------------------------------------------------------- sumário
+\RequirePackage{titletoc}
+\contentsmargin{2.2em}
+\titlecontents{part}[0pt]
+  {\addvspace{16pt}\sffamily\bfseries\color{destaque}}
+  {\MakeUppercase{\partname}~\thecontentslabel\quad}{}{\hfill\contentspage}[\addvspace{4pt}]
+\titlecontents{chapter}[3.4em]
+  {\addvspace{9pt}\EBftitulo\large}
+  {\contentslabel[{\color{destaque2}\EBfnumeros\thecontentslabel}]{2.6em}}
+  {\hspace*{-2.6em}}
+  {\hfill\sffamily\small\color{suave}\contentspage}
+\titlecontents{section}[5.6em]
+  {\addvspace{1pt}\small}
+  {\contentslabel[\sffamily\color{suave}\thecontentslabel]{2.2em}}{}
+  {\titlerule*[.6pc]{\color{fundo2}.}\sffamily\color{suave}\contentspage}
+
+%% ---------------------------------------------------------------- cabeçalhos
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\chaptermark[1]{\markboth{\if@mainmatter\chaptername\ \thechapter\ \ \textbullet\ \ \fi#1}{}}
+\renewcommand\sectionmark[1]{\markright{\ifnum\value{secnumdepth}>0 \thesection\ \ \fi#1}}
+\fancyhf{}
+\fancyhead[LE]{\sffamily\small{\color{destaque}\bfseries\thepage}\quad{\color{suave}\leftmark}}
+\fancyhead[RO]{\sffamily\small{\color{suave}\rightmark}\quad{\color{destaque}\bfseries\thepage}}
+\renewcommand\headrule{{\color{destaque2}\hrule height .4pt width\headwidth}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand\headrule{}%
+  \fancyfoot[C]{\sffamily\small\color{suave}\thepage}}
+\setlength{\headwidth}{\textwidth}
+
+%% ---------------------------------------------------------------- abas laterais
+\g@addto@macro\frontmatter{\setcounter{secnumdepth}{-1}}
+\g@addto@macro\mainmatter{\setcounter{secnumdepth}{2}}
+\newif\ifEB@principal
+\g@addto@macro\mainmatter{\global\EB@principaltrue}
+\g@addto@macro\backmatter{\global\EB@principalfalse}
+\newlength\EB@abaalt \setlength\EB@abaalt{20mm}
+\newlength\EB@abalarg \setlength\EB@abalarg{7mm}
+\def\EB@abacont{chapter}
+\ifdefstring{\ebAbasPor}{parte}{\def\EB@abacont{part}}{}
+\newcommand\EB@aba{%
+  \ifEB@principal\ifnum\value{\EB@abacont}>0
+    \begingroup
+      \dimen0=\dimexpr 36mm + (\EB@abaalt+2mm)*\numexpr\value{\EB@abacont}-1\relax\relax
+      \ifodd\value{page}\dimen2=\dimexpr\paperwidth-\EB@abalarg\relax\else\dimen2=0pt\fi
+      \dimen4=\dimexpr-\dimen0-\EB@abaalt\relax
+      \put(\strip@pt\dimen2,\strip@pt\dimen4){{%
+        \color{destaque}\rule{\EB@abalarg}{\EB@abaalt}%
+        \llap{\raisebox{.5\EB@abaalt}{\makebox[\EB@abalarg]{\color{white}\sffamily\bfseries\small\arabic{\EB@abacont}}}}}}%
+    \endgroup
+  \fi\fi}
+\ifdefstring{\ebAbas}{sim}{%
+  \AddToHook{shipout/background}{\setlength\unitlength{1pt}\EB@aba}}{}
+\ifdefstring{\ebFundoPagina}{sim}{\pagecolor{fundopagina}}{}
+
+%% ---------------------------------------------------------------- versículos e notas
+\newcommand\vs[1]{\textsuperscript{\EBfnumeros\bfseries\color{rubrica}#1}\,}
+\newcommand\margem[1]{\marginnote{\RaggedRight\sffamily\footnotesize\color{suave}#1}}
+\newcommand\EBimplicito[1]{{\color{suave}#1}}
+\newcommand\poema{\par\noindent\hangindent=1.5em\hangafter=1}
+
+%% ---------------------------------------------------------------- caixas (tcolorbox)
+\tcbset{EB/base/.style={enhanced, breakable, arc=1.5pt, boxrule=0pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt, before skip=10pt, after skip=10pt,
+    fonttitle=\sffamily\bfseries\small}}
+\newcommand\EB@rotulo[2]{{\sffamily\bfseries\footnotesize\color{#1}\MakeUppercase{#2}}}
+
+% Objetivo da etapa
+\newtcolorbox{objetivo}[1][]{EB/base, colback=fundo, borderline west={3pt}{0pt}{destaque2},
+  before upper={\EB@rotulo{destaque2!80!black}{Objetivo}\quad}, #1}
+
+% Tradução bíblica: \begin{traducao}{SIGLA}{Nome completo}{ano} ... \basetextual{AT}{NT} \end{traducao}
+\newcommand\EBselo[1]{\tikz[baseline=(s.base)]\node[fill=destaque, text=white, rounded corners=2pt,
+  inner xsep=4pt, inner ysep=2pt, font=\sffamily\bfseries\scriptsize](s){#1};}
+\newtcolorbox{traducao}[3]{EB/base, colback=white, colframe=fundo2, boxrule=.6pt,
+  colbacktitle=fundo, coltitle=tinta, toptitle=3pt, bottomtitle=3pt,
+  title={\EBselo{#1}\hspace{.6em}#2\hfill{\color{suave}\mdseries #3}},
+  before upper={\index{Traduções!#2 (#1)}\raggedright}}
+\newcommand\basetextual[2]{\par\smallskip{\color{fundo2}\hrule height .5pt}\smallskip
+  {\sffamily\scriptsize\color{suave}\textbf{Base AT:} #1\par\textbf{Base NT:} #2\par}}
+
+% Nota / observação
+\newtcolorbox{nota}[1][Nota]{EB/base, colback=destaque!4, borderline west={2.5pt}{0pt}{destaque},
+  before upper={\EB@rotulo{destaque}{#1}\quad}}
+% Pergunta de estudo (numerada por etapa)
+\newcounter{pergunta}[chapter]
+\renewcommand\thepergunta{\ifnum\value{chapter}>0 \thechapter.\fi\arabic{pergunta}}
+\newtcolorbox{pergunta}[1][]{EB/base, colback=fundo, borderline west={2.5pt}{0pt}{destaque2},
+  before upper={\refstepcounter{pergunta}\EB@rotulo{destaque2!80!black}{Pergunta \thepergunta}\quad}, #1}
+% Alerta metodológico (falácias, cuidados)
+\newtcolorbox{alerta}[1][Cuidado]{EB/base, colback=rubrica!5, borderline west={2.5pt}{0pt}{rubrica},
+  before upper={\EB@rotulo{rubrica}{#1}\quad}}
+% Aplicação
+\newtcolorbox{aplicacao}[1][Aplicação]{EB/base, colback=aramaico!6, borderline west={2.5pt}{0pt}{aramaico},
+  before upper={\EB@rotulo{aramaico}{#1}\quad}}
+% Variante textual
+\newtcolorbox{variante}[1][Crítica textual]{EB/base, colback=white, colframe=rubrica!60,
+  boxrule=.5pt, before upper={\EB@rotulo{rubrica}{#1}\quad}}
+% Citação de obra (comentário, léxico...): \begin{citacao}{Autor, Obra, p.}
+\newtcolorbox{citacao}[1]{EB/base, colback=fundo!60, borderline west={1pt}{0pt}{suave},
+  fontupper=\itshape, after upper={\par\hfill{\upshape\sffamily\footnotesize\color{suave}— #1}}}
+% Verbete lexical: \begin{lexico}{lema}{Strong}{nº no NT}
+\newtcolorbox{lexico}[3]{EB/base, colback=white, colframe=grego!35, boxrule=.5pt,
+  colbacktitle=grego!6, coltitle=tinta, toptitle=3pt, bottomtitle=3pt,
+  title={{\EBfgrego\large\color{grego}\mdseries #1}\enspace\trgr{#1}\hfill
+         {\mdseries\color{suave}#2\ifblank{#3}{}{\enspace·\enspace #3× no NT}}},
+  before upper={\EBindexlema{grego}{\directlua{tex.sprint(EB.chave("\luaescapestring{#1}"))}}{#1}}}
+\newcommand\lexicoref[1]{\EBindexlema{grego}{\directlua{tex.sprint(EB.chave("\luaescapestring{#1}"))}}{#1}}
+
+%% ---------------------------------------------------------------- tabelas
+\newcommand\EBcab[1]{\leavevmode\sffamily\bfseries\footnotesize\color{destaque}#1}
+\newenvironment{ebtabela}[1]
+  {\par\smallskip\noindent\small\rowcolors{2}{fundo!70}{white}\tabularx{\linewidth}{#1}\toprule
+   \noalign{\global\rownum=\z@}}
+  {\bottomrule\endtabularx\par\smallskip}
+
+%% ---------------------------------------------------------------- bibliografia e índices
+\RequirePackage[backend=biber, style=authoryear-comp, sorting=nyt, maxcitenames=2,
+  maxbibnames=4, uniquename=false, uniquelist=false, dashed=false, language=auto,
+  autolang=other]{biblatex}
+\DeclareFieldFormat{titleaddon}{\mkbibparens{#1}}
+\renewcommand*{\bibfont}{\small}
+
+\RequirePackage{imakeidx}
+\makeindex[intoc, columns=2, title=Índice remissivo, options={-s indice.ist}]
+\makeindex[name=termos, intoc, columns=2, title=Índice de termos originais, options={-s indice-termos.ist}]
+\newcommand\EBindexletra[1]{\par\medskip{\sffamily\bfseries\color{destaque}#1}\par\smallskip\nopagebreak}
+\newcommand\EBtermo[2]{\csname EB@termo@#1\endcsname{#2}}
+\newcommand\EB@termo@grego[1]{\gr{#1}}
+\newcommand\EB@termo@hebraico[1]{\hb{#1}}
+\newcommand\EB@termo@aramaico[1]{\arc{#1}}
+\newcommand\EB@termo@siriaco[1]{\sy{#1}}
+\newcommand\EBindexlema[3]{% língua, chave (expandida), lema
+  \begingroup\edef\x{\endgroup\noexpand\index[termos]{\csname EB@lingua@#1\endcsname!#2@\noexpand\EBtermo{#1}{\unexpanded{#3}}}}\x}
+\def\EB@lingua@grego{Grego}\def\EB@lingua@hebraico{Hebraico}
+\def\EB@lingua@aramaico{Aramaico}\def\EB@lingua@siriaco{Siríaco}
+
+%% ---------------------------------------------------------------- interlinear
+\RequirePackage{estilo/interlinear}
+
+%% ---------------------------------------------------------------- capa e colofão
+\newcommand\capa{%
+  \begin{titlepage}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[fundo] (current page.south west) rectangle (current page.north east);
+    \fill[destaque] (current page.north west) rectangle ([xshift=34mm]current page.south west);
+    \fill[destaque2] ([xshift=34mm]current page.north west) rectangle ([xshift=35.2mm]current page.south west);
+    \node[rotate=90, anchor=center, text=destaque!55!white, font=\EBfgrego\fontsize{40}{40}\selectfont]
+      at ([xshift=17mm]current page.west) {\ebIncipit};
+    \node[anchor=north west, text width=128mm, align=left] at ([xshift=52mm, yshift=-42mm]current page.north west) {%
+      {\EBfversal\normalsize\color{destaque2!85!black}\ebSerie\ifdefempty{\ebNumero}{}{\ \textbullet\ nº\,\ebNumero}}\\[20mm]
+      {\EBftitulo\fontsize{44}{50}\selectfont\color{tinta}\hyphenpenalty=10000\exhyphenpenalty=10000\spaceskip=.3em plus .1em\relax\ebTitulo}\\[8mm]
+      {\color{destaque2}\rule{60mm}{.8pt}}\\[7mm]
+      {\fontsize{17}{22}\selectfont\itshape\color{tinta!85}\ebSubtitulo}\\[16mm]
+      {\EBfgrego\fontsize{17}{22}\selectfont\color{grego}\ebIncipit}};
+    \node[anchor=south west] at ([xshift=52mm, yshift=40mm]current page.south west) {\EBemblema[1.1]};
+    \node[anchor=south west, align=left] at ([xshift=52mm, yshift=22mm]current page.south west)
+      {{\EBfversal\large\color{tinta}\ebAutor}\\[2pt]{\sffamily\small\color{suave}\ebData}};
+  \end{tikzpicture}
+  \end{titlepage}}
+
+\newcommand\colofao{%
+  \clearpage\thispagestyle{empty}\null\vfill
+  {\small\raggedright
+  \ifdefempty{\ebEpigrafe}{}{%
+    {\itshape\ebEpigrafe}\par\smallskip{\sffamily\footnotesize\color{destaque}\ebEpigrafeRef}\par\bigskip\bigskip}
+  {\color{destaque2}\rule{30mm}{.5pt}}\par\medskip
+  \textbf{\ebTitulo}\ifdefempty{\ebSubtitulo}{}{\ — \ebSubtitulo}\par
+  \ebSerie\par\medskip
+  Copyright \textcopyright\ \ebAutor. Material de estudo pessoal.\par\medskip
+  {\footnotesize\color{suave}
+  Texto grego: SBL Greek New Testament (CC BY 4.0, Society of Biblical Literature \& Logos);
+  morfologia MorphGNT (CC BY-SA 3.0). Hebraico e aramaico: Westminster Leningrad Codex
+  com morfologia da OpenScriptures Hebrew Bible (CC BY 4.0). Os textos das traduções
+  modernas pertencem aos respectivos detentores de direitos e são citados para estudo.\par\smallskip
+  Tipografia: EB Garamond, Gentium Book Plus, Marcellus, Source Sans 3, Noto Serif Hebrew
+  e Noto Sans Syriac (SIL Open Font License). Composto em \LaTeX\ (LuaLaTeX).\par}}
+  \clearpage}
+
+%% ---------------------------------------------------------------- hyperlinks
+\RequirePackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=destaque, citecolor=destaque, urlcolor=destaque,
+  pdftitle={\ebTitulo}, pdfauthor={\ebAutor}, pdfsubject={\ebSerie}, bookmarksnumbered=true,
+  linktoc=page}
+\RequirePackage{bookmark}
+\bookmarksetup{open, openlevel=1}
+
+\endinput

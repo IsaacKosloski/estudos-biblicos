@@ -1,0 +1,78 @@
+%% =============================================================================
+%%  Como fazer um estudo temático (texto genérico: serve a qualquer tema)
+%% =============================================================================
+\chapter{Como fazer um estudo temático}
+
+Um estudo temático parte de uma pergunta (\enquote{\temaPergunta}) e procura
+a resposta em toda a Bíblia. O risco próprio desse tipo de estudo é juntar
+versículos soltos que confirmam o que já se pensava. O roteiro abaixo existe
+para evitar isso: reunir \emph{todos} os textos relevantes, ler cada um no
+seu contexto, perceber como o assunto se desenvolve ao longo da Bíblia e só
+então formular a síntese \parencite{osborne2006, duvall2012}.
+
+\section{O roteiro em sete etapas}
+
+\begin{ebtabela}{@{}>{\raggedright}p{.26\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Etapa} & \EBcab{O que fazer}\\\midrule
+1. A pergunta & formular a pergunta com precisão, dividi-la em subperguntas e registrar o que já penso sobre o assunto (os meus pressupostos)\\
+2. Palavras e conceitos & levantar as palavras hebraicas e gregas do tema, com todas as ocorrências; procurar também sinônimos e ideias expressas sem essas palavras\\
+3. Os textos & montar a lista de estudo, agrupar por assunto e marcar o peso de cada texto (central, apoio, difícil)\\
+4. Leitura no contexto & estudar os textos centrais um a um: contexto, o que dizem, como contribuem para o tema\\
+5. Desenvolvimento & ver como o tema aparece ao longo da Bíblia: o que muda, o que permanece, a quem cada orientação é dirigida\\
+6. Diálogo & enfrentar os textos difíceis e ouvir como outras traduções, comentários e tradições os leem\\
+7. Síntese & responder à pergunta com proposições numeradas, cada uma com a sua base textual; separar o que é claro do que fica em aberto; aplicar\\
+\end{ebtabela}
+
+\begin{alerta}[Palavra não é conceito]
+Um tema pode estar presente sem a palavra que o nomeia, e a palavra pode
+aparecer sem tratar do tema. Uma concordância é o ponto de partida, não a
+lista final \parencite{barr1961, silva1994}. Em \enquote{Quem é Jesus?}, por
+exemplo, o assunto está em títulos, ações, relações e declarações, não numa
+única palavra; em \enquote{sangue}, a palavra está em quase todos os textos,
+mas nem todos tratam do mesmo aspecto.
+\end{alerta}
+
+\begin{alerta}[Seleção de evidências]
+Escolher só os textos que confirmam uma conclusão é o erro mais comum nos
+estudos temáticos \parencite{carson1996}. Por isso a lista de ocorrências fica
+no apêndice: ela mostra o que ainda não foi lido.
+\end{alerta}
+
+\section{Como usar este caderno}
+
+\paragraph{Os dados.} A pasta \texttt{\temaDados} tem três arquivos de texto:
+\texttt{textos.tsv} (a sua lista de estudo, que você escreve e reorganiza),
+\texttt{vocabulario.tsv} (as palavras do tema) e \texttt{ocorrencias.tsv}
+(gerado pela ferramenta). Os comandos estão no \texttt{MANUAL.md}:
+
+\begin{nota}[Ferramentas]
+\small\ttfamily
+python3 ferramentas/tema.py ocorrencias H1818 G129 -o \temaDados\\
+python3 ferramentas/tema.py vocabulario H1818 G129 -o \temaDados\\
+python3 ferramentas/tema.py conferir \temaDados
+\end{nota}
+
+\paragraph{Grupos e peso.} Na coluna \texttt{grupo} de \texttt{textos.tsv}
+você cria as suas categorias; o caderno agrupa os textos por elas, na ordem
+em que aparecem no arquivo. A coluna \texttt{peso} aceita
+\texttt{central}, \texttt{apoio} ou \texttt{dificil}; se ficar vazia, o caderno
+impresso mostra caixinhas para decidir à mão
+({\sffamily\tiny\color{suave}C\,\EBcaixa\;A\,\EBcaixa\;D\,\EBcaixa}).
+
+\paragraph{Fichas de texto.} Para estudar um texto no contexto:
+
+\begin{nota}[Exemplo]
+\small\ttfamily
+\textbackslash begin\{fichatexto\}[grupo]\{Lv 17:11\}\\
+\ \ \textbackslash begin\{campo\}\{Contexto\} ... \textbackslash end\{campo\}\\
+\ \ \textbackslash interlinear\{dados/biblia/lv017\_11.hbo.tsv\}\\
+\textbackslash end\{fichatexto\}
+\end{nota}
+
+\paragraph{Síntese.} Cada conclusão vai numa \verb|\proposicao{afirmação}{textos}|.
+Se um texto da base não aparece na lista de estudo, é sinal de que a lista
+precisa ser revista.
+
+\paragraph{Impresso ou digital.} No modo \texttt{impresso}
+(\texttt{config.tex}), os campos que você ainda não preencheu aparecem com
+linhas para escrever à mão; no modo \texttt{digital}, somem.
