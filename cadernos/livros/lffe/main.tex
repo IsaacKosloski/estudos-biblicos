@@ -1,0 +1,32 @@
+%% =============================================================================
+%%  Estudo de livro — arquivo principal (LuaLaTeX)
+%%  As lições são geradas a partir de dados/livros/<sigla>/*.tsv;
+%%  suas anotações ficam em licoes/NN.tex (opcional, uma por lição).
+%% =============================================================================
+\documentclass[11pt, twoside, openany]{book}
+\input{config}
+\usepackage{estilo/estudobiblico}
+\usepackage{estilo/livro}
+\addbibresource{geral.bib}          % compartilhado/bibliografia/geral.bib
+\addbibresource{bibliografia.bib}   % deste caderno
+
+\begin{document}
+
+\frontmatter
+\capa
+\colofao
+\tableofcontents
+\include{capitulos/00-como-estudar}
+\include{capitulos/01-progresso}
+
+\mainmatter
+\licoes
+
+\backmatter
+\include{capitulos/90-visao-geral}
+\printbibliography[heading=bibintoc, title={Bibliografia}]
+\printindex[textos]
+\printindex[termos]
+\include{capitulos/99-leitura-da-biblia}
+
+\end{document}

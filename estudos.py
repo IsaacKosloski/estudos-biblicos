@@ -4,6 +4,7 @@ estudos.py — ferramenta do repositório de estudos bíblicos.
 
   python3 estudos.py listar
   python3 estudos.py compilar cadernos/exegese/lc06-20-26     (ou --todos)
+  python3 estudos.py erros    cadernos/livros/lff              (o que o main.log acusou)
   python3 estudos.py limpar   cadernos/exegese/lc06-20-26     (ou --todos)
   python3 estudos.py novo exegese mt05-03-12 --titulo "Mateus 5:3–12"
   python3 estudos.py novo livro   lff        --titulo "Seja Feliz Para Sempre!"
@@ -94,6 +95,33 @@ def cmd_verificar(a):
 
 
 # ------------------------------------------------------------------ compilar
+ERRO_TEX = re.compile(r"^(?:!|\S*\.(?:tex|sty|lua|bib):\d+:)")
+
+
+def erros_do_log(caminho, quantos=3):
+    """Devolve as primeiras mensagens de erro do main.log, já formatadas."""
+    if not os.path.exists(caminho):
+        return []
+    linhas = open(caminho, encoding="utf-8", errors="replace").read().split("\n")
+    saida, i = [], 0
+    while i < len(linhas) and len(saida) < quantos:
+        if ERRO_TEX.match(linhas[i].strip()):
+            bloco = [l for l in linhas[i:i + 4] if l.strip()]
+            saida.append("\n      ".join(bloco))
+            i += 4
+        else:
+            i += 1
+    return saida
+
+
+def rodar_latexmk(pasta, forcar, verboso):
+    cmd = ["latexmk", "main.tex"] + (["-g"] if forcar else [])
+    if verboso:
+        return subprocess.run(cmd, cwd=pasta).returncode, ""
+    r = subprocess.run(cmd, cwd=pasta, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return r.returncode, r.stdout.decode("utf-8", "replace")
+
+
 def cmd_compilar(a):
     if not shutil.which("latexmk"):
         sys.exit("latexmk não encontrado. Rode `python3 estudos.py verificar` e veja o MANUAL.md.")
@@ -101,38 +129,55 @@ def cmd_compilar(a):
     falhas = []
     for c in resolver(a.cadernos, a.todos):
         print(f"==> {rel(c)}")
-        cmd = ["latexmk", "main.tex"] + (["-g"] if a.forcar else [])
-        r = subprocess.run(cmd, cwd=c, stdout=None if a.verboso else subprocess.DEVNULL,
-                           stderr=subprocess.STDOUT)
+        rc, saida = rodar_latexmk(c, a.forcar, a.verboso)
+        # latexmk se recusa a repetir uma compilação que falhou antes: limpa e tenta de novo
+        if rc != 0 and "previous invocation" in saida:
+            print("    (a compilação anterior falhou; limpando os auxiliares e tentando de novo)")
+            limpar_pasta(c, False)
+            rc, saida = rodar_latexmk(c, True, a.verboso)
         pdf = os.path.join(c, "main.pdf")
-        if r.returncode == 0 and os.path.exists(pdf):
+        if rc == 0 and os.path.exists(pdf):
             destino = os.path.join(SAIDA, nome_saida(c) + ".pdf")
             shutil.copy2(pdf, destino)
             print(f"    ok -> {rel(destino)}")
         else:
             falhas.append(c)
             print(f"    ERRO — veja {rel(os.path.join(c, 'main.log'))} (ou rode com -v)")
-            log = os.path.join(c, "main.log")
-            if os.path.exists(log):
-                linhas = open(log, encoding="utf-8", errors="replace").read().split("\n")
-                for i, l in enumerate(linhas):
-                    if l.startswith("!") or ".tex:" in l and "error" in l.lower():
-                        print("      " + "\n      ".join(linhas[i:i + 3]))
-                        break
+            for e in erros_do_log(os.path.join(c, "main.log")):
+                print("      " + e)
     if falhas:
         sys.exit(1)
 
 
 # -------------------------------------------------------------------- limpar
+def limpar_pasta(c, tambem_pdf):
+    n = 0
+    for pasta, _, arquivos in os.walk(c):
+        for f in arquivos:
+            if LIXO.search(f) or (tambem_pdf and f == "main.pdf"):
+                os.remove(os.path.join(pasta, f))
+                n += 1
+    return n
+
+
 def cmd_limpar(a):
     for c in resolver(a.cadernos, a.todos):
-        n = 0
-        for pasta, _, arquivos in os.walk(c):
-            for f in arquivos:
-                if LIXO.search(f) or (a.pdf and f == "main.pdf"):
-                    os.remove(os.path.join(pasta, f))
-                    n += 1
-        print(f"{rel(c)}: {n} arquivo(s) auxiliares removidos")
+        print(f"{rel(c)}: {limpar_pasta(c, a.pdf)} arquivo(s) auxiliares removidos")
+
+
+# -------------------------------------------------------------------- erros
+def cmd_erros(a):
+    for c in resolver(a.cadernos, a.todos):
+        log = os.path.join(c, "main.log")
+        if not os.path.exists(log):
+            print(f"{rel(c)}: sem main.log (compile pelo menos uma vez)")
+            continue
+        msgs = erros_do_log(log, a.n)
+        print(f"==> {rel(log)}")
+        if not msgs:
+            print("    nenhum erro no log (a última compilação terminou bem)")
+        for m in msgs:
+            print("      " + m)
 
 
 # ---------------------------------------------------------------------- novo
@@ -147,6 +192,9 @@ def cmd_novo(a):
     destino = os.path.join(CADERNOS, tipo_pasta, a.nome)
     if os.path.exists(destino):
         sys.exit(f"Já existe: {rel(destino)}")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", a.nome):
+        print("Aviso: prefira nomes só com letras minúsculas, números, '-' e '.'.\n"
+              "       Caracteres como '_' precisam ser escritos como \\_ dentro de arquivos .tex e .bib.")
     modelo = os.path.join(RAIZ, "modelos", a.tipo)
     shutil.copytree(modelo, destino)
     shutil.copy2(os.path.join(RAIZ, "compartilhado", "latexmkrc-caderno"),
@@ -280,6 +328,12 @@ def main():
     s.add_argument("--todos", action="store_true")
     s.add_argument("--pdf", action="store_true", help="apaga também o main.pdf do caderno")
     s.set_defaults(f=cmd_limpar)
+
+    s = sub.add_parser("erros", help="mostra as mensagens de erro do main.log")
+    s.add_argument("cadernos", nargs="*")
+    s.add_argument("--todos", action="store_true")
+    s.add_argument("-n", type=int, default=5, help="quantas mensagens mostrar")
+    s.set_defaults(f=cmd_erros)
 
     s = sub.add_parser("novo", help="cria um caderno a partir de modelos/")
     s.add_argument("tipo", choices=["exegese", "livro", "tema"])
