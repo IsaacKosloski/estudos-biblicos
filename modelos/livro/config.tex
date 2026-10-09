@@ -18,9 +18,11 @@
 \newcommand\livroEditora{}
 \newcommand\livroEdicao{}
 \newcommand\livroDados{dados/livros/«SIGLA»}   % licoes.tsv e textos.tsv
-\newcommand\livroUnidade{Lição}            % Lição | Capítulo | Artigo ...
-\newcommand\livroUnidadePlural{Lições}
-\newcommand\livroParte{Parte}
+% Nome da unidade: por padrão vem do idioma (Lição / Lesson / Lección).
+% Para outro nome, troque aqui: \newcommand\livroUnidade{Capítulo}
+\newcommand\livroUnidade{\EBtxt{licao}}
+\newcommand\livroUnidadePlural{\EBtxt{licoes}}
+\newcommand\livroParte{\EBtxt{parte}}
 % impresso: linhas e caixinhas para escrever à mão | digital: só licoes/NN.tex
 \newcommand\livroModo{impresso}
 \newcommand\livroLinhas{5}
@@ -28,6 +30,9 @@
 \newcommand\livroLicoes{}
 
 % ---- aparência ----------------------------------------------------------------
+% Idioma da interface (rótulos, tabelas, índices): pt | en | es | …
+% Os textos ficam em compartilhado/idiomas/<codigo>.tex
+\newcommand\ebIdioma{«IDIOMA»}
 \newcommand\ebTema{«TEMA»}          % lapis | purpura | oliveira | sepia
 \newcommand\ebPapel{«PAPEL»}         % a4 | b5
 \newcommand\ebFundoPagina{nao}

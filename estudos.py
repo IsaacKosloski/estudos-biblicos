@@ -9,6 +9,8 @@ estudos.py — ferramenta do repositório de estudos bíblicos.
   python3 estudos.py novo exegese mt05-03-12 --titulo "Mateus 5:3–12"
   python3 estudos.py novo livro   lff        --titulo "Seja Feliz Para Sempre!"
   python3 estudos.py novo tema    sangue     --titulo "O que a Bíblia diz sobre o sangue?"
+  python3 estudos.py novo livro   lff-en --idioma en --titulo "Enjoy Life Forever!"
+  python3 estudos.py idiomas                                   (quais idiomas existem)
   python3 estudos.py overleaf cadernos/livros/lff              (gera saida/<nome>-overleaf.zip)
   python3 estudos.py verificar                                 (confere se o TeX está instalado)
 
@@ -27,8 +29,32 @@ import zipfile
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 CADERNOS = os.path.join(RAIZ, "cadernos")
 SAIDA = os.path.join(RAIZ, "saida")
-MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho",
-         "agosto", "setembro", "outubro", "novembro", "dezembro"]
+MESES = {
+    "pt": ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho",
+           "agosto", "setembro", "outubro", "novembro", "dezembro"],
+    "en": ["January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December"],
+    "es": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+           "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+}
+IDIOMAS = os.path.join(RAIZ, "compartilhado", "idiomas")
+
+
+def idiomas():
+    """Códigos de idioma disponíveis (um arquivo .tex por idioma)."""
+    if not os.path.isdir(IDIOMAS):
+        return ["pt"]
+    return sorted(f[:-4] for f in os.listdir(IDIOMAS) if f.endswith(".tex"))
+
+
+def data_por_extenso(idioma):
+    hoje = datetime.date.today()
+    mes = MESES.get(idioma, MESES["pt"])[hoje.month - 1]
+    if idioma == "en":
+        return f"{mes} {hoje.year}"
+    if idioma == "es":
+        return f"{mes.capitalize()} de {hoje.year}"
+    return f"{mes.capitalize()} de {hoje.year}"
 LIXO = re.compile(r"\.(aux|log|toc|out|bbl|bcf|blg|idx|ilg|ind|fls|fdb_latexmk|synctex\.gz|run\.xml|xdv)$")
 
 
@@ -105,6 +131,12 @@ def erros_do_log(caminho, quantos=3):
     linhas = open(caminho, encoding="utf-8", errors="replace").read().split("\n")
     saida, i = [], 0
     while i < len(linhas) and len(saida) < quantos:
+        # longtable 4.24 (TeX Live 2025) avisa "Infinite glue shrinkage found in
+        # box being split" como erro ignorado: não afeta o PDF (corrigido na 4.25)
+        juntas = linhas[i].strip() + (linhas[i + 1].strip() if i + 1 < len(linhas) else "")
+        if "Infinite glue shrinkage found in box bein" in juntas:
+            i += 1
+            continue
         if ERRO_TEX.match(linhas[i].strip()):
             bloco = [l for l in linhas[i:i + 4] if l.strip()]
             saida.append("\n      ".join(bloco))
@@ -195,12 +227,30 @@ def cmd_novo(a):
     if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", a.nome):
         print("Aviso: prefira nomes só com letras minúsculas, números, '-' e '.'.\n"
               "       Caracteres como '_' precisam ser escritos como \\_ dentro de arquivos .tex e .bib.")
+    idioma = a.idioma or padroes().get("idioma", "pt")
+    if idioma not in idiomas():
+        sys.exit(f"Idioma '{idioma}' não existe. Disponíveis: {', '.join(idiomas())}.\n"
+                 f"Para criar um: copie compartilhado/idiomas/pt.tex, traduza os textos e "
+                 f"salve como {idioma}.tex (veja MANUAL.md, seção 15).")
     modelo = os.path.join(RAIZ, "modelos", a.tipo)
-    shutil.copytree(modelo, destino)
+    shutil.copytree(modelo, destino, ignore=shutil.ignore_patterns("i18n"))
+    # capítulos do modelo no idioma escolhido, quando existirem
+    traduzido = os.path.join(modelo, "i18n", idioma)
+    if os.path.isdir(traduzido):
+        for sub in os.listdir(traduzido):
+            alvo = os.path.join(destino, sub)
+            if os.path.isdir(os.path.join(traduzido, sub)):
+                shutil.rmtree(alvo, ignore_errors=True)
+                shutil.copytree(os.path.join(traduzido, sub), alvo)
+            else:
+                shutil.copy2(os.path.join(traduzido, sub), alvo)
+    elif idioma != "pt":
+        print(f"Aviso: não há modelo de capítulos em '{idioma}' para o tipo {a.tipo};\n"
+              f"       usei os capítulos em português. A interface (rótulos, tabelas,\n"
+              f"       índices) sai em '{idioma}'; traduza o texto dos capítulos.")
     shutil.copy2(os.path.join(RAIZ, "compartilhado", "latexmkrc-caderno"),
                  os.path.join(destino, "latexmkrc"))
     p = padroes()
-    hoje = datetime.date.today()
     valores = {
         "TITULO": a.titulo or a.nome,
         "SUBTITULO": a.subtitulo or "",
@@ -208,7 +258,8 @@ def cmd_novo(a):
         "SERIE": p.get("serie", "Cadernos de Estudo Bíblico"),
         "NUMERO": str(len(cadernos())),
         "AUTOR": a.autor or p.get("autor", ""),
-        "DATA": f"{MESES[hoje.month - 1].capitalize()} de {hoje.year}",
+        "DATA": data_por_extenso(idioma),
+        "IDIOMA": idioma,
         "EPIGRAFE": p.get("epigrafe", ""),
         "EPIGRAFE_REF": p.get("epigrafe_ref", ""),
         "TEMA": a.tema or p.get("tema_" + a.tipo, {"tema": "purpura"}.get(a.tipo, "lapis")),
@@ -223,7 +274,7 @@ def cmd_novo(a):
                 for k, v in valores.items():
                     s = s.replace(f"«{k}»", v)
                 open(caminho, "w", encoding="utf-8").write(s)
-    print(f"Caderno criado: {rel(destino)}")
+    print(f"Caderno criado: {rel(destino)}  (idioma: {idioma})")
     if a.tipo == "livro":
         dados = os.path.join(RAIZ, "dados", "livros", a.nome)
         os.makedirs(dados, exist_ok=True)
@@ -256,6 +307,18 @@ def cmd_novo(a):
               f"  3. python3 estudos.py compilar {rel(destino)}")
 
 
+# ------------------------------------------------------------------- idiomas
+def cmd_idiomas(a):
+    print("Idiomas disponíveis (compartilhado/idiomas/<codigo>.tex):\n")
+    for cod in idiomas():
+        modelos = [t for t in ("exegese", "livro", "tema")
+                   if cod == "pt" or os.path.isdir(os.path.join(RAIZ, "modelos", t, "i18n", cod))]
+        print(f"  {cod:4s} capítulos de modelo: "
+              + (", ".join(modelos) if modelos else "nenhum (usa os em português)"))
+    print("\nPara acrescentar um idioma, copie compartilhado/idiomas/pt.tex, traduza os\n"
+          "textos e salve como <codigo>.tex. Veja MANUAL.md, seção 15.")
+
+
 # ------------------------------------------------------------------ overleaf
 LATEXMKRC_OVERLEAF = """# LuaLaTeX + biber + makeindex (projeto exportado para o Overleaf)
 $pdf_mode = 4;
@@ -286,6 +349,8 @@ def cmd_overleaf(a):
                     continue
                 orig = os.path.join(pasta, f)
                 add(orig, os.path.relpath(orig, c).replace(os.sep, "/"))
+        for f in sorted(os.listdir(os.path.join(comp, "idiomas"))):
+            add(os.path.join(comp, "idiomas", f), f"idiomas/{f}")
         for sub in ("estilo", "fontes"):
             for f in sorted(os.listdir(os.path.join(comp, sub))):
                 add(os.path.join(comp, sub, f), f"{sub}/{f}")
@@ -340,7 +405,11 @@ def main():
     s.add_argument("nome", help="nome da pasta (ex.: mt05-03-12), sigla do livro (ex.: lff) ou do tema (ex.: sangue)")
     s.add_argument("--titulo"); s.add_argument("--subtitulo"); s.add_argument("--incipit")
     s.add_argument("--autor"); s.add_argument("--tema", choices=["lapis", "purpura", "oliveira", "sepia"])
+    s.add_argument("--idioma", help="código do idioma do caderno (pt, en, es…; veja `estudos.py idiomas`)")
     s.set_defaults(f=cmd_novo)
+
+    s = sub.add_parser("idiomas", help="lista os idiomas disponíveis")
+    s.set_defaults(f=cmd_idiomas)
 
     s = sub.add_parser("overleaf", help="gera um .zip do caderno para enviar ao Overleaf")
     s.add_argument("caderno"); s.add_argument("-o", help="arquivo .zip de saída")

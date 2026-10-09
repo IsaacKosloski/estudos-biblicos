@@ -101,6 +101,15 @@ def carregar_livros():
     return livros, nomes
 
 
+def nome_livro(livro, idioma):
+    """Nome do livro na língua pedida (coluna nome_<idioma> de livros.tsv)."""
+    if idioma and idioma != "pt":
+        v = livro.get("nome_" + idioma, "")
+        if v:
+            return v
+    return livro["nome"]
+
+
 def regex_referencias(nomes):
     alt = "|".join(re.escape(n).replace(r"\ ", r"\s+") for n, _ in nomes)
     return re.compile(r"(?<![\w])(" + alt + r")\s+(\d{1,3}:\d{1,3}[\d\s:,;\-–—]*)", re.I)
@@ -122,17 +131,41 @@ def expandir(bloco):
 
 
 # ------------------------------------------------------------------ indice
+# palavras que abrem uma divisão maior do livro, em várias línguas
+DIVISOR = r"PARTE|PART|SECTION|SECCION|SECAO|SEZIONE|TEIL|PARTIE"
+REVISAO = r"REVIS|REVIEW|REPASO"
+# verbos que, antes de uma referência, indicam "leia este texto"
+LEIA = r"lei(?:a|am)|read|lea[ns]?|lee[dn]?|lisez|lies"
+
+
+def titulo_provavel(linhas):
+    """Junta as linhas seguintes ao número enquanto parecerem título, não corpo.
+    Títulos vêm em linhas curtas; o corpo começa numa linha longa ou pontuada."""
+    partes = []
+    for l in linhas[:4]:
+        if len(l) > 55 or l.endswith((".", ",", ";", ":")) or l.startswith("("):
+            break
+        if partes and l[:1].isupper() and partes[-1].endswith(("?", "!")):
+            break
+        partes.append(l)
+        if l.endswith(("?", "!")):
+            break
+    return " ".join(partes)
+
+
 def cmd_indice(a):
     paginas = paginas_pdf(a.pdf)
+    divisor = re.compile(r"(?:%s)\s+\d+" % (a.divisor or DIVISOR), re.I)
     licoes, parte = [], 0
     for i, t in enumerate(paginas, start=1):
         linhas = [l.strip() for l in t.split("\n") if l.strip()]
-        if any(re.fullmatch(r"PARTE \d+", l) for l in linhas[:3]) and "REVIS" not in t[:200]:
+        if (any(divisor.fullmatch(l) for l in linhas[:3])
+                and not re.search(REVISAO, t[:200], re.I)):
             parte += 1
         for j, l in enumerate(linhas[:6]):
             if re.fullmatch(r"\d{2}", l):
-                titulo = " ".join(linhas[j + 1:j + 3])
-                licoes.append({"num": l, "parte": parte or "", "titulo": titulo,
+                licoes.append({"num": l, "parte": parte or "",
+                               "titulo": titulo_provavel(linhas[j + 1:j + 5]),
                                "pagina": i - a.deslocamento, "pagina_pdf": i})
                 break
     destino = os.path.join(a.o, "licoes.tsv")
@@ -149,6 +182,7 @@ def cmd_textos(a):
     _, nomes = carregar_livros()
     por_nome = {n: l for n, l in nomes}
     rx = regex_referencias(nomes)
+    gatilho = re.compile(r"\b(?:%s)\b[^.]*$" % (a.leia or LEIA), re.I)
     inicios = [(int(l["pagina_pdf"]), l["num"]) for l in licoes]
     inicios.sort()
     fim_ultima = a.ultima or len(paginas)
@@ -158,8 +192,9 @@ def cmd_textos(a):
         secao = ""
         for pag in range(ini, fim + 1):
             bruto = paginas[pag - 1]
-            if re.search(r"PARTE \d+:\s*REVIS", bruto) or re.fullmatch(r"\s*PARTE \d+.*", bruto[:12] or ""):
-                continue            # páginas de revisão / abertura de parte
+            cabeca = bruto[:200]
+            if re.search(r"(?:%s)\s*\d*\s*:?\s*(?:%s)" % (DIVISOR, REVISAO), cabeca, re.I):
+                continue            # páginas de revisão / abertura de divisão
             for linha in bruto.split("\n"):
                 m = re.match(r"\s*(\d{1,2})\.\s+\S", linha)
                 if m and int(m.group(1)) <= 12:
@@ -168,12 +203,12 @@ def cmd_textos(a):
             for m in rx.finditer(t):
                 livro = por_nome[re.sub(r"\s+", " ", m.group(1).lower())]
                 antes = t[max(0, m.start() - 22):m.start()].lower()
-                tipo = "leia" if re.search(r"\blei(a|am)\b[^.]*$", antes) else "citado"
+                tipo = "leia" if re.search(gatilho, antes) else "citado"
                 for cap, vers in expandir(m.group(2)):
                     if cap > int(livro["capitulos"]):
                         continue
                     saida.append({"licao": num, "secao": secao,
-                                  "ref": f'{livro["nome"]} {cap}:{vers}',
+                                  "ref": f'{nome_livro(livro, a.idioma)} {cap}:{vers}',
                                   "abrev": f'{livro["abrev"]} {cap}:{vers}',
                                   "ordem": livro["ordem"], "cap": cap,
                                   "vers": vers, "tipo": tipo})
@@ -216,10 +251,16 @@ def main():
     s.add_argument("pdf"); s.add_argument("-o", required=True, help="pasta de dados do livro")
     s.add_argument("--deslocamento", type=int, default=0,
                    help="página_pdf − página_impressa (ex.: 2)")
+    s.add_argument("--divisor", help="palavra que abre uma divisão do livro "
+                                     "(padrão: PARTE|PART|SECTION|…)")
     s.set_defaults(f=cmd_indice)
     s = sub.add_parser("textos", help="extrai os textos bíblicos de cada lição")
     s.add_argument("pdf"); s.add_argument("-o", required=True, help="pasta de dados do livro")
     s.add_argument("--ultima", type=int, help="última página do PDF que pertence à última lição")
+    s.add_argument("--leia", help="verbos que marcam um texto como 'leia' "
+                                  "(padrão: leia|leiam|read|lea|lean|…)")
+    s.add_argument("--idioma", help="idioma dos nomes dos livros na coluna ref "
+                                    "(pt, en, es…; usa a coluna nome_<idioma> de livros.tsv)")
     s.set_defaults(f=cmd_textos)
     s = sub.add_parser("resumo", help="estatísticas dos dados de um livro")
     s.add_argument("pasta"); s.add_argument("-n", type=int, default=15)

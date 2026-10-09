@@ -8,6 +8,7 @@ cadernos de acompanhamento de livros e estudos por tema.
 |---|---|---|
 | Lucas 6:20–26 — Sermão da Planície: felicidades e ais | exegese | `cadernos/exegese/lc06-20-26` |
 | Seja Feliz Para Sempre! — lição a lição | estudo de livro | `cadernos/livros/lff` |
+| Enjoy Life Forever! — lesson by lesson (inglês) | estudo de livro | `cadernos/livros/lff-en` |
 | O que a Bíblia diz sobre o sangue? | estudo temático | `cadernos/temas/sangue` |
 
 ## Início rápido
@@ -17,11 +18,16 @@ python3 estudos.py verificar          # confere a instalação (TeX Live, Python
 python3 estudos.py compilar --todos   # PDFs em saida/
 python3 estudos.py novo exegese mt05-03-12 --titulo "Mateus 5:3–12"
 python3 estudos.py novo tema jesus --titulo "Quem é Jesus?"
+python3 estudos.py novo livro lff-en --idioma en --titulo "Enjoy Life Forever!"
 python3 estudos.py overleaf lff       # zip pronto para o Overleaf
 ```
 
-Tudo sobre instalação, estrutura, criação de cadernos, formato dos dados,
-Overleaf e Git está no **[MANUAL.md](MANUAL.md)**.
+Cada caderno pode sair em **português, inglês, espanhol** ou em outro idioma
+que você acrescente (`--idioma`): rótulos, tabelas, índices, nomes dos livros
+bíblicos e capítulos de modelo seguem a escolha.
+
+Tudo sobre instalação, estrutura, criação de cadernos, idiomas, formato dos
+dados, Overleaf e Git está no **[MANUAL.md](MANUAL.md)**.
 
 ## Fontes de dados e licenças
 

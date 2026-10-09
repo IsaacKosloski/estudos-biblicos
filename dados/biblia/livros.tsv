@@ -1,69 +1,70 @@
 # Livros da Bíblia (cânon de 66 livros) — ordem, abreviação, nome, capítulos, testamento, grupo
 # nomes_alt: outras grafias aceitas na extração (sem acentos, separadas por |)
-ordem	abrev	nome	capitulos	testamento	grupo	nomes_alt
-1	Gn	Gênesis	50	AT	Pentateuco	genesis
-2	Êx	Êxodo	40	AT	Pentateuco	exodo
-3	Lv	Levítico	27	AT	Pentateuco	levitico
-4	Nm	Números	36	AT	Pentateuco	numeros
-5	Dt	Deuteronômio	34	AT	Pentateuco	deuteronomio
-6	Js	Josué	24	AT	Históricos	josue
-7	Jz	Juízes	21	AT	Históricos	juizes
-8	Rt	Rute	4	AT	Históricos	rute
-9	1Sm	1 Samuel	31	AT	Históricos	1 samuel
-10	2Sm	2 Samuel	24	AT	Históricos	2 samuel
-11	1Rs	1 Reis	22	AT	Históricos	1 reis
-12	2Rs	2 Reis	25	AT	Históricos	2 reis
-13	1Cr	1 Crônicas	29	AT	Históricos	1 cronicas
-14	2Cr	2 Crônicas	36	AT	Históricos	2 cronicas
-15	Ed	Esdras	10	AT	Históricos	esdras
-16	Ne	Neemias	13	AT	Históricos	neemias
-17	Et	Ester	10	AT	Históricos	ester
-18	Jó	Jó	42	AT	Poéticos	jo|job
-19	Sl	Salmos	150	AT	Poéticos	salmos|salmo
-20	Pr	Provérbios	31	AT	Poéticos	proverbios
-21	Ec	Eclesiastes	12	AT	Poéticos	eclesiastes
-22	Ct	Cântico de Salomão	8	AT	Poéticos	cantico de salomao|cantares|canticos
-23	Is	Isaías	66	AT	Profetas	isaias
-24	Jr	Jeremias	52	AT	Profetas	jeremias
-25	Lm	Lamentações	5	AT	Profetas	lamentacoes
-26	Ez	Ezequiel	48	AT	Profetas	ezequiel
-27	Dn	Daniel	12	AT	Profetas	daniel
-28	Os	Oseias	14	AT	Profetas	oseias
-29	Jl	Joel	3	AT	Profetas	joel
-30	Am	Amós	9	AT	Profetas	amos
-31	Ob	Obadias	1	AT	Profetas	obadias
-32	Jn	Jonas	4	AT	Profetas	jonas
-33	Mq	Miqueias	7	AT	Profetas	miqueias
-34	Na	Naum	3	AT	Profetas	naum
-35	Hc	Habacuque	3	AT	Profetas	habacuque
-36	Sf	Sofonias	3	AT	Profetas	sofonias
-37	Ag	Ageu	2	AT	Profetas	ageu
-38	Zc	Zacarias	14	AT	Profetas	zacarias
-39	Ml	Malaquias	4	AT	Profetas	malaquias
-40	Mt	Mateus	28	NT	Evangelhos	mateus
-41	Mc	Marcos	16	NT	Evangelhos	marcos
-42	Lc	Lucas	24	NT	Evangelhos	lucas
-43	Jo	João	21	NT	Evangelhos	joao
-44	At	Atos	28	NT	Históricos	atos|actos
-45	Rm	Romanos	16	NT	Cartas	romanos
-46	1Co	1 Coríntios	16	NT	Cartas	1 corintios
-47	2Co	2 Coríntios	13	NT	Cartas	2 corintios
-48	Gl	Gálatas	6	NT	Cartas	galatas
-49	Ef	Efésios	6	NT	Cartas	efesios
-50	Fp	Filipenses	4	NT	Cartas	filipenses
-51	Cl	Colossenses	4	NT	Cartas	colossenses
-52	1Ts	1 Tessalonicenses	5	NT	Cartas	1 tessalonicenses
-53	2Ts	2 Tessalonicenses	3	NT	Cartas	2 tessalonicenses
-54	1Tm	1 Timóteo	6	NT	Cartas	1 timoteo
-55	2Tm	2 Timóteo	4	NT	Cartas	2 timoteo
-56	Tt	Tito	3	NT	Cartas	tito
-57	Fm	Filêmon	1	NT	Cartas	filemon|filemom
-58	Hb	Hebreus	13	NT	Cartas	hebreus
-59	Tg	Tiago	5	NT	Cartas	tiago
-60	1Pe	1 Pedro	5	NT	Cartas	1 pedro
-61	2Pe	2 Pedro	3	NT	Cartas	2 pedro
-62	1Jo	1 João	5	NT	Cartas	1 joao
-63	2Jo	2 João	1	NT	Cartas	2 joao
-64	3Jo	3 João	1	NT	Cartas	3 joao
-65	Jd	Judas	1	NT	Cartas	judas
-66	Ap	Apocalipse	22	NT	Profecia	apocalipse
+# nome_en/nome_es e grupo_en/grupo_es: nomes usados nos cadernos em inglês e espanhol
+ordem	abrev	nome	capitulos	testamento	grupo	nome_en	nome_es	grupo_en	grupo_es	nomes_alt
+1	Gn	Gênesis	50	AT	Pentateuco	Genesis	Génesis	Pentateuch	Pentateuco	genesis
+2	Êx	Êxodo	40	AT	Pentateuco	Exodus	Éxodo	Pentateuch	Pentateuco	exodo|exodus
+3	Lv	Levítico	27	AT	Pentateuco	Leviticus	Levítico	Pentateuch	Pentateuco	levitico|leviticus
+4	Nm	Números	36	AT	Pentateuco	Numbers	Números	Pentateuch	Pentateuco	numbers|numeros
+5	Dt	Deuteronômio	34	AT	Pentateuco	Deuteronomy	Deuteronomio	Pentateuch	Pentateuco	deuteronomio|deuteronomy
+6	Js	Josué	24	AT	Históricos	Joshua	Josué	Historical	Históricos	joshua|josue
+7	Jz	Juízes	21	AT	Históricos	Judges	Jueces	Historical	Históricos	judges|jueces|juizes
+8	Rt	Rute	4	AT	Históricos	Ruth	Rut	Historical	Históricos	rut|rute|ruth
+9	1Sm	1 Samuel	31	AT	Históricos	1 Samuel	1 Samuel	Historical	Históricos	1 samuel
+10	2Sm	2 Samuel	24	AT	Históricos	2 Samuel	2 Samuel	Historical	Históricos	2 samuel
+11	1Rs	1 Reis	22	AT	Históricos	1 Kings	1 Reyes	Historical	Históricos	1 kings|1 reis|1 reyes
+12	2Rs	2 Reis	25	AT	Históricos	2 Kings	2 Reyes	Historical	Históricos	2 kings|2 reis|2 reyes
+13	1Cr	1 Crônicas	29	AT	Históricos	1 Chronicles	1 Crónicas	Historical	Históricos	1 chronicles|1 cronicas
+14	2Cr	2 Crônicas	36	AT	Históricos	2 Chronicles	2 Crónicas	Historical	Históricos	2 chronicles|2 cronicas
+15	Ed	Esdras	10	AT	Históricos	Ezra	Esdras	Historical	Históricos	esdras|ezra
+16	Ne	Neemias	13	AT	Históricos	Nehemiah	Nehemías	Historical	Históricos	neemias|nehemiah|nehemias
+17	Et	Ester	10	AT	Históricos	Esther	Ester	Historical	Históricos	ester|esther
+18	Jó	Jó	42	AT	Poéticos	Job	Job	Poetic	Poéticos	jo|job
+19	Sl	Salmos	150	AT	Poéticos	Psalms	Salmos	Poetic	Poéticos	psalm|psalms|salmo|salmos
+20	Pr	Provérbios	31	AT	Poéticos	Proverbs	Proverbios	Poetic	Poéticos	proverbios|proverbs
+21	Ec	Eclesiastes	12	AT	Poéticos	Ecclesiastes	Eclesiastés	Poetic	Poéticos	ecclesiastes|eclesiastes
+22	Ct	Cântico de Salomão	8	AT	Poéticos	Song of Solomon	Cantar de los Cantares	Poetic	Poéticos	cantar|cantar de los cantares|cantares|canticles|cantico de salomao|canticos|song of solomon|song of songs
+23	Is	Isaías	66	AT	Profetas	Isaiah	Isaías	Prophets	Profetas	isaiah|isaias
+24	Jr	Jeremias	52	AT	Profetas	Jeremiah	Jeremías	Prophets	Profetas	jeremiah|jeremias
+25	Lm	Lamentações	5	AT	Profetas	Lamentations	Lamentaciones	Prophets	Profetas	lamentaciones|lamentacoes|lamentations
+26	Ez	Ezequiel	48	AT	Profetas	Ezekiel	Ezequiel	Prophets	Profetas	ezekiel|ezequiel
+27	Dn	Daniel	12	AT	Profetas	Daniel	Daniel	Prophets	Profetas	daniel
+28	Os	Oseias	14	AT	Profetas	Hosea	Oseas	Prophets	Profetas	hosea|oseas|oseias
+29	Jl	Joel	3	AT	Profetas	Joel	Joel	Prophets	Profetas	joel
+30	Am	Amós	9	AT	Profetas	Amos	Amós	Prophets	Profetas	amos
+31	Ob	Obadias	1	AT	Profetas	Obadiah	Abdías	Prophets	Profetas	abdias|obadiah|obadias
+32	Jn	Jonas	4	AT	Profetas	Jonah	Jonás	Prophets	Profetas	jonah|jonas
+33	Mq	Miqueias	7	AT	Profetas	Micah	Miqueas	Prophets	Profetas	micah|miqueas|miqueias
+34	Na	Naum	3	AT	Profetas	Nahum	Nahúm	Prophets	Profetas	nahum|naum
+35	Hc	Habacuque	3	AT	Profetas	Habakkuk	Habacuc	Prophets	Profetas	habacuc|habacuque|habakkuk
+36	Sf	Sofonias	3	AT	Profetas	Zephaniah	Sofonías	Prophets	Profetas	sofonias|zephaniah
+37	Ag	Ageu	2	AT	Profetas	Haggai	Hageo	Prophets	Profetas	ageu|hageo|haggai
+38	Zc	Zacarias	14	AT	Profetas	Zechariah	Zacarías	Prophets	Profetas	zacarias|zechariah
+39	Ml	Malaquias	4	AT	Profetas	Malachi	Malaquías	Prophets	Profetas	malachi|malaquias
+40	Mt	Mateus	28	NT	Evangelhos	Matthew	Mateo	Gospels	Evangelios	mateo|mateus|matthew
+41	Mc	Marcos	16	NT	Evangelhos	Mark	Marcos	Gospels	Evangelios	marcos|mark
+42	Lc	Lucas	24	NT	Evangelhos	Luke	Lucas	Gospels	Evangelios	lucas|luke
+43	Jo	João	21	NT	Evangelhos	John	Juan	Gospels	Evangelios	joao|john|juan
+44	At	Atos	28	NT	Históricos	Acts	Hechos	Historical	Históricos	actos|acts|acts of the apostles|atos|hechos
+45	Rm	Romanos	16	NT	Cartas	Romans	Romanos	Letters	Cartas	romanos|romans
+46	1Co	1 Coríntios	16	NT	Cartas	1 Corinthians	1 Corintios	Letters	Cartas	1 corinthians|1 corintios
+47	2Co	2 Coríntios	13	NT	Cartas	2 Corinthians	2 Corintios	Letters	Cartas	2 corinthians|2 corintios
+48	Gl	Gálatas	6	NT	Cartas	Galatians	Gálatas	Letters	Cartas	galatas|galatians
+49	Ef	Efésios	6	NT	Cartas	Ephesians	Efesios	Letters	Cartas	efesios|ephesians
+50	Fp	Filipenses	4	NT	Cartas	Philippians	Filipenses	Letters	Cartas	filipenses|philippians
+51	Cl	Colossenses	4	NT	Cartas	Colossians	Colosenses	Letters	Cartas	colosenses|colossenses|colossians
+52	1Ts	1 Tessalonicenses	5	NT	Cartas	1 Thessalonians	1 Tesalonicenses	Letters	Cartas	1 tesalonicenses|1 tessalonicenses|1 thessalonians
+53	2Ts	2 Tessalonicenses	3	NT	Cartas	2 Thessalonians	2 Tesalonicenses	Letters	Cartas	2 tesalonicenses|2 tessalonicenses|2 thessalonians
+54	1Tm	1 Timóteo	6	NT	Cartas	1 Timothy	1 Timoteo	Letters	Cartas	1 timoteo|1 timothy
+55	2Tm	2 Timóteo	4	NT	Cartas	2 Timothy	2 Timoteo	Letters	Cartas	2 timoteo|2 timothy
+56	Tt	Tito	3	NT	Cartas	Titus	Tito	Letters	Cartas	tito|titus
+57	Fm	Filêmon	1	NT	Cartas	Philemon	Filemón	Letters	Cartas	filemom|filemon|philemon
+58	Hb	Hebreus	13	NT	Cartas	Hebrews	Hebreos	Letters	Cartas	hebreos|hebreus|hebrews
+59	Tg	Tiago	5	NT	Cartas	James	Santiago	Letters	Cartas	james|santiago|tiago
+60	1Pe	1 Pedro	5	NT	Cartas	1 Peter	1 Pedro	Letters	Cartas	1 pedro|1 peter
+61	2Pe	2 Pedro	3	NT	Cartas	2 Peter	2 Pedro	Letters	Cartas	2 pedro|2 peter
+62	1Jo	1 João	5	NT	Cartas	1 John	1 Juan	Letters	Cartas	1 joao|1 john|1 juan
+63	2Jo	2 João	1	NT	Cartas	2 John	2 Juan	Letters	Cartas	2 joao|2 john|2 juan
+64	3Jo	3 João	1	NT	Cartas	3 John	3 Juan	Letters	Cartas	3 joao|3 john|3 juan
+65	Jd	Judas	1	NT	Cartas	Jude	Judas	Letters	Cartas	judas|jude
+66	Ap	Apocalipse	22	NT	Profecia	Revelation	Apocalipsis	Prophecy	Profecía	apocalipse|apocalipsis|apocalypse|revelation|revelations

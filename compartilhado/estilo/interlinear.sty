@@ -73,19 +73,19 @@
 \newcommand\EBil@conf@grego{%
   \def\EBil@forig{\EBfgrego\fontsize{12.6}{15}\selectfont\color{grego}}%
   \def\EBil@fcorrido{\EBfgrego\fontsize{13}{19}\selectfont\color{tinta}}%
-  \def\EBil@nomelingua{Grego}\def\EBil@corlingua{grego}\def\EBil@corpus{No NT}}
+  \def\EBil@nomelingua{\EBtxt{grego}}\def\EBil@corlingua{grego}\def\EBil@corpus{\EBtxt{corpusNT}}}
 \newcommand\EBil@conf@hebraico{\EBil@rtltrue
   \def\EBil@forig{\EBfhebraico\fontsize{15}{17}\selectfont\color{hebraico}}%
   \def\EBil@fcorrido{\EBfhebraico\fontsize{15.5}{24}\selectfont\color{tinta}}%
-  \def\EBil@nomelingua{Hebraico}\def\EBil@corlingua{hebraico}\def\EBil@corpus{No AT}}
+  \def\EBil@nomelingua{\EBtxt{hebraico}}\def\EBil@corlingua{hebraico}\def\EBil@corpus{\EBtxt{corpusAT}}}
 \newcommand\EBil@conf@aramaico{\EBil@rtltrue
   \def\EBil@forig{\EBfhebraico\fontsize{15}{17}\selectfont\color{aramaico}}%
   \def\EBil@fcorrido{\EBfhebraico\fontsize{15.5}{24}\selectfont\color{tinta}}%
-  \def\EBil@nomelingua{Aramaico}\def\EBil@corlingua{aramaico}\def\EBil@corpus{No AT}}
+  \def\EBil@nomelingua{\EBtxt{aramaico}}\def\EBil@corlingua{aramaico}\def\EBil@corpus{\EBtxt{corpusAT}}}
 \newcommand\EBil@conf@siriaco{\EBil@rtltrue
   \def\EBil@forig{\EBfsiriaco\fontsize{15}{17}\selectfont\color{aramaico}}%
   \def\EBil@fcorrido{\EBfsiriaco\fontsize{15.5}{24}\selectfont\color{tinta}}%
-  \def\EBil@nomelingua{Siríaco}\def\EBil@corlingua{aramaico}\def\EBil@corpus{No NT}}
+  \def\EBil@nomelingua{\EBtxt{siriaco}}\def\EBil@corlingua{aramaico}\def\EBil@corpus{\EBtxt{corpusNT}}}
 
 % camadas latinas
 \newcommand\EBil@ftranslit{\EBftranslit\fontsize{8.6}{10}\selectfont\color{suave}}
@@ -158,11 +158,11 @@
   \ifdefempty{\EBil@titulo}{}{\enspace{\sffamily\footnotesize\color{suave}\EBil@titulo}}\par
   \vspace{5pt}}
 \newcommand\EBil@legendalinha{%
-  \par\vspace{4pt}\noindent{\sffamily\scriptsize\color{suave}Camadas: original%
-  \ifEBil@translit\ · \textit{transliteração}\fi
-  \ifEBil@pt\ · glosa (pt)\fi\ifEBil@en\ · \textit{glosa (en)}\fi
-  \ifEBil@lema\ · lema\fi\ifEBil@strong\ · Strong\fi\ifEBil@morf\ · morfologia\fi
-  \ · {\color{rubrica}°}\,variante\ · [\,]\,implícito}\par}
+  \par\vspace{4pt}\noindent{\sffamily\scriptsize\color{suave}\EBtxt{camadas}: \EBtxt{original}%
+  \ifEBil@translit\ · \textit{\EBtxt{transliteracaoMin}}\fi
+  \ifEBil@pt\ · \EBtxt{glosaPropria}\fi\ifEBil@en\ · \textit{\EBtxt{glosaLexical}}\fi
+  \ifEBil@lema\ · \EBtxt{lemaMin}\fi\ifEBil@strong\ · Strong\fi\ifEBil@morf\ · \EBtxt{morfologiaMin}\fi
+  \ · {\color{rubrica}°}\,\EBtxt{varianteMin}\ · [\,]\,\EBtxt{implicitoMin}}\par}
 
 \newcommand\interlinear[2][]{%
   \begingroup
@@ -191,7 +191,7 @@
   \setbox0\hbox{\directlua{EB.variantes(\EBil@luaargs{#1})}}%
   \ifdim\wd0>\z@
     \par\vspace{6pt}\noindent{\sffamily\footnotesize\color{suave}%
-      {\color{rubrica}\bfseries Variantes\enspace}%
+      {\color{rubrica}\bfseries\EBtxt{variantes}\enspace}%
       \directlua{EB.variantes(\EBil@luaargs{#1})}\par}%
   \fi}
 \newcommand\variantes[2][]{%
@@ -223,15 +223,15 @@
 \newcommand\tabelamorfologica[2][]{%
   \begingroup
   \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
-  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!70}{white}%
+  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{4pt}%
   \begin{longtable}{@{}>{\raggedright}p{9mm} >{\raggedright}p{.15\linewidth}
       >{\raggedright}p{.14\linewidth} >{\raggedright}p{.13\linewidth}
       >{\raggedright}p{.2\linewidth} >{\raggedright\arraybackslash}p{.19\linewidth}@{}}
     \toprule
-    \EBil@cabtab{Ref.} & \EBil@cabtab{Palavra} & \EBil@cabtab{Transliteração} &
-    \EBil@cabtab{Lema} & \EBil@cabtab{Morfologia} & \EBil@cabtab{Glosa}\\\midrule\endfirsthead
-    \EBil@cabtab{Ref.} & \EBil@cabtab{Palavra} & \EBil@cabtab{Transliteração} &
-    \EBil@cabtab{Lema} & \EBil@cabtab{Morfologia} & \EBil@cabtab{Glosa}\\\midrule\endhead
+    \EBil@cabtab{\EBtxt{cabRef}} & \EBil@cabtab{\EBtxt{cabPalavra}} & \EBil@cabtab{\EBtxt{cabTransliteracao}} &
+    \EBil@cabtab{\EBtxt{cabLema}} & \EBil@cabtab{\EBtxt{cabMorfologia}} & \EBil@cabtab{\EBtxt{cabGlosa}}\\\midrule\endfirsthead
+    \EBil@cabtab{\EBtxt{cabRef}} & \EBil@cabtab{\EBtxt{cabPalavra}} & \EBil@cabtab{\EBtxt{cabTransliteracao}} &
+    \EBil@cabtab{\EBtxt{cabLema}} & \EBil@cabtab{\EBtxt{cabMorfologia}} & \EBil@cabtab{\EBtxt{cabGlosa}}\\\midrule\endhead
     \bottomrule\endfoot
     \directlua{EB.tabela(\EBil@luaargs{#2}, \ifEBil@acentos true\else false\fi)}
   \end{longtable}\endgroup}
@@ -240,13 +240,13 @@
 \newcommand\vocabulario[2][]{%
   \begingroup
   \EBil@padroes\pgfkeys{/eb/il,#1}\EBil@preparar{#2}%
-  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{5pt}\rowcolors{2}{fundo!70}{white}%
+  \small\addfontfeatures{Numbers={Lining,Monospaced}}\setlength\tabcolsep{5pt}%
   \begin{longtable}{@{}l l l r r >{\raggedright\arraybackslash}p{.36\linewidth}@{}}
     \toprule
-    \EBil@cabtab{Lema} & \EBil@cabtab{Transliteração} & \EBil@cabtab{Strong} &
-    \EBil@cabtab{No trecho} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{Glosas no trecho}\\\midrule\endfirsthead
-    \EBil@cabtab{Lema} & \EBil@cabtab{Transliteração} & \EBil@cabtab{Strong} &
-    \EBil@cabtab{No trecho} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{Glosas no trecho}\\\midrule\endhead
+    \EBil@cabtab{\EBtxt{cabLema}} & \EBil@cabtab{\EBtxt{cabTransliteracao}} & \EBil@cabtab{\EBtxt{cabStrong}} &
+    \EBil@cabtab{\EBtxt{cabNoTrecho}} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{\EBtxt{cabGlosasNoTrecho}}\\\midrule\endfirsthead
+    \EBil@cabtab{\EBtxt{cabLema}} & \EBil@cabtab{\EBtxt{cabTransliteracao}} & \EBil@cabtab{\EBtxt{cabStrong}} &
+    \EBil@cabtab{\EBtxt{cabNoTrecho}} & \EBil@cabtab{\EBil@corpus} & \EBil@cabtab{\EBtxt{cabGlosasNoTrecho}}\\\midrule\endhead
     \bottomrule\endfoot
     \directlua{EB.vocabulario(\EBil@luaargs{#2}, \EBil@minimo)}
   \end{longtable}\endgroup}

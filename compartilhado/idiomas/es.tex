@@ -1,0 +1,120 @@
+%% =============================================================================
+%%  es.tex — textos de la interfaz en español
+%%  Lo carga estilo/estudobiblico.sty cuando \ebIdioma es "es".
+%%  Para añadir un idioma: copie este archivo, traduzca los textos y guárdelo
+%%  como <codigo>.tex (p. ej. fr.tex); luego use \newcommand\ebIdioma{fr}.
+%%  NO cambie las claves (el primer argumento de \EBdeftxt).
+%% =============================================================================
+% Idioma principal de babel (silabeo, fechas, nombres automáticos)
+\def\EB@babelmain{spanish}
+% Columna de dados/biblia/livros.tsv con los nombres de los libros
+% ("" = columna "nome"; "es" = columna "nome_es"; etc.)
+\def\EB@colunalivros{es}
+
+%% ---------------------------------------------------------------- estructura
+\EBdeftxt{numeroAbrev}{n.\textsuperscript{o}}
+\EBdeftxt{etapa}{Etapa}
+\EBdeftxt{parte}{Parte}
+\EBdeftxt{sumario}{Índice}
+\EBdeftxt{bibliografia}{Bibliografía}
+\EBdeftxt{indiceRemissivo}{Índice analítico}
+\EBdeftxt{indiceTermos}{Índice de términos originales}
+\EBdeftxt{indiceTextos}{Índice de textos bíblicos}
+
+%% --------------------------------------------------------------------- cajas
+\EBdeftxt{colofaoUso}{Material de estudio personal.}
+\EBdeftxt{colofaoFontes}{Texto griego: SBL Greek New Testament (CC BY 4.0, Society of Biblical Literature \& Logos); morfología MorphGNT (CC BY-SA 3.0). Hebreo y arameo: Westminster Leningrad Codex con morfología de la OpenScriptures Hebrew Bible (CC BY 4.0). Los textos de las traducciones modernas pertenecen a sus titulares y se citan para estudio.}
+\EBdeftxt{colofaoTipografia}{Tipografía: EB Garamond, Gentium Book Plus, Marcellus, Source Sans 3, Noto Serif Hebrew y Noto Sans Syriac (SIL Open Font License). Compuesto en \LaTeX\ (LuaLaTeX).}
+
+\EBdeftxt{objetivo}{Objetivo}
+\EBdeftxt{nota}{Nota}
+\EBdeftxt{pergunta}{Pregunta}
+\EBdeftxt{cuidado}{Atención}
+\EBdeftxt{aplicacao}{Aplicación}
+\EBdeftxt{criticaTextual}{Crítica textual}
+\EBdeftxt{baseAT}{Base AT:}
+\EBdeftxt{baseNT}{Base NT:}
+\EBdeftxt{traducoes}{Traducciones}
+\EBdeftxt{noNT}{en el NT}
+
+%% -------------------------------------------------------------- interlinear
+\EBdeftxt{grego}{Griego}
+\EBdeftxt{hebraico}{Hebreo}
+\EBdeftxt{aramaico}{Arameo}
+\EBdeftxt{siriaco}{Siríaco}
+\EBdeftxt{corpusNT}{En NT}
+\EBdeftxt{corpusAT}{En AT}
+\EBdeftxt{camadas}{Capas}
+\EBdeftxt{original}{original}
+\EBdeftxt{transliteracaoMin}{transliteración}
+\EBdeftxt{glosaPropria}{glosa propia}
+\EBdeftxt{glosaLexical}{glosa léxica (en)}
+\EBdeftxt{lemaMin}{lema}
+\EBdeftxt{morfologiaMin}{morfología}
+\EBdeftxt{varianteMin}{variante}
+\EBdeftxt{implicitoMin}{implícito}
+\EBdeftxt{variantes}{Variantes}
+\EBdeftxt{cabRef}{Ref.}
+\EBdeftxt{cabPalavra}{Palabra}
+\EBdeftxt{cabTransliteracao}{Transliteración}
+\EBdeftxt{cabLema}{Lema}
+\EBdeftxt{cabMorfologia}{Morfología}
+\EBdeftxt{cabGlosa}{Glosa}
+\EBdeftxt{cabStrong}{Strong}
+\EBdeftxt{cabNoTrecho}{En el pasaje}
+\EBdeftxt{cabGlosasNoTrecho}{Glosas en el pasaje}
+
+%% ----------------------------------------------------------- cuaderno de libro
+\EBdeftxt{licao}{Lección}
+\EBdeftxt{licoes}{Lecciones}
+\EBdeftxt{seloLeia}{LEA}
+\EBdeftxt{citado}{citado}
+\EBdeftxt{textosBiblicos}{Textos bíblicos}
+\EBdeftxt{dicaTextos}{\S\ = punto de la lección · marque al leer el contexto (capítulo) y al comparar traducciones}
+\EBdeftxt{semTextos}{(no se encontró ningún texto bíblico en esta lección)}
+\EBdeftxt{nTextos}{textos bíblicos}
+\EBdeftxt{paraLer}{para leer}
+\EBdeftxt{estudadaEm}{Estudiada el}
+\EBdeftxt{revisadaEm}{Repasada el}
+\EBdeftxt{cabNum}{N\textsuperscript{o}}
+\EBdeftxt{cabPag}{Pág.}
+\EBdeftxt{cabTextos}{Textos}
+\EBdeftxt{cabEstudada}{Estudiada}
+\EBdeftxt{cabRevisada}{Repasada}
+\EBdeftxt{cabTipo}{Tipo}
+\EBdeftxt{cabContexto}{Contexto}
+\EBdeftxt{cabTraducoes}{Traducciones}
+\EBdeftxt{cabObservacao}{Observación}
+\EBdeftxt{cabTexto}{Texto}
+\EBdeftxt{cabVezes}{Veces}
+\EBdeftxt{cabEmQue}{En qué lecciones}
+\EBdeftxt{antesDeLer}{Antes de leer}
+\EBdeftxt{antesDeLerDica}{¿Qué pregunta responde esta lección? (con mis palabras)}
+\EBdeftxt{ideiaCentral}{Idea central}
+\EBdeftxt{ideiaCentralDica}{la respuesta de la lección, en una o dos frases}
+\EBdeftxt{anotacoes}{Apuntes}
+\EBdeftxt{anotacoesDica}{puntos principales de cada sección; lo que me llamó la atención}
+\EBdeftxt{duvidas}{Para investigar}
+\EBdeftxt{revisaoSemConsultar}{Repaso sin consultar}
+\EBdeftxt{revisaoSemConsultarDica}{responda de memoria a las preguntas de repaso de la lección}
+\EBdeftxt{escriturasHebraicas}{Escrituras Hebreas}
+\EBdeftxt{escriturasGregas}{Escrituras Griegas}
+
+%% ------------------------------------------------------- cuaderno temático
+\EBdeftxt{pesoCentral}{CENTRAL}
+\EBdeftxt{pesoApoio}{apoyo}
+\EBdeftxt{pesoDificil}{DIFÍCIL}
+\EBdeftxt{cabGrupo}{Grupo}
+\EBdeftxt{cabPeso}{Peso}
+\EBdeftxt{cabLido}{Leído}
+\EBdeftxt{cabNota}{Nota}
+\EBdeftxt{cabTranslitAbr}{Translit.}
+\EBdeftxt{cabOcorr}{Ocurr.}
+\EBdeftxt{cabSentido}{Sentido}
+\EBdeftxt{siglaAT}{AT}
+\EBdeftxt{siglaNT}{NT}
+\EBdeftxt{parteDaBiblia}{Parte de la Biblia}
+\EBdeftxt{textosEstudados}{Textos estudiados}
+\EBdeftxt{ocorrenciasPalavras}{Ocurrencias de las palabras}
+\EBdeftxt{base}{Base:}
+\EBdeftxt{temaVazio}{(ningún texto con ese criterio en textos.tsv)}

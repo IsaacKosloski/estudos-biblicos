@@ -1,0 +1,78 @@
+%% =============================================================================
+%%  How to do a thematic study (generic: fits any theme)
+%% =============================================================================
+\chapter{How to do a thematic study}
+
+A thematic study starts from a question (\enquote{\temaPergunta}) and looks
+for the answer across the whole Bible. The risk peculiar to this kind of study
+is stringing together isolated verses that confirm what one already thought.
+The route below exists to avoid that: gather \emph{all} the relevant texts,
+read each one in its context, see how the subject develops across the Bible,
+and only then frame the synthesis \parencite{osborne2006, duvall2012}.
+
+\section{The seven steps}
+
+\begin{ebtabela}{@{}>{\raggedright}p{.26\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Step} & \EBcab{What to do}\\\midrule
+1. The question & state the question precisely, break it into sub-questions, and record what you already think about the subject (your presuppositions)\\
+2. Words and concepts & collect the Hebrew and Greek words of the theme with all their occurrences; look as well for synonyms and for ideas expressed without those words\\
+3. The texts & build the study list, group it by subject, and mark the weight of each text (central, support, difficult)\\
+4. Reading in context & study the central texts one by one: context, what they say, how they bear on the theme\\
+5. Development & see how the theme appears across the Bible: what changes, what stays, and whom each instruction addresses\\
+6. Dialogue & face the difficult texts and hear how other translations, commentaries and traditions read them\\
+7. Synthesis & answer the question in numbered propositions, each with its textual basis; separate what is clear from what stays open; apply\\
+\end{ebtabela}
+
+\begin{alerta}[A word is not a concept]
+A theme can be present without the word that names it, and the word can appear
+without touching the theme. A concordance is the starting point, not the final
+list \parencite{barr1961, silva1994}. In \enquote{Who is Jesus?}, for
+instance, the subject lies in titles, actions, relationships and statements,
+not in a single word; in \enquote{blood}, the word is in nearly every text,
+but not every text treats the same aspect.
+\end{alerta}
+
+\begin{alerta}[Cherry-picking]
+Choosing only the texts that confirm a conclusion is the commonest mistake in
+thematic studies \parencite{carson1996}. That is why the list of occurrences
+sits in the appendix: it shows what has not been read yet.
+\end{alerta}
+
+\section{How to use this notebook}
+
+\paragraph{The data.} The folder \texttt{\temaDados} holds three text files:
+\texttt{textos.tsv} (your study list, which you write and rearrange),
+\texttt{vocabulario.tsv} (the words of the theme) and \texttt{ocorrencias.tsv}
+(produced by the tool). The commands are in \texttt{MANUAL.md}:
+
+\begin{nota}[Tools]
+\small\ttfamily
+python3 ferramentas/tema.py ocorrencias H1818 G129 -o \temaDados\\
+python3 ferramentas/tema.py vocabulario H1818 G129 -o \temaDados\\
+python3 ferramentas/tema.py conferir \temaDados
+\end{nota}
+
+\paragraph{Groups and weight.} In the \texttt{grupo} column of
+\texttt{textos.tsv} you create your own categories; the notebook groups the
+texts by them, in the order they first appear in the file. The \texttt{peso}
+column takes \texttt{central}, \texttt{apoio} or \texttt{dificil}; left empty,
+the printed notebook shows boxes to decide by hand
+({\sffamily\tiny\color{suave}C\,\EBcaixa\;S\,\EBcaixa\;D\,\EBcaixa}).
+
+\paragraph{Text sheets.} To study a text in its context:
+
+\begin{nota}[Example]
+\small\ttfamily
+\textbackslash begin\{fichatexto\}[group]\{Le 17:11\}\\
+\ \ \textbackslash begin\{campo\}\{Context\} ... \textbackslash end\{campo\}\\
+\ \ \textbackslash interlinear\{dados/biblia/lv017\_11.hbo.tsv\}\\
+\textbackslash end\{fichatexto\}
+\end{nota}
+
+\paragraph{Synthesis.} Each conclusion goes into a
+\verb|\proposicao{statement}{texts}|. If a text in the basis does not appear
+in the study list, that is a sign the list needs revisiting.
+
+\paragraph{Printed or digital.} In \texttt{impresso} mode
+(\texttt{config.tex}) the fields you have not filled in yet appear with ruled
+lines to write on; in \texttt{digital} mode they disappear.

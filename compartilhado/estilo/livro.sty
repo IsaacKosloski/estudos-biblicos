@@ -17,9 +17,9 @@
 \providecommand\livroNome{}
 \providecommand\livroEditora{}
 \providecommand\livroEdicao{}
-\providecommand\livroUnidade{Lição}
-\providecommand\livroUnidadePlural{Lições}
-\providecommand\livroParte{Parte}
+\providecommand\livroUnidade{\EBtxt{licao}}
+\providecommand\livroUnidadePlural{\EBtxt{licoes}}
+\providecommand\livroParte{\EBtxt{parte}}
 \providecommand\livroModo{impresso}      % impresso | digital
 \providecommand\livroLinhas{5}
 \providecommand\livroLicoes{}             % vazio = todas; ex.: 1-12 ou 1,4,7
@@ -39,11 +39,13 @@
 \ifdefstring{\livroModo}{impresso}{\EBimpressotrue}{\EBimpressofalse}
 
 %% ------------------------------------------------ nomes e numeração
-\addto\captionsbrazilian{\renewcommand\chaptername{\livroUnidade}\renewcommand\partname{\livroParte}}
+\expandafter\addto\csname captions\EB@babelmain\endcsname{%
+  \renewcommand\chaptername{\livroUnidade}\renewcommand\partname{\livroParte}}
 \renewcommand\chaptername{\livroUnidade}
+\renewcommand\partname{\livroParte}
 \renewcommand\thechapter{\two@digits{\value{chapter}}}
 \setcounter{tocdepth}{0}
-\makeindex[name=textos, intoc, columns=3, title=Índice de textos bíblicos,
+\makeindex[name=textos, intoc, columns=3, title=\EBtxt{indiceTextos},
   options={-s indice-termos.ist}]
 
 %% ------------------------------------------------ elementos gráficos
@@ -56,8 +58,8 @@
   \advance\count@ -1 \repeat}\par\vspace{2pt}}
 % selo "LEIA" / "citado"
 \newcommand\EBlivtipo[1]{\leavevmode\ifstrequal{#1}{leia}%
-  {{\fboxsep=1.3pt\colorbox{destaque}{\color{white}\sffamily\bfseries\tiny LEIA}}}%
-  {{\sffamily\scriptsize\color{suave}citado}}}
+  {{\fboxsep=1.3pt\colorbox{destaque}{\color{white}\sffamily\bfseries\tiny\EBtxt{seloLeia}}}}%
+  {{\sffamily\scriptsize\color{suave}\EBtxt{citado}}}}
 
 %% ------------------------------------------------ campos de anotação
 % \begin{campo}{Título} ... \end{campo}  — usado nos arquivos licoes/NN.tex
@@ -80,47 +82,47 @@
   \setcounter{chapter}{\numexpr#1-1\relax}%
   \chapter{#2}\label{licao:#1}%
   \EBlivficha{#1}{#3}{#4}{#5}%
-  \EBlivcampo[2]{Antes de ler}{Que pergunta esta lição responde? (em minhas palavras)}%
+  %\EBlivcampo[2]{\EBtxt{antesDeLer}}{\EBtxt{antesDeLerDica}}%
   \EBlivtabela{#1}%
   \IfFileExists{\livroNotas/#1.tex}%
     {\input{\livroNotas/#1.tex}}%
-    {\EBlivcampo{Ideia central}{a resposta da lição, em uma ou duas frases}%
-     \EBlivcampo[4]{Anotações}{pontos principais de cada seção; o que me chamou a atenção}%
-     \EBlivcampo[3]{Dúvidas para pesquisar}{}%
-     \EBlivcampo[3]{Revisão sem consultar}{responda às perguntas de revisão da lição de memória}%
-     \EBlivcampo[3]{Aplicação}{}}}
+    {\EBlivcampo{\EBtxt{ideiaCentral}}{\EBtxt{ideiaCentralDica}}%
+     \EBlivcampo[4]{\EBtxt{anotacoes}}{\EBtxt{anotacoesDica}}%
+     \EBlivcampo[3]{\EBtxt{duvidas}}{}%
+     \EBlivcampo[3]{\EBtxt{revisaoSemConsultar}}{\EBtxt{revisaoSemConsultarDica}}%
+     \EBlivcampo[3]{\EBtxt{aplicacao}}{}}}
 
 \newcommand\EBlivnumeros[2]{\def\EBlivnt{#1}\def\EBlivnl{#2}}
 \newcommand\EBlivficha[4]{%
   \directlua{LV.contagem("\livroDados", "#1")}%
   \par\noindent{\sffamily\small\color{suave}%
     pp.\,#2–#3 \ifblank{#4}{}{(PDF #4)}\enspace\textperiodcentered\enspace
-    \EBlivnt\ textos bíblicos (\EBlivnl\ para ler)%
-    \ifEBimpresso\hfill Estudada em \rule{20mm}{.4pt}\enspace Revisada em \rule{20mm}{.4pt}\fi}\par
+    \EBlivnt\ \EBtxt{nTextos} (\EBlivnl\ \EBtxt{paraLer})%
+    \ifEBimpresso\hfill\EBtxt{estudadaEm}\ \rule{20mm}{.4pt}\enspace\EBtxt{revisadaEm}\ \rule{20mm}{.4pt}\fi}\par
   \vspace{6pt}}
 
 %% ------------------------------------------------ tabela de textos da lição
-\newcommand\EBlivsemtextos{\multicolumn{3}{l}{\sffamily\small\color{suave}(nenhum texto bíblico encontrado nesta lição)}}
+\newcommand\EBlivsemtextos{\multicolumn{3}{l}{\sffamily\small\color{suave}\EBtxt{semTextos}}}
 \ifEBimpresso
   \newcommand\EBlivtexto[5]{\leavevmode\index[textos]{#4!#5}%
     {\sffamily\scriptsize\color{suave}#1} & #2 & \EBlivtipo{#3} & \EBcaixa & \EBcaixa & }
   \newcommand\EBlivtabela[1]{%
-    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}Textos bíblicos}\enspace
-    {\sffamily\scriptsize\color{suave}§ = ponto da lição · marque ao ler o contexto (capítulo) e ao comparar traduções}\par
-    \begingroup\small\setlength\tabcolsep{4pt}\renewcommand\arraystretch{1.35}\rowcolors{2}{fundo!60}{white}%
+    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}\EBtxt{textosBiblicos}}\enspace
+    {\sffamily\scriptsize\color{suave}\EBtxt{dicaTextos}}\par
+    \begingroup\small\setlength\tabcolsep{4pt}\renewcommand\arraystretch{1.35}%
     \begin{longtable}{@{}>{\centering}p{5mm} >{\raggedright}p{.3\linewidth} >{\centering}p{11mm}
         >{\centering}p{12mm} >{\centering}p{13mm} >{\raggedright\arraybackslash}Y@{}}
-      \EBcab{§} & \EBcab{Texto} & \EBcab{Tipo} & \EBcab{Contexto} & \EBcab{Traduções} & \EBcab{Observação}\\\midrule\endhead
+      \EBcab{\S} & \EBcab{\EBtxt{cabTexto}} & \EBcab{\EBtxt{cabTipo}} & \EBcab{\EBtxt{cabContexto}} & \EBcab{\EBtxt{cabTraducoes}} & \EBcab{\EBtxt{cabObservacao}}\\\midrule\endhead
       \directlua{LV.tabela("\livroDados", "#1", true)}
     \end{longtable}\endgroup}
 \else
   \newcommand\EBlivtexto[5]{\leavevmode\index[textos]{#4!#5}%
     {\sffamily\scriptsize\color{suave}#1} & #2 & \EBlivtipo{#3}}
   \newcommand\EBlivtabela[1]{%
-    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}Textos bíblicos}\par
-    \begingroup\small\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!60}{white}%
+    \par\addvspace{8pt}\noindent{\sffamily\bfseries\small\color{destaque}\EBtxt{textosBiblicos}}\par
+    \begingroup\small\setlength\tabcolsep{4pt}%
     \begin{longtable}{@{}>{\centering}p{5mm} >{\raggedright}p{.5\linewidth} >{\centering\arraybackslash}p{12mm}@{}}
-      \EBcab{§} & \EBcab{Texto} & \EBcab{Tipo}\\\midrule\endhead
+      \EBcab{\S} & \EBcab{\EBtxt{cabTexto}} & \EBcab{\EBtxt{cabTipo}}\\\midrule\endhead
       \directlua{LV.tabela("\livroDados", "#1", false)}
     \end{longtable}\endgroup}
 \fi
@@ -132,16 +134,16 @@
 
 \newcommand\EBlivprog[5]{\hyperref[licao:#1]{#1} & #2 & #3 & #4 & \rule{16mm}{.4pt} & \rule{16mm}{.4pt}}
 \newcommand\progresso{%
-  \begingroup\small\setlength\tabcolsep{4pt}\rowcolors{2}{fundo!60}{white}%
+  \begingroup\small\setlength\tabcolsep{4pt}%
   \begin{longtable}{@{}l >{\raggedright}p{.46\linewidth} r r c c@{}}
-    \EBcab{Nº} & \EBcab{\livroUnidade} & \EBcab{Pág.} & \EBcab{Textos} & \EBcab{Estudada} & \EBcab{Revisada}\\\midrule\endhead
+    \EBcab{\EBtxt{cabNum}} & \EBcab{\livroUnidade} & \EBcab{\EBtxt{cabPag}} & \EBcab{\EBtxt{cabTextos}} & \EBcab{\EBtxt{cabEstudada}} & \EBcab{\EBtxt{cabRevisada}}\\\midrule\endhead
     \directlua{LV.progresso("\livroDados")}
   \end{longtable}\endgroup}
 
 \newcommand\textosmaiscitados[1][2]{%
-  \begingroup\small\setlength\tabcolsep{5pt}\rowcolors{2}{fundo!60}{white}%
+  \begingroup\small\setlength\tabcolsep{5pt}%
   \begin{longtable}{@{}>{\raggedright}p{.38\linewidth} r >{\raggedright\arraybackslash}p{.44\linewidth}@{}}
-    \EBcab{Texto} & \EBcab{Vezes} & \EBcab{Em que lições}\\\midrule\endhead
+    \EBcab{\EBtxt{cabTexto}} & \EBcab{\EBtxt{cabVezes}} & \EBcab{\EBtxt{cabEmQue}}\\\midrule\endhead
     \directlua{LV.mais_citados("\livroDados", #1, 40)}
   \end{longtable}\endgroup}
 \newcommand\textosporlivro{\directlua{LV.por_livro("\livroDados")}}

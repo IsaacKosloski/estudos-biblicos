@@ -1,0 +1,111 @@
+%% =============================================================================
+%%  How to study a book with this notebook (generic: fits any book)
+%% =============================================================================
+\chapter{How to study this book}
+
+This notebook follows \emph{\livroNome} \parencite{livro} lesson by lesson. It
+does not reproduce the text of the publication: it carries only the number,
+the title and the pages of each lesson, the list of the Bible texts it cites,
+and room for your own notes. Use it with the book open beside you.
+
+The publication itself invites the reader to look up the Bible texts it points
+to and to compare what the Bible says with what is being taught. This notebook
+organises that work, in the spirit of the Beroeans, who received the message
+eagerly and \enquote{examined the Scriptures} to confirm what they heard
+(\rb{Ac 17:11}).
+
+\section{The cycle of each lesson}
+
+The route combines three well-established ideas about reading and learning:
+survey the whole before reading \parencite{robinson1946}, question the text
+while reading \parencite{adler1972}, and recall from memory rather than merely
+rereading, spacing the reviews over time \parencite{brown2014}.
+
+\begin{center}
+\begin{tikzpicture}[
+    passo/.style={circle, minimum size=12mm, inner sep=0pt, font=\EBftitulo\Large, text=white},
+    rot/.style={font=\sffamily\scriptsize, text width=25mm, align=center, text=tinta}]
+  \foreach \i/\ang/\t/\d in {
+      1/90/{See the whole}/{title, points, pictures, summary},
+      2/18/{Read and mark}/{the idea of each point},
+      3/-54/{Check the texts}/{in context, in more than one translation},
+      4/-126/{Say it in your own words}/{without looking},
+      5/162/{Review and apply}/{after 1 day, 1 week, 1 month}}{
+    \node[passo, fill=destaque] (p\i) at (\ang:2.6cm) {\i};
+    \node[rot, anchor=center] at (\ang:4.35cm) {\textbf{\t}\\{\color{suave}\d}};
+  }
+  \foreach \a/\b in {1/2, 2/3, 3/4, 4/5, 5/1}
+    \draw[-{Stealth[length=5pt]}, destaque2, thick, shorten <=2pt, shorten >=2pt]
+      (p\a) to[bend left=18] (p\b);
+  \node[font=\EBfversal\small, text=destaque2!80!black] at (0,0) {Lesson};
+\end{tikzpicture}
+\end{center}
+
+\paragraph{1. See the whole.} Before reading, go over the title, the questions
+and subheadings, the pictures and the summary. Write in the \enquote{Before
+reading} field which question the lesson sets out to answer.
+
+\paragraph{2. Read and mark.} Read point by point. For each one, write down
+the main idea in a single sentence. The numbers in the \S\ column of the text
+table say at which point of the lesson each text appears.
+
+\paragraph{3. Check the texts.} This is the heart of the notebook. Texts with
+the \EBlivtipo{leia} badge are the ones the lesson asks you to read; the
+\EBlivtipo{citado} ones appear in brackets or in the body of the text. For
+each one, follow the routine below and tick the boxes.
+
+\paragraph{4. Say it in your own words.} Close the book and write the central
+idea of the lesson. Then answer the review questions from memory. Recalling
+works better than rereading \parencite{brown2014}.
+
+\paragraph{5. Review and apply.} Come back to the lesson a day later, a week
+later, and at the review of the part. Record the dates in the lesson's header
+and in the progress record. Write down one concrete application.
+
+\section{How to check a Bible text}
+
+\begin{ebtabela}{@{}>{\raggedright}p{.28\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Question} & \EBcab{How to answer it}\\\midrule
+What does the context say? & read the whole chapter (or the paragraph, in the letters); note who is speaking, to whom, when and why\\
+Do the translations agree? & compare two or three; where they differ, write down the difference\\
+Does it hinge on one word? & open the original with the interlinear (\texttt{ferramentas/interlinear.py}) and look at how the word is used elsewhere\\
+What point does the lesson draw from it? & write in one sentence how the lesson uses the text and what reasoning links the two\\
+What is left open? & record the doubt in the \enquote{To look into} field\\
+\end{ebtabela}
+
+\begin{alerta}[Text and context]
+A verse on its own can seem to say more, or less, than it says in context.
+Reading the whole chapter is the simplest and most useful habit.
+\end{alerta}
+
+\section{How to use this notebook}
+
+\paragraph{Printed or digital.} In \texttt{impresso} mode
+(\texttt{config.tex}) each lesson carries ruled lines to write on and boxes to
+tick. In \texttt{digital} mode only the notes you type appear.
+
+\paragraph{Notes on the computer.} Create the file \texttt{licoes/07.tex}
+(lesson number with two digits). Whatever is in it goes into the lesson, in
+place of the blank fields. The same resources as in the exegesis notebook are
+available: boxes (\texttt{nota}, \texttt{pergunta}, \texttt{lexico}), text in
+Greek or Hebrew (\verb|\gr{...}|, \verb|\hb{...}|) and the interlinear.
+
+\begin{nota}[Example of licoes/07.tex]
+\small\ttfamily
+\textbackslash begin\{campo\}\{Central idea\}\\
+\ \ The answer of the lesson, in my own words.\\
+\textbackslash end\{campo\}\\
+\textbackslash begin\{campo\}\{Text in focus: Ex 34:6\}\\
+\ \ \textbackslash interlinear[modo=leitura]\{dados/biblia/ex034\_06.hbo.tsv\}\\
+\textbackslash end\{campo\}
+\end{nota}
+
+\paragraph{Indexes.} At the end of the notebook you will find the texts most
+cited in the book, an index of every Bible text (in biblical order, with the
+page of the lesson) and a chart of the 1189 chapters of the Bible for
+recording your reading.
+
+\paragraph{Legend of the text table.}
+\S\ = point of the lesson; \EBlivtipo{leia} = the lesson asks you to read it;
+\EBlivtipo{citado} = cited or mentioned; \EBcaixa\ = tick when you read the
+context and when you compare translations.

@@ -68,6 +68,13 @@ local function no_intervalo(reg, de, ate)
 end
 
 -- ------------------------------------------------------ escape para o TeX
+-- listras: as longtables que quebram de página recebem \EBzebra linha a linha
+-- (o \rowcolors do xcolor não sobrevive à divisão da tabela)
+local function zebra(i, clara)
+  if i % 2 == 0 then return clara and "\\EBzebraclara " or "\\EBzebra " end
+  return ""
+end
+
 local ESC = { ["\\"] = "\\textbackslash{}", ["{"] = "\\{", ["}"] = "\\}",
   ["%"] = "\\%", ["&"] = "\\&", ["#"] = "\\#", ["_"] = "\\_", ["$"] = "\\$",
   ["^"] = "\\^{}", ["~"] = "\\textasciitilde{}" }
@@ -278,9 +285,12 @@ end
 
 -- ---------------------------------------- tabela de análise morfológica
 function EB.tabela(caminho, lingua, de, ate, acentos)
+  local i = 0
   for _, reg in ipairs(EB.ler(caminho)) do
     if no_intervalo(reg, de, ate) then
       local w, tr = preparar(reg, lingua, acentos)
+      i = i + 1
+      tex.sprint(zebra(i, true))
       tex.sprint(string.format(
         "\\EBtabref{%d:%d} & \\EBtaborig{%s} & \\EBtabtr{%s} & \\EBtaborig{%s} & \\EBtabmorf{%s} & %s\\\\",
         reg.cap, reg.vers, esc(w), esc(tr), esc(reg.lema), esc(reg.morf), esc(reg.pt)))
@@ -312,9 +322,12 @@ function EB.vocabulario(caminho, lingua, de, ate, minimo)
     if cont[a] ~= cont[b] then return cont[a] > cont[b] end
     return a < b
   end)
+  local i = 0
   for _, l in ipairs(ordem) do
     if cont[l] >= (minimo or 1) then
       local r = info[l]
+      i = i + 1
+      tex.sprint(zebra(i, true))
       local tr = (lingua == "grego") and EB.translit_grc(l) or (r.translit or "")
       local lista = glosas[l].lista
       local g = table.concat(lista, " · ", 1, math.min(#lista, 4))

@@ -30,8 +30,27 @@
 \providecommand\ebEpigrafe{}
 \providecommand\ebEpigrafeRef{}
 \providecommand\ebFontesPersonalizadas{}
+\providecommand\ebIdioma{pt}
 
 \RequirePackage{etoolbox}
+
+%% ------------------------------------------------------- idioma da interface
+% Os textos da interface (rótulos das caixas, cabeçalhos das tabelas, nomes dos
+% índices) ficam em compartilhado/idiomas/<codigo>.tex. Para acrescentar um
+% idioma, copie um desses arquivos, traduza e use \newcommand\ebIdioma{<codigo>}.
+\newcommand\EBdeftxt[2]{\expandafter\def\csname EB@txt@#1\endcsname{#2}}
+\newcommand\EBtxt[1]{%
+  \ifcsname EB@txt@#1\endcsname\csname EB@txt@#1\endcsname
+  \else\PackageWarning{estudobiblico}{Texto '#1' não definido em idiomas/\ebIdioma.tex}%
+    \texttt{[#1]}\fi}
+\IfFileExists{idiomas/\ebIdioma.tex}
+  {\input{idiomas/\ebIdioma.tex}}
+  {\PackageWarning{estudobiblico}{Idioma '\ebIdioma' não encontrado
+     (compartilhado/idiomas/\ebIdioma.tex); usando português}%
+   \input{idiomas/pt.tex}}
+% os motores Lua (interlinear, livro, tema) usam isto para escolher a coluna
+% de nomes dos livros bíblicos em dados/biblia/livros.tsv
+\directlua{EB_IDIOMA_COL = "\EB@colunalivros"}
 \newcommand\EB@se[3]{\ifdefstring{#1}{#2}{#3}{}}
 
 %% ---------------------------------------------------------------- página
@@ -68,18 +87,62 @@
 %% ---------------------------------------------------------------- fontes e línguas
 \RequirePackage{fontspec}
 \RequirePackage[bidi=basic]{babel}
-\babelprovide[main, import]{brazilian}
-\babelprovide[import]{english}
+\babelprovide[main, import]{\EB@babelmain}
+% as demais línguas modernas continuam disponíveis para \foreignlanguage
+\ifdefstring{\EB@babelmain}{brazilian}{}{\babelprovide[import]{brazilian}}
+\ifdefstring{\EB@babelmain}{english}{}{\babelprovide[import]{english}}
 \babelprovide[import, onchar=ids fonts]{ancientgreek}
 \babelprovide[import, onchar=ids fonts]{hebrew}
 \babelprovide[import, onchar=ids fonts]{syriac}
 
 % Pasta das fontes: "fontes/" ao lado da pasta "estilo/" (vale para o projeto do
 % Overleaf e para o repositório, onde estilo/ fica em compartilhado/).
+% Procura a pasta em vários lugares e só aceita a que realmente contém as
+% fontes: um caminho que não abre aqui faz o LuaTeX falhar ao gravar o PDF
+% (TeX Live 2025). Sem "#" nem "\comandos" no código Lua: dentro de \edef o
+% TeX trataria o primeiro como parâmetro e não expandiria o segundo; e sem
+% "~=" em Lua, porque "~" é um comando no LaTeX (espaço inseparável).
 \edef\EB@dir{\directlua{
-  local sty = kpse.find_file("estilo/estudobiblico.sty", "tex") or "estilo/estudobiblico.sty"
-  local base = sty:gsub("estilo/estudobiblico[.]sty$", "")
-  tex.sprint(base .. "fontes/")}}
+  local cand, vistos, n = {}, {}, 0
+  local function por(d)
+    if d and not (d == "") and not vistos[d] then vistos[d] = true; n = n + 1; cand[n] = d end
+  end
+  local function pasta(p) return p and p:match("^(.*/)") end
+  local sty = pasta(kpse.find_file("estilo/estudobiblico.sty", "tex"))
+  if sty then por(sty .. "../fontes/") end
+  por(pasta(kpse.find_file("fontes/EBGaramond-Regular.otf", "tex")))
+  por(pasta(kpse.find_file("EBGaramond-Regular.otf", "opentype fonts")))
+  por("fontes/")
+  por("compartilhado/fontes/")
+  por("../../../compartilhado/fontes/")
+  local achada
+  for i = 1, n do
+    local f = io.open(cand[i] .. "EBGaramond-Regular.otf", "r")
+    if f then f:close(); achada = cand[i]; break end
+  end
+  if achada and not achada:match("^/") then achada = lfs.currentdir() .. "/" .. achada end
+  tex.sprint(achada or "fontes/")}}
+\IfFileExists{\EB@dir EBGaramond-Regular.otf}{}{%
+  \PackageWarning{estudobiblico}{Nao encontrei a pasta compartilhado/fontes
+    (procurei em \EB@dir); o PDF pode falhar ao ser gravado}}
+% Cache do luaotfload: ele guarda o caminho completo de cada fonte. Se o
+% repositório mudou de pasta, esse caminho antigo faz o LuaTeX parar no fim com
+% "(type 2): cannot find file ''". estilo/fontes.lua apaga só essas entradas
+% velhas (das nossas fontes) antes de carregá-las.
+\directlua{
+  local nome = "estilo/fontes.lua"
+  local f = io.open(nome, "r")
+  if f then f:close() else nome = kpse.find_file("estilo/fontes.lua", "tex") or nome end
+  local ok, erro = pcall(dofile, nome)
+  if ok and EBF then
+    pcall(EBF.limpar_cache, EBF.normalizar("\luaescapestring{\EB@dir}"))
+  else
+    texio.write_nl("estudobiblico: nao consegui carregar estilo/fontes.lua: " .. tostring(erro))
+  end
+}
+% "…/estilo/../fontes/" -> "…/fontes/"
+\edef\EB@dir{\directlua{tex.sprint(EBF and EBF.normalizar("\luaescapestring{\EB@dir}") or "\luaescapestring{\EB@dir}")}}
+
 % texto: EB Garamond | títulos: Marcellus | rótulos: Source Sans 3
 \babelfont{rm}[Path=\EB@dir, Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
   BoldFont=*-SemiBold, BoldItalicFont=*-SemiBoldItalic, Numbers=OldStyle]{EBGaramond}
@@ -171,9 +234,12 @@
 
 %% ---------------------------------------------------------------- títulos (titlesec)
 \RequirePackage{titlesec}
-\addto\captionsbrazilian{\renewcommand\chaptername{Etapa}\renewcommand\partname{Parte}
-  \renewcommand\contentsname{Sumário}\renewcommand\indexname{Índice remissivo}}
-\renewcommand\chaptername{Etapa}
+\expandafter\addto\csname captions\EB@babelmain\endcsname{%
+  \renewcommand\chaptername{\EBtxt{etapa}}\renewcommand\partname{\EBtxt{parte}}%
+  \renewcommand\contentsname{\EBtxt{sumario}}\renewcommand\indexname{\EBtxt{indiceRemissivo}}%
+  \renewcommand\bibname{\EBtxt{bibliografia}}}
+\renewcommand\chaptername{\EBtxt{etapa}}
+\renewcommand\partname{\EBtxt{parte}}
 
 \newcommand\EB@fundopagina[1][fundo]{%
   \begin{tikzpicture}[remember picture, overlay]
@@ -288,7 +354,7 @@
 
 % Objetivo da etapa
 \newtcolorbox{objetivo}[1][]{EB/base, colback=fundo, borderline west={3pt}{0pt}{destaque2},
-  before upper={\EB@rotulo{destaque2!80!black}{Objetivo}\quad}, #1}
+  before upper={\EB@rotulo{destaque2!80!black}{\EBtxt{objetivo}}\quad}, #1}
 
 % Tradução bíblica: \begin{traducao}{SIGLA}{Nome completo}{ano} ... \basetextual{AT}{NT} \end{traducao}
 \newcommand\EBselo[1]{\tikz[baseline=(s.base)]\node[fill=destaque, text=white, rounded corners=2pt,
@@ -296,26 +362,26 @@
 \newtcolorbox{traducao}[3]{EB/base, colback=white, colframe=fundo2, boxrule=.6pt,
   colbacktitle=fundo, coltitle=tinta, toptitle=3pt, bottomtitle=3pt,
   title={\EBselo{#1}\hspace{.6em}#2\hfill{\color{suave}\mdseries #3}},
-  before upper={\index{Traduções!#2 (#1)}\raggedright}}
+  before upper={\index{\EBtxt{traducoes}!#2 (#1)}\raggedright}}
 \newcommand\basetextual[2]{\par\smallskip{\color{fundo2}\hrule height .5pt}\smallskip
-  {\sffamily\scriptsize\color{suave}\textbf{Base AT:} #1\par\textbf{Base NT:} #2\par}}
+  {\sffamily\scriptsize\color{suave}\textbf{\EBtxt{baseAT}} #1\par\textbf{\EBtxt{baseNT}} #2\par}}
 
 % Nota / observação
-\newtcolorbox{nota}[1][Nota]{EB/base, colback=destaque!4, borderline west={2.5pt}{0pt}{destaque},
+\newtcolorbox{nota}[1][\EBtxt{nota}]{EB/base, colback=destaque!4, borderline west={2.5pt}{0pt}{destaque},
   before upper={\EB@rotulo{destaque}{#1}\quad}}
 % Pergunta de estudo (numerada por etapa)
 \newcounter{pergunta}[chapter]
 \renewcommand\thepergunta{\ifnum\value{chapter}>0 \thechapter.\fi\arabic{pergunta}}
 \newtcolorbox{pergunta}[1][]{EB/base, colback=fundo, borderline west={2.5pt}{0pt}{destaque2},
-  before upper={\refstepcounter{pergunta}\EB@rotulo{destaque2!80!black}{Pergunta \thepergunta}\quad}, #1}
+  before upper={\refstepcounter{pergunta}\EB@rotulo{destaque2!80!black}{\EBtxt{pergunta} \thepergunta}\quad}, #1}
 % Alerta metodológico (falácias, cuidados)
-\newtcolorbox{alerta}[1][Cuidado]{EB/base, colback=rubrica!5, borderline west={2.5pt}{0pt}{rubrica},
+\newtcolorbox{alerta}[1][\EBtxt{cuidado}]{EB/base, colback=rubrica!5, borderline west={2.5pt}{0pt}{rubrica},
   before upper={\EB@rotulo{rubrica}{#1}\quad}}
 % Aplicação
-\newtcolorbox{aplicacao}[1][Aplicação]{EB/base, colback=aramaico!6, borderline west={2.5pt}{0pt}{aramaico},
+\newtcolorbox{aplicacao}[1][\EBtxt{aplicacao}]{EB/base, colback=aramaico!6, borderline west={2.5pt}{0pt}{aramaico},
   before upper={\EB@rotulo{aramaico}{#1}\quad}}
 % Variante textual
-\newtcolorbox{variante}[1][Crítica textual]{EB/base, colback=white, colframe=rubrica!60,
+\newtcolorbox{variante}[1][\EBtxt{criticaTextual}]{EB/base, colback=white, colframe=rubrica!60,
   boxrule=.5pt, before upper={\EB@rotulo{rubrica}{#1}\quad}}
 % Citação de obra (comentário, léxico...): \begin{citacao}{Autor, Obra, p.}
 \newtcolorbox{citacao}[1]{EB/base, colback=fundo!60, borderline west={1pt}{0pt}{suave},
@@ -324,12 +390,17 @@
 \newtcolorbox{lexico}[3]{EB/base, colback=white, colframe=grego!35, boxrule=.5pt,
   colbacktitle=grego!6, coltitle=tinta, toptitle=3pt, bottomtitle=3pt,
   title={{\EBfgrego\large\color{grego}\mdseries #1}\enspace\trgr{#1}\hfill
-         {\mdseries\color{suave}#2\ifblank{#3}{}{\enspace·\enspace #3× no NT}}},
+         {\mdseries\color{suave}#2\ifblank{#3}{}{\enspace·\enspace #3× \EBtxt{noNT}}}},
   before upper={\EBindexlema{grego}{\directlua{tex.sprint(EB.chave("\luaescapestring{#1}"))}}{#1}}}
 \newcommand\lexicoref[1]{\EBindexlema{grego}{\directlua{tex.sprint(EB.chave("\luaescapestring{#1}"))}}{#1}}
 
 %% ---------------------------------------------------------------- tabelas
 \newcommand\EBcab[1]{\leavevmode\sffamily\bfseries\footnotesize\color{destaque}#1}
+% Listras das tabelas que quebram de página: o \rowcolors do xcolor não
+% sobrevive à divisão de uma longtable (longtable 4.24, TeX Live 2025), então
+% os motores Lua emitem \EBzebra no início das linhas pares.
+\newcommand\EBzebra{\rowcolor{fundo!60}}
+\newcommand\EBzebraclara{\rowcolor{fundo!70}}
 \newenvironment{ebtabela}[1]
   {\par\smallskip\noindent\small\rowcolors{2}{fundo!70}{white}\tabularx{\linewidth}{#1}\toprule
    \noalign{\global\rownum=\z@}}
@@ -343,8 +414,8 @@
 \renewcommand*{\bibfont}{\small}
 
 \RequirePackage{imakeidx}
-\makeindex[intoc, columns=2, title=Índice remissivo, options={-s indice.ist}]
-\makeindex[name=termos, intoc, columns=2, title=Índice de termos originais, options={-s indice-termos.ist}]
+\makeindex[intoc, columns=2, title=\EBtxt{indiceRemissivo}, options={-s indice.ist}]
+\makeindex[name=termos, intoc, columns=2, title=\EBtxt{indiceTermos}, options={-s indice-termos.ist}]
 \newcommand\EBindexletra[1]{\par\medskip{\sffamily\bfseries\color{destaque}#1}\par\smallskip\nopagebreak}
 \newcommand\EBtermo[2]{\csname EB@termo@#1\endcsname{#2}}
 \newcommand\EB@termo@grego[1]{\gr{#1}}
@@ -353,8 +424,8 @@
 \newcommand\EB@termo@siriaco[1]{\sy{#1}}
 \newcommand\EBindexlema[3]{% língua, chave (expandida), lema
   \begingroup\edef\x{\endgroup\noexpand\index[termos]{\csname EB@lingua@#1\endcsname!#2@\noexpand\EBtermo{#1}{\unexpanded{#3}}}}\x}
-\def\EB@lingua@grego{Grego}\def\EB@lingua@hebraico{Hebraico}
-\def\EB@lingua@aramaico{Aramaico}\def\EB@lingua@siriaco{Siríaco}
+\def\EB@lingua@grego{\EBtxt{grego}}\def\EB@lingua@hebraico{\EBtxt{hebraico}}
+\def\EB@lingua@aramaico{\EBtxt{aramaico}}\def\EB@lingua@siriaco{\EBtxt{siriaco}}
 
 %% ---------------------------------------------------------------- interlinear
 \RequirePackage{estilo/interlinear}
@@ -370,7 +441,7 @@
     \node[rotate=90, anchor=center, text=destaque!55!white, font=\EBfgrego\fontsize{40}{40}\selectfont]
       at ([xshift=17mm]current page.west) {\ebIncipit};
     \node[anchor=north west, text width=128mm, align=left] at ([xshift=52mm, yshift=-42mm]current page.north west) {%
-      {\EBfversal\normalsize\color{destaque2!85!black}\ebSerie\ifdefempty{\ebNumero}{}{\ \textbullet\ nº\,\ebNumero}}\\[20mm]
+      {\EBfversal\normalsize\color{destaque2!85!black}\ebSerie\ifdefempty{\ebNumero}{}{\ \textbullet\ \EBtxt{numeroAbrev}\,\ebNumero}}\\[20mm]
       {\EBftitulo\fontsize{44}{50}\selectfont\color{tinta}\hyphenpenalty=10000\exhyphenpenalty=10000\spaceskip=.3em plus .1em\relax\ebTitulo}\\[8mm]
       {\color{destaque2}\rule{60mm}{.8pt}}\\[7mm]
       {\fontsize{17}{22}\selectfont\itshape\color{tinta!85}\ebSubtitulo}\\[16mm]
@@ -389,14 +460,10 @@
   {\color{destaque2}\rule{30mm}{.5pt}}\par\medskip
   \textbf{\ebTitulo}\ifdefempty{\ebSubtitulo}{}{\ — \ebSubtitulo}\par
   \ebSerie\par\medskip
-  Copyright \textcopyright\ \ebAutor. Material de estudo pessoal.\par\medskip
+  Copyright \textcopyright\ \ebAutor. \EBtxt{colofaoUso}\par\medskip
   {\footnotesize\color{suave}
-  Texto grego: SBL Greek New Testament (CC BY 4.0, Society of Biblical Literature \& Logos);
-  morfologia MorphGNT (CC BY-SA 3.0). Hebraico e aramaico: Westminster Leningrad Codex
-  com morfologia da OpenScriptures Hebrew Bible (CC BY 4.0). Os textos das traduções
-  modernas pertencem aos respectivos detentores de direitos e são citados para estudo.\par\smallskip
-  Tipografia: EB Garamond, Gentium Book Plus, Marcellus, Source Sans 3, Noto Serif Hebrew
-  e Noto Sans Syriac (SIL Open Font License). Composto em \LaTeX\ (LuaLaTeX).\par}}
+  \EBtxt{colofaoFontes}\par\smallskip
+  \EBtxt{colofaoTipografia}\par}}
   \clearpage}
 
 %% ---------------------------------------------------------------- hyperlinks

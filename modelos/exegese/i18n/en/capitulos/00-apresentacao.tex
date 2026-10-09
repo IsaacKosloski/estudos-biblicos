@@ -1,0 +1,100 @@
+%% =============================================================================
+%%  Introduction — how to use this notebook
+%% =============================================================================
+\chapter{Introduction}
+
+This notebook holds a personal study of \ebTitulo. The aim is twofold: to
+understand the text as faithfully as possible and, at the same time, to
+practise a \emph{method} that can be repeated in the next notebooks of the
+series.
+
+\section{The seven steps}
+
+The path starts from what is closest to the reader (the translations already
+in use) and moves towards the text in its own language, form and context,
+hearing other interpreters only afterwards and then framing a synthesis. At
+the end it returns to the text: interpretation is a \emph{spiral}, not a
+straight line \parencite{osborne2006}.
+
+\begin{center}
+\begin{tikzpicture}[
+    etapa/.style={circle, minimum size=11mm, inner sep=0pt, font=\EBftitulo\Large,
+      text=white},
+    rot/.style={font=\sffamily\scriptsize, text width=18mm, align=center, text=tinta},
+    grupo/.style={font=\EBfversal\footnotesize, text=destaque2!80!black}]
+  \foreach \i/\t/\c in {1/Translations/destaque, 2/Original text/destaque,
+      3/Structure/destaque, 4/Context/grego!70!destaque2, 5/Intertext/grego!70!destaque2,
+      6/Dialogue/grego!70!destaque2, 7/Synthesis/rubrica}{
+    \node[etapa, fill=\c] (e\i) at ({(\i-1)*2.1}, 0) {\i};
+    \node[rot, below=2pt of e\i] {\t};
+  }
+  \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,6}
+    \draw[-{Stealth[length=5pt]}, destaque2, thick] (e\i) -- (e\j);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e1.west) -- node[grupo, above=6pt]{Observation} ([yshift=9mm]e3.east);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e4.west) -- node[grupo, above=6pt]{Interpretation} ([yshift=9mm]e6.east);
+  \draw[decorate, decoration={brace, amplitude=5pt}, destaque2]
+    ([yshift=9mm]e7.west) -- node[grupo, above=6pt]{Appropriation} ([yshift=9mm]e7.east);
+  \draw[-{Stealth[length=5pt]}, rubrica, thick, dashed, rounded corners=8pt]
+    (e7.south) -- ++(0,-12mm) -| node[pos=.25, below, font=\sffamily\scriptsize, text=rubrica]
+    {hermeneutical spiral: back to the text with new questions} (e1.south);
+\end{tikzpicture}
+\end{center}
+
+Each step opens with a \emph{goal} box, carries numbered questions and closes
+with what was learned. The steps expand a classic six-stage plan, giving the
+original text, the literary structure and the use of the Old Testament a
+place of their own:
+
+\begin{ebtabela}{@{}>{\raggedright}p{.3\linewidth} >{\raggedright\arraybackslash}X@{}}
+\EBcab{Classic plan} & \EBcab{In this notebook}\\\midrule
+1. Translation & Step 1 — Translations (critical comparison)\\
+2. Lexicon and semantics & Step 2 — Original text (textual criticism, lexicon, grammar)\\
+3. Immediate context & Step 3 — Structure \emph{and} Step 4 — Context\\
+4. Cross references & Step 5 — Intertext (Hebrew OT, Aramaic, LXX, Peshitta)\\
+5. Commentaries & Step 6 — Dialogue with the tradition\\
+6. Homiletics and doctrine & Step 7 — Synthesis and appropriation\\
+\end{ebtabela}
+
+\section{Working principles}
+
+\paragraph{Observe before interpreting.} The first three steps only record
+what is in the text: words, forms, repetitions, contrasts. Questions of
+meaning are written down but left open \parencite{duvall2012, fee2002}.
+
+\paragraph{Commentaries last.} Reading commentaries too early makes a study
+repeat other people's conclusions. They come in at Step~6 as conversation
+partners, to confirm, correct or extend what was observed.
+
+\paragraph{Words mean things in context.} The interlinear is a tool for
+observation, not a translation. It tends to suggest a word-for-word reading
+and to hide the syntax; that is why it always goes together with an analysis
+of the whole sentence.
+
+\begin{alerta}[Fallacies to avoid]
+\emph{Root fallacy}: assuming that etymology settles a word's current sense.
+\emph{Illegitimate totality transfer}: loading a single occurrence with every
+sense the dictionary lists. \emph{Anachronism}: reading a Greek term through
+the meaning of an English word derived from it. See \textcite{carson1996} and
+\textcite{silva1994}.
+\end{alerta}
+
+\section{Legend}
+
+\noindent
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\gr{Ἑλληνικά} & Greek text (Gentium Book Plus, blue)\\
+\hb{עִבְרִית} & Hebrew (Noto Serif Hebrew, amber)\\
+\arc{אֲרָמִית} \ \sy{ܣܘܪܝܝܐ} & Aramaic and Syriac (olive green)\\
+\tl{translit.} & transliteration in the SBL style\\
+\vs{20}\hspace{-.2em} & verse number (rubric red, as in the manuscripts)\\
+{\color{rubrica}°} & word with a recorded textual variant\\
+{\color{suave}[\,]} & implied word, supplied in the gloss\\
+\end{tabularx}
+
+\begin{objetivo}States what the step sets out to achieve.\end{objetivo}
+\begin{pergunta}Study question, numbered within the step.\end{pergunta}
+\begin{nota}An observation, a fact or a clarification.\end{nota}
+\begin{variante}A problem of textual criticism.\end{variante}
+\begin{aplicacao}A bridge from the sense of the text to life today.\end{aplicacao}

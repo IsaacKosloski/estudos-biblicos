@@ -45,6 +45,26 @@ local function ler(caminho, opcional)
   return linhas
 end
 
+-- ----------------------------------------- nome do livro conforme o idioma
+-- EB_IDIOMA_COL é definido pelo TeX a partir de compartilhado/idiomas/<cod>.tex
+local function sufixo()
+  local c = rawget(_G, "EB_IDIOMA_COL") or ""
+  return c ~= "" and ("_" .. c) or ""
+end
+local function campo(b, nome)
+  if not b then return "" end
+  local v = b[nome .. sufixo()]
+  if v == nil or v == "" then v = b[nome] end
+  return v or ""
+end
+
+-- listras: as longtables que quebram de página recebem \EBzebra linha a linha
+-- (o \rowcolors do xcolor não sobrevive à divisão da tabela)
+local function zebra(i)
+  if i % 2 == 0 then return "\\EBzebra " end
+  return ""
+end
+
 local ESC = { ["\\"] = "\\textbackslash{}", ["{"] = "\\{", ["}"] = "\\}", ["%"] = "\\%",
   ["&"] = "\\&", ["#"] = "\\#", ["_"] = "\\_", ["$"] = "\\$", ["^"] = "\\^{}", ["~"] = "\\~{}" }
 local function esc(s) return ((s or ""):gsub("[\\{}%%&#_%$%^~]", ESC)) end
@@ -65,6 +85,9 @@ local function livros()
   for _, b in ipairs(LIVROS) do
     POR_NOME[chave_nome(b.abrev)] = b
     POR_NOME[chave_nome(b.nome)] = b
+    for _, c in ipairs({ "nome_en", "nome_es" }) do
+      if b[c] and b[c] ~= "" then POR_NOME[chave_nome(b[c])] = b end
+    end
     for alt in (b.nomes_alt or ""):gmatch("[^|]+") do POR_NOME[chave_nome(alt)] = b end
   end
   return LIVROS
@@ -93,7 +116,7 @@ local function preparar(lista)
       t._cap = cap or 0
       t._vers = vers or ""
       t._v1 = tonumber((vers or ""):match("%d+")) or 0
-      t._nome = b and (b.nome .. " " .. cap .. ":" .. vers) or t.ref
+      t._nome = b and (campo(b, "nome") .. " " .. cap .. ":" .. vers) or t.ref
     end
   end
   return lista
@@ -101,7 +124,7 @@ end
 
 local function idx(t)
   if not t._livro then return "" end
-  return string.format("%02d@%s!%03d%03d@%d:%s", t._ordem, esc(t._livro.nome), t._cap, t._v1,
+  return string.format("%02d@%s!%03d%03d@%d:%s", t._ordem, esc(campo(t._livro, "nome")), t._cap, t._v1,
     t._cap, esc(t._vers))
 end
 
@@ -129,7 +152,10 @@ function TM.tabela(dados, modo, grupo_so, peso_so)
     local copia = {}
     for _, t in ipairs(lista) do if grupo_so == "" or t.grupo == grupo_so then copia[#copia + 1] = t end end
     table.sort(copia, ordenar)
+    local i = 0
     for _, t in ipairs(copia) do
+      i = i + 1
+      tex.sprint(zebra(i))
       tex.sprint(string.format("\\EBtematexto{%s}{%s}{%s}{%s}{%s}\\\\",
         esc(t._nome), esc(t.grupo), esc(t.peso), esc(t.nota), idx(t)))
     end
@@ -141,11 +167,14 @@ function TM.tabela(dados, modo, grupo_so, peso_so)
     if not por_g[g] then por_g[g] = {}; ordem_g[#ordem_g + 1] = g end
     table.insert(por_g[g], t)
   end
+  local linha = 0
   for _, g in ipairs(ordem_g) do
     if grupo_so == "" or grupo_so == g then
       table.sort(por_g[g], ordenar)
       tex.sprint(string.format("\\EBtemagrupo{%s}{%d}\\\\", esc(g), #por_g[g]))
       for _, t in ipairs(por_g[g]) do
+        linha = linha + 1
+        tex.sprint(zebra(linha))
         tex.sprint(string.format("\\EBtematexto{%s}{%s}{%s}{%s}{%s}\\\\",
           esc(t._nome), esc(g), esc(t.peso), esc(t.nota), idx(t)))
       end
@@ -155,7 +184,10 @@ end
 
 -- ------------------------------------------------ vocabulário
 function TM.vocabulario(dados)
+  local i = 0
   for _, v in ipairs(ler(dados .. "/vocabulario.tsv", true)) do
+    i = i + 1
+    tex.sprint(zebra(i))
     local tr = v.translit
     if (tr == nil or tr == "") and v.lingua == "grego" and EB and EB.translit_grc then
       tr = EB.translit_grc(v.lema)
@@ -168,10 +200,14 @@ end
 -- ------------------------------------------------ distribuição por grupo de livros
 function TM.distribuicao(dados)
   livros()
-  local grupos, nomes = {}, {}
+  local grupos, nomes, rotulo = {}, {}, {}
   for _, b in ipairs(LIVROS) do
-    local g = b.testamento .. " · " .. b.grupo
-    if not grupos[g] then grupos[g] = { t = 0, o = 0 }; nomes[#nomes + 1] = g end
+    local g = b.testamento .. " · " .. campo(b, "grupo")
+    if not grupos[g] then
+      grupos[g] = { t = 0, o = 0 }
+      nomes[#nomes + 1] = g
+      rotulo[g] = "\\EBtxt{sigla" .. b.testamento .. "} \\textperiodcentered{} " .. esc(campo(b, "grupo"))
+    end
     b._g = g
   end
   for _, t in ipairs(TM.textos(dados)) do
@@ -185,7 +221,7 @@ function TM.distribuicao(dados)
   local mt, mo = 1, 1
   for _, g in ipairs(nomes) do mt = math.max(mt, grupos[g].t); mo = math.max(mo, grupos[g].o) end
   for _, g in ipairs(nomes) do
-    tex.sprint(string.format("\\EBtemabarra{%s}{%d}{%d}{%d}{%d}\\\\", esc(g), grupos[g].t, mt,
+    tex.sprint(string.format("\\EBtemabarra{%s}{%d}{%d}{%d}{%d}\\\\", rotulo[g], grupos[g].t, mt,
       grupos[g].o, mo))
   end
 end
@@ -217,9 +253,9 @@ function TM.ocorrencias(dados, strong)
       local chave = o.ref
       if b and not vistos[chave] then
         vistos[chave] = true
-        if b.nome ~= atual then
+        if campo(b, "nome") ~= atual then
           if #partes > 0 then blocos[#blocos + 1] = cap_atual .. ":" .. table.concat(partes, ", ") end
-          fechar(); atual, cap_atual, partes, blocos = b.nome, nil, {}, {}
+          fechar(); atual, cap_atual, partes, blocos = campo(b, "nome"), nil, {}, {}
         end
         if o.cap ~= cap_atual then
           if #partes > 0 then blocos[#blocos + 1] = cap_atual .. ":" .. table.concat(partes, ", ") end

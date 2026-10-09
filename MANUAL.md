@@ -22,17 +22,18 @@ listas de ocorrências, tabelas).
 | [9. Caderno de exegese](#9-caderno-de-exegese) | passo a passo |
 | [10. Caderno de estudo de livro](#10-caderno-de-estudo-de-livro) | passo a passo |
 | [11. Caderno temático](#11-caderno-temático) | passo a passo |
-| [12. Referência de comandos LaTeX](#12-referência-de-comandos-latex) | tudo o que você escreve nos capítulos |
-| [13. Ferramentas de linha de comando](#13-ferramentas-de-linha-de-comando) | interlinear.py, livro.py, tema.py |
-| [14. Formato dos dados](#14-formato-dos-dados) | todos os TSV |
-| [15. Personalizar](#15-personalizar) | cores, fontes, margens, caixas, capa |
-| [16. Bibliografia e índices](#16-bibliografia-e-índices) | biblatex e imakeidx |
-| [17. Overleaf](#17-overleaf) | exportar e compilar na nuvem |
-| [18. Git e GitHub](#18-git-e-github) | versionar e sincronizar |
-| [19. Manutenção](#19-manutenção-do-repositório) | renomear, mover, apagar, backup |
-| [20. Estender o repositório](#20-estender-o-repositório) | criar um tipo novo de caderno |
-| [21. Problemas comuns](#21-problemas-comuns) | erros e soluções |
-| [22. Licenças e cuidados](#22-licenças-e-cuidados) | o que pode e o que não pode ser publicado |
+| [12. Idiomas](#12-idiomas) | fazer o caderno em português, inglês ou outro idioma |
+| [13. Referência de comandos LaTeX](#13-referência-de-comandos-latex) | tudo o que você escreve nos capítulos |
+| [14. Ferramentas de linha de comando](#14-ferramentas-de-linha-de-comando) | interlinear.py, livro.py, tema.py |
+| [15. Formato dos dados](#15-formato-dos-dados) | todos os TSV |
+| [16. Personalizar](#16-personalizar) | cores, fontes, margens, caixas, capa |
+| [17. Bibliografia e índices](#17-bibliografia-e-índices) | biblatex e imakeidx |
+| [18. Overleaf](#18-overleaf) | exportar e compilar na nuvem |
+| [19. Git e GitHub](#19-git-e-github) | versionar e sincronizar |
+| [20. Manutenção](#20-manutenção-do-repositório) | renomear, mover, apagar, backup |
+| [21. Estender o repositório](#21-estender-o-repositório) | criar um tipo novo de caderno |
+| [22. Problemas comuns](#22-problemas-comuns) | erros e soluções |
+| [23. Licenças e cuidados](#23-licenças-e-cuidados) | o que pode e o que não pode ser publicado |
 
 ---
 
@@ -146,6 +147,8 @@ Vale conhecer a sequência, porque quase todo erro aparece num destes passos.
 main.tex
   ├─ \input{config}                 título, autor, tema de cores, papel…
   ├─ \usepackage{estilo/estudobiblico}   visual + comandos comuns
+  │                                      (→ estilo/fontes.lua: acha as fontes e
+  │                                       limpa o cache velho do luaotfload)
   ├─ \usepackage{estilo/interlinear}     (exegese)  → estilo/interlinear.lua
   ├─ \usepackage{estilo/livro}           (livro)    → estilo/livro.lua
   ├─ \usepackage{estilo/tema}            (tema)     → estilo/tema.lua
@@ -505,6 +508,13 @@ python3 estudos.py compilar lff
 - `--ultima` = última página do PDF que ainda pertence à última lição (antes dos
   apêndices).
 
+Para um livro em outro idioma há mais três opções, todas opcionais:
+`--divisor` (a palavra que abre uma divisão maior: `PARTE`, `PART`,
+`SECTION`…; o padrão já reconhece todas), `--leia` (os verbos que marcam um
+texto como “leia este texto”: `leia`, `read`, `lea`…) e, no comando
+`textos`, `--idioma en`, que escreve os nomes dos livros bíblicos em inglês na
+coluna `ref`.
+
 Se o livro tiver outro formato e o `indice` não funcionar, escreva o
 `licoes.tsv` à mão: bastam `num`, `parte`, `titulo`, `pagina`, `pagina_pdf`.
 
@@ -618,12 +628,108 @@ deixe a coluna `grupo` refletir isso.
 
 ---
 
-## 12. Referência de comandos LaTeX
+## 12. Idiomas
+
+Cada caderno tem um idioma próprio, escolhido na criação. Ele decide a língua
+de tudo o que o repositório gera: rótulos das caixas, cabeçalhos das tabelas,
+nomes dos índices, nomes dos livros da Bíblia, hifenização e os capítulos de
+modelo. O repositório traz **português (`pt`)**, **inglês (`en`)** e
+**espanhol (`es`)**, e aceita qualquer outro que você acrescente.
+
+```bash
+python3 estudos.py idiomas                       # quais existem
+python3 estudos.py novo livro lff-en --idioma en --titulo "Enjoy Life Forever!"
+python3 estudos.py novo tema  blood  --idioma en --titulo "What does the Bible say about blood?"
+```
+
+O idioma fica registrado no `config.tex` do caderno e pode ser trocado depois:
+
+```latex
+\newcommand\ebIdioma{en}     % pt | en | es | …
+```
+
+Para que todo caderno novo saia num idioma, acrescente `idioma = en` em
+`estudos.ini`.
+
+### 12.1 O que muda e o que não muda
+
+| Muda com o idioma | Não muda |
+|---|---|
+| rótulos das caixas (Objetivo/Goal/Objetivo), cabeçalhos de tabela, legendas do interlinear | o que **você** escreve nos capítulos |
+| nomes dos índices, do sumário e da bibliografia | os dados dos TSV: glosas, morfologia, títulos das lições, notas |
+| nomes dos livros da Bíblia (Gênesis / Genesis / Génesis) e dos grupos (Profetas / Prophets) | o texto original (grego, hebraico, aramaico, siríaco) |
+| nome da unidade do caderno de livro (Lição / Lesson / Lección) | a sua bibliografia |
+| hifenização, datas e aspas (via babel) | o nome da série (`\ebSerie`), que é escolha sua |
+| os capítulos de modelo, quando existem no idioma | — |
+
+Duas consequências que vale ter em mente:
+
+- **As glosas do interlinear vêm dos dados, não do idioma.** A coluna `pt` do
+  TSV é a *sua* glosa (a legenda a chama de \enquote{glosa própria} /
+  \enquote{own gloss}) e a coluna `en` é a glosa lexical automática. Num
+  caderno em inglês, escreva a sua glosa na coluna `pt` do mesmo jeito, ou
+  desligue a camada com `\interlinear[pt=false]`.
+- **A morfologia sai em português**, porque é gerada assim pelo
+  `interlinear.py`. Para um caderno em inglês, use
+  `\interlinear[morf=false]` ou traduza a coluna `morf` do TSV.
+
+### 12.2 Acrescentar um idioma
+
+Três passos, nenhum deles obrigatório além do primeiro:
+
+1. **Os textos da interface.** Copie `compartilhado/idiomas/pt.tex` para
+   `compartilhado/idiomas/fr.tex` e traduza o segundo argumento de cada
+   `\EBdeftxt`. **Não mude as chaves** (o primeiro argumento). No alto do
+   arquivo, ajuste duas linhas:
+
+   ```latex
+   \def\EB@babelmain{french}   % nome da língua no babel
+   \def\EB@colunalivros{fr}    % coluna de nomes dos livros em livros.tsv
+   ```
+
+2. **Os nomes dos livros da Bíblia.** Em `dados/biblia/livros.tsv`,
+   acrescente as colunas `nome_fr` e `grupo_fr` (o cabeçalho é lido pelo nome,
+   então a ordem das colunas não importa). Se faltarem, o caderno usa os nomes
+   em português. Vale também acrescentar os nomes novos a `nomes_alt`, para
+   que o `tema.py` e o `livro.py` reconheçam referências escritas nesse idioma.
+
+3. **Os capítulos de modelo.** Opcional. Crie
+   `modelos/<tipo>/i18n/fr/capitulos/` com os capítulos traduzidos. Sem isso,
+   um caderno novo nesse idioma nasce com os capítulos em português e o
+   `estudos.py` avisa; a interface sai no idioma escolhido de qualquer forma.
+
+Depois: `python3 estudos.py novo tema x --idioma fr`.
+
+\medskip
+
+> **Hifenização.** O babel só separa sílabas corretamente se os padrões da
+> língua estiverem instalados. No Debian/Ubuntu são pacotes como
+> `texlive-lang-spanish`, `texlive-lang-french`, `texlive-lang-german`. Sem
+> eles o texto compila, mas sem hifenização (o `main.log` diz
+> `Hyphen rules for '<língua>' set to \l@nil`). Português e inglês já vêm com
+> a instalação recomendada na seção 2.
+
+### 12.3 Duas versões do mesmo estudo
+
+É o caso de uma publicação que existe em português e em inglês: crie dois
+cadernos, cada um com o seu idioma e a sua pasta de dados.
+
+```bash
+python3 estudos.py novo livro lff    --idioma pt --titulo "Seja Feliz Para Sempre!"
+python3 estudos.py novo livro lff-en --idioma en --titulo "Enjoy Life Forever!"
+```
+
+Estilo, ferramentas e interlineares são os mesmos; mudam o `licoes.tsv` (com
+os títulos na língua da edição), o `\livroDados` de cada `config.tex` e o
+texto que você escreve. Se quiser usar as mesmas anotações nos dois, aponte
+`\livroNotas` para a mesma pasta.
+
+## 13. Referência de comandos LaTeX
 
 Tudo o que se segue está disponível em qualquer caderno (o que é específico
 está marcado).
 
-### 12.1 Texto em outras línguas e referências
+### 13.1 Texto em outras línguas e referências
 
 | Comando | Resultado |
 |---|---|
@@ -640,7 +746,7 @@ está marcado).
 | `\EBimplicito{...}` | palavra implícita, em cinza |
 | `\poema` | inicia parágrafo com recuo pendente (poesia) |
 
-### 12.2 Caixas
+### 13.2 Caixas
 
 ```latex
 \begin{objetivo} O que se quer alcançar na etapa. \end{objetivo}
@@ -663,7 +769,7 @@ está marcado).
 
 `\lexicoref{μακάριος}` põe um lema no índice de termos sem abrir uma caixa.
 
-### 12.3 Tabelas
+### 13.3 Tabelas
 
 ```latex
 \begin{ebtabela}{@{}l >{\raggedright\arraybackslash}X@{}}
@@ -675,7 +781,7 @@ está marcado).
 `X` é a coluna elástica (do pacote `tabularx`); `\EBcab` formata o cabeçalho; as
 linhas saem com fundo alternado.
 
-### 12.4 Interlinear (todos os cadernos)
+### 13.4 Interlinear (todos os cadernos)
 
 ```latex
 \interlinear[opções]{dados/biblia/arquivo.tsv}
@@ -703,7 +809,7 @@ Opções:
 Os modos: **leitura** = original + transliteração + português; **estudo** =
 mais inglês e morfologia; **completo** = mais lema e número de Strong.
 
-### 12.5 Caderno de livro
+### 13.5 Caderno de livro
 
 | Comando | Efeito |
 |---|---|
@@ -715,7 +821,7 @@ mais inglês e morfologia; **completo** = mais lema e número de Strong.
 | `\begin{campo}{Título}…\end{campo}` | bloco de anotação sua |
 | `\EBlivcampo[4]{Título}{dica}` | campo em branco com 4 linhas (só no modo impresso) |
 
-### 12.6 Caderno temático
+### 13.6 Caderno temático
 
 | Comando | Efeito |
 |---|---|
@@ -731,7 +837,7 @@ mais inglês e morfologia; **completo** = mais lema e número de Strong.
 | `\proposicao{Afirmação.}{Lv 17:11; Hb 9:22}` | proposição numerada da síntese |
 | `\campovazio[3]{Título}{dica}` | campo em branco com 3 linhas |
 
-### 12.7 Estrutura do documento
+### 13.7 Estrutura do documento
 
 `\capa`, `\colofao`, `\part{...}`, `\chapter{...}`, `\section{...}`,
 `\EBornamento`, `\EBlosango`, `\EBemblema`.
@@ -741,13 +847,13 @@ Citações: `\parencite{fee2002}` (entre parênteses) e `\textcite{bovon2002}`
 
 ---
 
-## 13. Ferramentas de linha de comando
+## 14. Ferramentas de linha de comando
 
 Todas usam só a biblioteca padrão do Python 3 e são executadas **a partir da
 raiz** do repositório. Na primeira execução, baixam as bases para
 `ferramentas/.cache/` (é preciso internet só nessa vez).
 
-### 13.1 interlinear.py
+### 14.1 interlinear.py
 
 ```bash
 python3 ferramentas/interlinear.py grego LIVRO CAP:V-V -o ARQUIVO.tsv
@@ -767,21 +873,23 @@ python3 ferramentas/interlinear.py aparato LIVRO CAP:V-V
   Bíblias em português é Sl 83:19 no hebraico, porque o título conta como
   versículo 1. Os Salmos são o caso mais frequente.
 
-### 13.2 livro.py
+### 14.2 livro.py
 
 ```bash
-python3 ferramentas/livro.py indice PDF -o PASTA [--deslocamento N]
-python3 ferramentas/livro.py textos PDF -o PASTA [--ultima N]
+python3 ferramentas/livro.py indice PDF -o PASTA [--deslocamento N] [--divisor PART]
+python3 ferramentas/livro.py textos PDF -o PASTA [--ultima N] [--leia read] [--idioma en]
 python3 ferramentas/livro.py resumo PASTA [-n 15]
 ```
 
 `indice` procura o número de duas casas no alto de cada página e monta o
-`licoes.tsv` (títulos a revisar à mão). `textos` percorre as páginas de cada
-lição e reconhece referências no formato "Livro capítulo:versículo", marcando
-como `leia` as precedidas de "Leia"/"Leiam". `resumo` mostra os textos e livros
-mais citados.
+`licoes.tsv`. Reconhece as divisões maiores em várias línguas (`PARTE`, `PART`,
+`SECTION`…) e monta o título juntando as linhas curtas que seguem o número;
+ainda assim, **confira os títulos**, sobretudo quando o PDF perde acentos ou
+ligaduras. `textos` percorre as páginas de cada lição e reconhece referências
+no formato "Livro capítulo:versículo", marcando como `leia` as precedidas de
+"Leia", "Read", "Lea"… `resumo` mostra os textos e livros mais citados.
 
-### 13.3 tema.py
+### 14.3 tema.py
 
 ```bash
 python3 ferramentas/tema.py ocorrencias H1818 G129 -o PASTA
@@ -795,7 +903,7 @@ que ainda não entraram na sua lista de estudo.
 
 ---
 
-## 14. Formato dos dados
+## 15. Formato dos dados
 
 Todos os dados são **TSV**: texto puro, UTF-8, colunas separadas por
 **tabulação**. Linhas iniciadas por `#` são comentários. Podem ser editados em
@@ -806,7 +914,7 @@ por tabulações").
 > separada por espaços em vez de tabulação é a causa mais comum de "sumiu uma
 > linha".
 
-### 14.1 Texto original — `dados/biblia/*.grc|hbo|arc|syr.tsv`
+### 15.1 Texto original — `dados/biblia/*.grc|hbo|arc|syr.tsv`
 
 Uma palavra por linha:
 
@@ -823,19 +931,19 @@ Uma palavra por linha:
 | `var` | variante textual — marca a palavra com ° e entra na lista de variantes |
 | `freq_nt` | ocorrências do lema no NT |
 
-### 14.2 Livro — `dados/livros/<sigla>/`
+### 15.2 Livro — `dados/livros/<sigla>/`
 
 - `licoes.tsv`: `num`, `parte`, `titulo`, `pagina`, `pagina_pdf`
 - `textos.tsv`: `licao`, `secao`, `ref`, `abrev`, `ordem`, `cap`, `vers`, `tipo`
   (`leia` ou `citado`)
 
-### 14.3 Tema — `dados/temas/<sigla>/`
+### 15.3 Tema — `dados/temas/<sigla>/`
 
 - `textos.tsv`: `ref`, `grupo`, `peso`, `nota` — **escrito por você**
 - `vocabulario.tsv`: `lingua`, `lema`, `translit`, `strong`, `ocorrencias`, `sentido`, `nota`
 - `ocorrencias.tsv`: `strong`, `lema`, `ref`, `ordem`, `cap`, `vers`, `forma` — gerado
 
-### 14.4 Livros da Bíblia — `dados/biblia/livros.tsv`
+### 15.4 Livros da Bíblia — `dados/biblia/livros.tsv`
 
 Os 66 livros com `ordem`, `abrev`, `nome`, `capitulos`, `testamento`, `grupo` e
 `nomes_alt` (grafias alternativas usadas no reconhecimento de referências).
@@ -845,9 +953,9 @@ Os 66 livros com `ordem`, `abrev`, `nome`, `capitulos`, `testamento`, `grupo` e
 
 ---
 
-## 15. Personalizar
+## 16. Personalizar
 
-### 15.1 Trocar o tema de cores
+### 16.1 Trocar o tema de cores
 
 No `config.tex` do caderno:
 
@@ -861,7 +969,7 @@ As cores das línguas são fixas em todos os temas: `grego` (azul), `hebraico`
 (âmbar), `aramaico` (oliva, usada também no siríaco), `ingles` (ardósia), além
 de `tinta` e `suave`.
 
-### 15.2 Criar um tema novo
+### 16.2 Criar um tema novo
 
 Em `compartilhado/estilo/estudobiblico.sty`, junto dos outros:
 
@@ -873,7 +981,7 @@ Em `compartilhado/estilo/estudobiblico.sty`, junto dos outros:
 Os seis valores são cores em hexadecimal, na ordem do comentário. Depois é só
 usar `\newcommand\ebTema{indigo}` no `config.tex`.
 
-### 15.3 Papel e margens
+### 16.3 Papel e margens
 
 ```latex
 \newcommand\ebPapel{a4}    % a4 = margem externa larga para notas | b5 = livro
@@ -883,7 +991,7 @@ Para ajustar as margens, edite o bloco `\geometry{...}` em
 `estudobiblico.sty`. A margem externa grande existe para o `\margem{...}`;
 `marginparwidth` controla a largura dessas notas.
 
-### 15.4 Trocar uma fonte
+### 16.4 Trocar uma fonte
 
 As fontes ficam em `compartilhado/fontes/` e são carregadas por nome de arquivo.
 Para trocar a fonte do hebraico, por exemplo: copie os arquivos para essa pasta
@@ -899,7 +1007,7 @@ Sugestões livres: Cardo, Ezra SIL, Taamey Frank CLM, Libertinus Serif.
 SBL BibLit e SBL Hebrew são gratuitas com licença própria; Brill é gratuita só
 para uso não comercial.
 
-### 15.5 Ligar ou desligar elementos
+### 16.5 Ligar ou desligar elementos
 
 ```latex
 \newcommand\ebFundoPagina{sim}   % fundo pergaminho em todas as páginas
@@ -907,7 +1015,7 @@ para uso não comercial.
 \newcommand\ebAbasPor{parte}     % abas por parte (livro) ou por capítulo
 ```
 
-### 15.6 Criar uma caixa nova
+### 16.6 Criar uma caixa nova
 
 Em `estudobiblico.sty`, ao lado das outras:
 
@@ -919,7 +1027,7 @@ Em `estudobiblico.sty`, ao lado das outras:
 
 Fica disponível como `\begin{oracao} … \end{oracao}` em todos os cadernos.
 
-### 15.7 Ajustar o interlinear
+### 16.7 Ajustar o interlinear
 
 No `interlinear.sty`:
 
@@ -928,7 +1036,7 @@ No `interlinear.sty`:
 - `\EBilmorfmax` — largura máxima da coluna de morfologia;
 - `\EBil@conf@grego` e irmãos — fonte, corpo e cor de cada língua.
 
-### 15.8 Capa e colofão
+### 16.8 Capa e colofão
 
 `\capa` e `\colofao` estão no fim de `estudobiblico.sty`. A capa usa
 `\ebTitulo`, `\ebSubtitulo`, `\ebIncipit` (girado na lateral), `\ebSerie`,
@@ -938,7 +1046,7 @@ bases de dados e das fontes.
 
 ---
 
-## 16. Bibliografia e índices
+## 17. Bibliografia e índices
 
 ### Bibliografia
 
@@ -966,7 +1074,7 @@ preciso rodar o makeindex à mão.
 
 ---
 
-## 17. Overleaf
+## 18. Overleaf
 
 ```bash
 python3 estudos.py overleaf lff      # gera saida/livros-lff-overleaf.zip
@@ -983,7 +1091,7 @@ alterações sozinho: copie de volta os arquivos do caderno que você editou lá
 
 ---
 
-## 18. Git e GitHub
+## 19. Git e GitHub
 
 **Crie o repositório como privado.** Ele contém textos de traduções modernas e
 dados extraídos de publicações protegidas por direitos autorais, para uso pessoal.
@@ -1049,7 +1157,7 @@ gh workflow disable compilar     # desligar
 
 ---
 
-## 19. Manutenção do repositório
+## 20. Manutenção do repositório
 
 ### Renomear um caderno
 
@@ -1092,7 +1200,7 @@ Um `git push` já é o seu backup.
 
 ---
 
-## 20. Estender o repositório
+## 21. Estender o repositório
 
 ### Acrescentar uma etapa a um caderno
 
@@ -1125,7 +1233,7 @@ direção) e acrescente a extensão correspondente na tabela `EXT` de
 
 ---
 
-## 21. Problemas comuns
+## 22. Problemas comuns
 
 ### "Nothing to do" / "gave an error in previous invocation"
 
@@ -1172,10 +1280,15 @@ pasta o sublinhado é normal e não precisa de nada.
 | Índice vazio | o makeindex não rodou: compile pelo latexmk. |
 | `Interlinear: arquivo … não encontrado` | caminho errado: ele é relativo à raiz (`dados/biblia/...`), não ao capítulo. |
 | `Estudo temático: arquivo … não encontrado` | confira `\temaDados` no `config.tex` e se o TSV existe. |
-| Hebraico com versículos "trocados" | use a numeração hebraica ao gerar os dados (seção 13.1). |
+| Hebraico com versículos "trocados" | use a numeração hebraica ao gerar os dados (seção 14.1). |
 | Uma referência não aparece no catálogo/índice | rode `tema.py conferir` ou `livro.py resumo`: a abreviação pode não estar em `livros.tsv`. |
 | Tabela desalinhada depois de editar um TSV | alguma coluna ficou separada por espaços em vez de tabulação. |
 | Compilação lenta | normal com LuaLaTeX; compile por partes (seção 8). No WSL, saia de `/mnt/c`. |
+| Caderno sai com rótulos em português apesar do `--idioma` | confira `\ebIdioma` no `config.tex` e se existe `compartilhado/idiomas/<codigo>.tex`; o `main.log` avisa quando o idioma não foi encontrado. |
+| `Texto 'xxx' não definido em idiomas/…` | a chave existe em `pt.tex` mas falta no seu arquivo de idioma; acrescente a linha `\EBdeftxt{xxx}{…}`. |
+| Texto sem hifenização num idioma novo | instale os padrões do TeX Live (`texlive-lang-<idioma>`); veja a seção 12.2. |
+| `(type 2): cannot find file ''` no fim da compilação, sem PDF | o cache de fontes do LuaTeX (`~/.texlive2025/texmf-var/luatex-cache/generic/fonts/otl`) guardava o caminho antigo das fontes — acontece quando o repositório muda de pasta. Desde esta versão o estilo apaga sozinho essas entradas velhas (`compartilhado/estilo/fontes.lua`). Se ainda acontecer, apague o cache à mão: `rm -rf ~/.texlive*/texmf-var/luatex-cache/generic/fonts/otl` e compile de novo. |
+| `Infinite glue shrinkage found in box being split` no log | aviso do pacote `longtable` 4.24 (TeX Live 2025) quando uma tabela longa quebra de página. É um "erro ignorado": não muda nada no PDF e foi corrigido na versão 4.25. O `estudos.py` não o mostra mais na lista de erros. |
 | `Overfull \hbox` | aviso, não erro: uma linha passou da margem. Reformule a frase ou ignore. |
 
 ### Onde procurar o erro
@@ -1191,7 +1304,7 @@ O resumo final do latexmk (`Command for 'lualatex' gave return code 1`) só diz
 
 ---
 
-## 22. Licenças e cuidados
+## 23. Licenças e cuidados
 
 **Dados e programas usados:**
 

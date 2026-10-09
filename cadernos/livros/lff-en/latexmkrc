@@ -1,0 +1,7 @@
+# latexmkrc de um caderno: acha a raiz do repositório (arquivo .estudos-raiz)
+# e carrega a configuração comum. Não precisa editar.
+use Cwd qw(abs_path); use File::Basename qw(dirname);
+our $raiz = abs_path('.');
+$raiz = dirname($raiz) until (-e "$raiz/.estudos-raiz" or $raiz eq dirname($raiz));
+die "Não achei a raiz do repositório (.estudos-raiz)\n" unless -e "$raiz/.estudos-raiz";
+do "$raiz/compartilhado/latexmkrc";

@@ -43,6 +43,26 @@ local function ler(caminho)
   return linhas
 end
 
+-- ----------------------------------------- nome do livro conforme o idioma
+-- EB_IDIOMA_COL é definido pelo TeX a partir de compartilhado/idiomas/<cod>.tex
+local function sufixo()
+  local c = rawget(_G, "EB_IDIOMA_COL") or ""
+  return c ~= "" and ("_" .. c) or ""
+end
+local function campo(b, nome)
+  if not b then return "" end
+  local v = b[nome .. sufixo()]
+  if v == nil or v == "" then v = b[nome] end
+  return v or ""
+end
+
+-- listras: as longtables que quebram de página recebem \EBzebra linha a linha
+-- (o \rowcolors do xcolor não sobrevive à divisão da tabela)
+local function zebra(i, clara)
+  if i % 2 == 0 then return clara and "\\EBzebraclara " or "\\EBzebra " end
+  return ""
+end
+
 local ESC = { ["\\"] = "\\textbackslash{}", ["{"] = "\\{", ["}"] = "\\}", ["%"] = "\\%",
   ["&"] = "\\&", ["#"] = "\\#", ["_"] = "\\_", ["$"] = "\\$", ["^"] = "\\^{}", ["~"] = "\\~{}" }
 local function esc(s) return ((s or ""):gsub("[\\{}%%&#_%$%^~]", ESC)) end
@@ -102,10 +122,15 @@ function LV.tabela(dados, num, impresso)
   for _, t in ipairs(LV.textos(dados)) do
     if t.licao == num then
       n = n + 1
+      tex.sprint(zebra(n))
       local k1, k2 = chave_idx(t)
-      local nome = livros[t.ordem] and livros[t.ordem].nome or t.ref
+      local nome = campo(livros[t.ordem], "nome")
+      local mostrar = t.ref
+      if nome ~= "" and t.cap ~= "" and t.vers ~= "" then
+        mostrar = nome .. " " .. t.cap .. ":" .. t.vers
+      end
       tex.sprint(string.format("\\EBlivtexto{%s}{%s}{%s}{%s@%s}{%s@%s:%s}\\\\",
-        esc(t.secao), esc(t.ref), esc(t.tipo), k1, esc(nome), k2, esc(t.cap), esc(t.vers)))
+        esc(t.secao), esc(mostrar), esc(t.tipo), k1, esc(nome), k2, esc(t.cap), esc(t.vers)))
     end
   end
   if n == 0 then tex.sprint("\\EBlivsemtextos\\\\") end
@@ -143,7 +168,7 @@ function LV.mais_citados(dados, minimo, maximo)
   for _, k in ipairs(ordem) do
     if cont[k] >= (minimo or 2) and n < (maximo or 40) then
       n = n + 1
-      tex.sprint(string.format("%s & %d & %s\\\\", esc(info[k].ref), cont[k], table.concat(onde[k], ", ")))
+      tex.sprint(zebra(n) .. string.format("%s & %d & %s\\\\", esc(info[k].ref), cont[k], table.concat(onde[k], ", ")))
     end
   end
 end
@@ -161,8 +186,11 @@ end
 
 -- --------------------------------------------------- registro de progresso
 function LV.progresso(dados)
+  local i = 0
   for _, l in ipairs(LV.licoes(dados)) do
     local n, leia = LV.contar(dados, l.num)
+    i = i + 1
+    tex.sprint(zebra(i))
     tex.sprint(string.format("\\EBlivprog{%s}{%s}{%s}{%d}{%d}\\\\", l.num, esc(l.titulo), esc(l.pagina), n, leia))
   end
 end
@@ -171,15 +199,16 @@ end
 function LV.leitura()
   local grupo = nil
   for _, b in ipairs(ler("dados/biblia/livros.tsv")) do
-    local g = b.testamento .. ": " .. b.grupo
+    local g = b.testamento .. ": " .. campo(b, "grupo")
     if g ~= grupo then
-      tex.sprint("\\EBlivgrupo{" .. (b.testamento == "AT" and "Escrituras Hebraicas" or "Escrituras Gregas")
-        .. "}{" .. esc(b.grupo) .. "}")
+      tex.sprint("\\EBlivgrupo{\\EBtxt{"
+        .. (b.testamento == "AT" and "escriturasHebraicas" or "escriturasGregas")
+        .. "}}{" .. esc(campo(b, "grupo")) .. "}")
       grupo = g
     end
     local caixas = {}
     for c = 1, tonumber(b.capitulos) do caixas[#caixas + 1] = "\\EBcx{" .. c .. "}" end
-    tex.sprint("\\EBlivlivro{" .. esc(b.nome) .. "}{" .. table.concat(caixas) .. "}")
+    tex.sprint("\\EBlivlivro{" .. esc(campo(b, "nome")) .. "}{" .. table.concat(caixas) .. "}")
   end
 end
 
